@@ -72,6 +72,9 @@
                        article.tags.some(tag => currentArticleTags.includes(tag));
             });
 
+            // 最新（配列の後ろ）から3つ分だけを取り出す
+            const limitedRelated = related.slice(-3).reverse();
+
             if (related.length === 0) {
                 listElement.innerHTML = '<li>（関連する過去記事はありません）</li>';
                 return;
