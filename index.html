@@ -58,15 +58,19 @@ async function loadPage() {
         featuredList.forEach(article => {
             const card = document.createElement('div');
             card.className = 'featured-card';
+            // ポイント：data-iframely-url の末尾に &media=1 を追加して画像メインにする
             card.innerHTML = `
-                <div class="iframely-embed">
-                    <div class="iframely-responsive" style="padding-bottom: 56.25%;">
-                        <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&card=small"></a>
+                <a href="articles/${article.id}.html" class="featured-card-link">
+                    <div class="iframely-embed">
+                        <div class="iframely-responsive">
+                            <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&media=1"></a>
+                        </div>
                     </div>
-                </div>
-                <div style="padding: 10px; text-align: center;">
-                    <a href="articles/${article.id}.html" class="read-more-btn">記事を読む</a>
-                </div>
+                    <div class="featured-info">
+                        <h3 class="featured-title">${article.title}</h3>
+                        <span class="featured-read-btn">記事を読む</span>
+                    </div>
+                </a>
             `;
             featuredSection.appendChild(card);
         });
