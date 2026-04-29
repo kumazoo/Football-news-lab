@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゴードンのバイエルン移籍話が破談に？ | Football News Lab</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html" style="text-decoration: none; color: inherit;">Football News Lab</a></h1>
+</header>
+
+<main>
+    <article class="article-card">
+        <span class="tag">移籍・噂</span>
+        <h2>ゴードンのバイエルン移籍話が破談に？</h2>
+
+        <p>海外の複数メディアでシーズン後の移籍の可能性が報じられているイングランド代表FWアンソニー・ゴードン。<br>
+        中でも高い温度感で獲得を検討しているといわれていたのはバイエルン・ミュンヘンだが、ドイツ最多優勝クラブの優先ターゲットは別の選手であるようだ。</p>
+
+        <div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 56.25%; padding-top: 120px;"><a href="https://www.goal.com/jp/%E3%83%AA%E3%82%B9%E3%83%88/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%8B%E3%83%BC-%E3%82%B3%E3%82%99%E3%83%BC%E3%83%88%E3%82%99%E3%83%B3%E3%81%AE%E3%83%8F%E3%82%99%E3%82%A4%E3%82%A8%E3%83%AB%E3%83%B3-%E3%83%9F%E3%83%A5%E3%83%B3%E3%83%98%E3%83%B3%E7%A7%BB%E7%B1%8D%E8%A9%B1%E3%81%8B%E3%82%99%E7%A0%B4%E8%AB%87%E3%81%8B-%E3%83%95%E3%82%99%E3%83%B3%E3%83%86%E3%82%99%E3%82%B9%E3%83%AA%E3%83%BC%E3%82%AB%E3%82%99%E7%8E%8B%E8%80%85-%E6%96%B0%E3%81%9F%E3%81%AA%E3%83%88%E3%83%83%E3%83%95%E3%82%9A%E7%A7%BB%E7%B1%8D%E5%80%99%E8%A3%9C%E3%81%AB%E7%85%A7%E6%BA%96/blt7e861c5787b17eab" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light"></a></div></div><script async src="https://iframely.net/embed.js"></script>
+
+        <div class="summary">
+            <strong>■ 要約（ソース：Goal.com）</strong>
+            <ul>
+                <li>バイエルン・ミュンヘンの来夏の最優先ターゲットはRBライプツィヒのヤン・ディオマンデだが、高額な移籍金が獲得の障壁となっている。</li>
+                <li>そのため、以前から関心を示していたニューカッスルのアンソニー・ゴードンが、より現実的な代替案として浮上している。</li>
+                <li>ゴードン自身もバイエルン移籍を前向きに捉えており、ディオマンデの獲得に失敗した場合は彼が最有力候補となる。</li>
+            </ul>
+        </div>
+
+        <div class="supplementary-info">
+            <h3>📊 Player Profile: アンソニー・ゴードン</h3>
+            <div class="supplementary-content">
+                エヴァートンFCの下部組織出身。2023年1月にニューカッスル・ユナイテッドへ移籍した。スピードに乗ったドリブルと、献身的な守備への意識が持ち味のアタッカー。<br>
+                <a href="https://ja.wikipedia.org/wiki/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B4%E3%83%BC%E3%83%89%E3%83%B3" target="_blank" class="wiki-link-btn">Wikipediaで詳細を確認</a>
+            </div>
+        </div>
+
+        <div class="supplementary-info" style="border-top: none; margin-top: 15px;">
+            <h3>🔗 関連記事</h3>
+            <div class="supplementary-content" style="background-color: transparent; padding: 0;">
+                <ul id="related-list" style="margin: 0; padding-left: 20px;">
+                    </ul>
+                <div style="margin-top: 10px;">
+                    <a href="../index.html" style="font-size: 13px;">新着記事一覧に戻る</a>
+                </div>
+            </div>
+        </div>
+    </article>
+</main>
+
+<footer>
+    &copy; 2026 Football News Lab
+</footer>
+
+<script>
+    // 自分で入力が必要な項目（記事ごとに変更）
+    const currentArticleTags = ["gordon", "newcastle"]; 
+    const currentArticleId = "260428_transfer01";
+
+    async function loadRelatedArticles() {
+        try {
+            const response = await fetch('list.json');
+            if (!response.ok) return;
+            const allArticles = await response.json();
+            const listElement = document.getElementById('related-list');
+
+            const related = allArticles.filter(article => {
+                return article.id !== currentArticleId && 
+                       article.tags.some(tag => currentArticleTags.includes(tag));
+            });
+
+            if (related.length === 0) {
+                listElement.innerHTML = '<li>（関連する過去記事はありません）</li>';
+                return;
+            }
+
+            related.forEach(article => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${article.id}.html" style="font-size: 13px;">${article.title}</a>`;
+                listElement.appendChild(li);
+            });
+        } catch (e) {
+            console.error("Related articles load failed.");
+        }
+    }
+    loadRelatedArticles();
+</script>
+
+</body>
+</html>

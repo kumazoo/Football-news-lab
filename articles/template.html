@@ -1,0 +1,97 @@
+これまでの修正（命名規則、タグ管理用スクリプト、スタイリッシュなレイアウト）をすべて盛り込んだ、最新の決定版テンプレートです。
+
+今後の記事作成には、このコードをベースにお使いください。
+
+最新記事テンプレート（articles/template.html）
+HTML
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【記事タイトルを入力】 | Football News Lab</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html" style="text-decoration: none; color: inherit;">Football News Lab</a></h1>
+</header>
+
+<main>
+    <article class="article-card">
+        <span class="tag">【表示カテゴリ（例：移籍・噂）】</span>
+        <h2>【記事タイトルを入力】</h2>
+
+        <p>【導入文：ここにあなたの視点を1〜2文で入力】</p>
+
+        <div class="summary">
+            <strong>■ 要約（ソース：【メディア名】）</strong>
+            <ul>
+                <li>【要約ポイント1】</li>
+                <li>【要約ポイント2】</li>
+                <li>【要約ポイント3】</li>
+            </ul>
+        </div>
+
+        <div class="supplementary-info">
+            <h3>📊 Player Profile / 📌 Keyword</h3>
+            <div class="supplementary-content">
+                【AI等で生成した選手の遍歴や用語の解説文を入力】<br>
+                <a href="【WikipediaのURL】" target="_blank" class="wiki-link-btn">Wikipediaで詳細を確認</a>
+            </div>
+        </div>
+
+        <div class="supplementary-info" style="border-top: none; margin-top: 15px;">
+            <h3>🔗 関連記事</h3>
+            <div class="supplementary-content" style="background-color: transparent; padding: 0;">
+                <ul id="related-list" style="margin: 0; padding-left: 20px;">
+                    </ul>
+                <div style="margin-top: 10px;">
+                    <a href="../index.html" style="font-size: 13px;">新着記事一覧に戻る</a>
+                </div>
+            </div>
+        </div>
+    </article>
+</main>
+
+<footer>
+    &copy; 2026 Soccer News Lab
+</footer>
+
+<script>
+    /* 記事ごとにここを書き換えてください */
+    const currentArticleTags = ["tag1", "tag2"]; // 関連付けたいタグをカンマ区切りで
+    const currentArticleId = "260429_genre01";   // ファイル名（拡張子なし）を入力
+
+    async function loadRelatedArticles() {
+        try {
+            const response = await fetch('list.json');
+            if (!response.ok) return;
+            const allArticles = await response.json();
+            const listElement = document.getElementById('related-list');
+
+            const related = allArticles.filter(article => {
+                return article.id !== currentArticleId && 
+                       article.tags.some(tag => currentArticleTags.includes(tag));
+            });
+
+            if (related.length === 0) {
+                listElement.innerHTML = '<li>（関連する過去記事はありません）</li>';
+                return;
+            }
+
+            related.forEach(article => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${article.id}.html" style="font-size: 13px;">${article.title}</a>`;
+                listElement.appendChild(li);
+            });
+        } catch (e) {
+            console.error("Related articles load failed.");
+        }
+    }
+    loadRelatedArticles();
+</script>
+
+</body>
+</html>
