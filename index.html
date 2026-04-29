@@ -85,6 +85,10 @@ async function loadPage() {
                 </article>
             `;
             newsFeed.appendChild(item);
+            // 新しく追加されたリンクをIframelyに再スキャンさせる
+            if (window.iframely) {
+            iframely.load();
+    }
         });
     } catch (e) {
         console.error("Failed to load articles.");
