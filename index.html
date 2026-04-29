@@ -59,16 +59,16 @@ async function loadPage() {
             const card = document.createElement('div');
             card.className = 'featured-card';
             card.innerHTML = `
-                <!-- 画像エリア（Iframely） -->
-                <div class="featured-image-container">
-                    <div class="iframely-embed">
-                        <div class="iframely-responsive">
-                            <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&media=1"></a>
+                <a href="articles/${article.id}.html" class="featured-overlay-link">
+                    <!-- 画像だけを見せるためのコンテナ -->
+                    <div class="featured-image-mask">
+                        <div class="iframely-embed">
+                            <div class="iframely-responsive">
+                                <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&media=1"></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- 前面に重ねるリンクとタイトル -->
-                <a href="articles/${article.id}.html" class="featured-overlay-link">
+                    <!-- 自分のタイトルを画像の上に配置 -->
                     <div class="featured-text-content">
                         <h3 class="featured-title">${article.title}</h3>
                         <span class="featured-read-btn">記事を読む</span>

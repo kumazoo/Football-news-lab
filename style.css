@@ -19,7 +19,7 @@ main {
     padding: 20px;
 }
 
-/* 注目記事：画像の上にタイトルを重ねるスタイル */
+/* 注目記事：タイルレイアウト */
 .featured-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -28,91 +28,90 @@ main {
 }
 
 .featured-card {
-    position: relative; /* 重ね合わせの基準 */
+    position: relative;
     background: #000;
     border-radius: 12px;
-    overflow: hidden;
-    height: 250px; /* 高さを固定 */
+    overflow: hidden; /* 枠外にはみ出したIframelyの文字を隠す */
+    height: 240px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-/* Iframelyを背景化 */
-.featured-image-container {
+/* Iframelyの文字部分を隠して画像だけを中央に配置 */
+.featured-image-mask {
     position: absolute;
-    top: 0;
+    top: -10%; /* 上にずらして文字を追い出す */
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 150%; /* 高さを大きく取って下側の文字も追い出す */
     z-index: 1;
-    pointer-events: none; /* 画像（引用元）をクリックさせない */
-    opacity: 0.7; /* タイトルを読みやすくするために少し暗く */
+    pointer-events: none; /* 下のリンクを邪魔しない */
 }
 
-/* 全面を覆うリンクレイヤー */
+/* 全面リンク */
 .featured-overlay-link {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 2; /* Iframelyより上に配置 */
+    z-index: 2;
     text-decoration: none;
     display: flex;
-    align-items: flex-end; /* テキストを下側に配置 */
-    background: linear-gradient(transparent 50%, rgba(0,0,0,0.8) 100%); /* 下部をグラデーションで暗く */
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(transparent 40%, rgba(0,0,0,0.8) 100%);
 }
 
 .featured-text-content {
-    padding: 20px;
+    padding: 15px;
     color: white;
-    width: 100%;
 }
 
 .featured-title {
-    font-size: 1.1rem;
-    margin: 0 0 8px 0;
+    font-size: 1rem;
+    margin: 0 0 5px 0;
     font-weight: bold;
     line-height: 1.4;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    /* 3行以上は省略 */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .featured-read-btn {
-    font-size: 0.8rem;
-    font-weight: bold;
+    font-size: 0.75rem;
     background: #2e7d32;
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 4px;
     display: inline-block;
 }
 
-/* 最新記事リスト */
+/* セクションタイトル・最新記事 */
 .section-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #2e7d32;
     border-bottom: 2px solid #2e7d32;
-    margin: 40px 0 20px;
+    margin: 40px 0 15px;
     padding-bottom: 5px;
-    font-weight: bold;
 }
 
 .news-card {
     background: #fff;
-    padding: 15px;
+    padding: 12px 15px;
     margin-bottom: 10px;
     border-radius: 8px;
     border: 1px solid #eee;
     display: flex;
     align-items: center;
+    transition: 0.2s;
 }
 
-.news-date {
-    color: #888;
-    font-size: 0.8rem;
-    margin-right: 15px;
-}
+.news-card:hover { border-color: #2e7d32; }
 
-/* スマホ対応 */
+.news-date { color: #888; font-size: 0.8rem; margin-right: 15px; }
+.news-title { font-size: 0.95rem; font-weight: bold; margin: 0; }
+
 @media (max-width: 600px) {
     .featured-grid { grid-template-columns: 1fr; }
-    .featured-card { height: 200px; }
 }
