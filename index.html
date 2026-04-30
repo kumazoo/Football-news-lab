@@ -1,3 +1,9 @@
+ご提示いただいた現状の index.html 全文をベースに、「ニュース一覧（archive.html）へのリンク」と「最新記事の表示件数制限（5件）」を組み込んだ改修版です。
+
+そのままコピー＆ペーストして上書きしてください。
+
+改修版 index.html
+HTML
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -12,9 +18,9 @@
     <h1><a href="index.html" style="text-decoration: none; color: inherit;">Football News Lab</a></h1>
 </header>
 
-<!-- メニューボタン（仮） -->
+<!-- メニューボタン：ニュースのリンク先を archive.html へ変更 -->
 <nav style="text-align: center; margin-top: 15px;">
-    <a href="index.html" class="nav-btn">ニュース</a>
+    <a href="archive.html" class="nav-btn">ニュース</a>
     <a href="#" class="nav-btn">ライター</a>
 </nav>
 
@@ -35,6 +41,11 @@
     <section id="news-feed" class="news-feed">
         <!-- JSでリストが生成されます -->
     </section>
+
+    <!-- 【追加】ニュース一覧ページへの誘導ボタン -->
+    <div style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
+        <a href="archive.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての記事を見る</a>
+    </div>
 </main>
 
 <footer>
@@ -59,7 +70,6 @@ async function loadPage() {
             const card = document.createElement('div');
             card.className = 'featured-card';
             card.innerHTML = `
-                <!-- 1. 背景：Iframely（文字を完全に場外へ） -->
                 <div class="featured-image-mask">
                     <div class="iframely-embed">
                         <div class="iframely-responsive">
@@ -67,7 +77,6 @@ async function loadPage() {
                         </div>
                     </div>
                 </div>
-                <!-- 2. 前面：あなたの記事へのリンクとタイトル -->
                 <a href="articles/${article.id}.html" class="featured-overlay-link">
                     <div class="featured-text-content">
                         <h3 class="featured-title">${article.title}</h3>
@@ -78,25 +87,32 @@ async function loadPage() {
             featuredSection.appendChild(card);
         });
 
-        // 2. 最新記事一覧（全記事を表示）
-        articles.slice().reverse().forEach(article => {
+        // 2. 最新記事一覧（最新の5件に制限して表示）
+        // slice(0, 5) を追加して最新5件のみを抽出
+        articles.slice().reverse().slice(0, 5).forEach(article => {
             const item = document.createElement('a');
             item.href = `articles/${article.id}.html`;
             item.className = 'news-item-link';
+
+            // 日付のフォーマット：IDの先頭6文字から 20xx.xx.xx を生成
+            const dateStr = article.id.substring(0,6);
+            const formattedDate = `20${dateStr.substring(0,2)}.${dateStr.substring(2,4)}.${dateStr.substring(4,6)}`;
+
             item.innerHTML = `
                 <article class="news-card">
                     <div class="news-meta">
-                        <span class="news-date">${article.id.substring(0,6)}</span>
+                        <span class="news-date">${formattedDate}</span>
                         <h3 class="news-title">${article.title}</h3>
                     </div>
                 </article>
             `;
             newsFeed.appendChild(item);
-            // 新しく追加されたリンクをIframelyに再スキャンさせる
-            if (window.iframely) {
-            iframely.load();
-    }
         });
+
+        // Iframelyに再スキャンさせる
+        if (window.iframely) {
+            iframely.load();
+        }
     } catch (e) {
         console.error("Failed to load articles.");
     }
