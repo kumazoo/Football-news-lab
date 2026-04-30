@@ -1,3 +1,9 @@
+地域ソートの追加ですね。日本代表や国内リーグのニュース、あるいは南米や北中米といった「その他」の地域のニュースもカバーできるよう、archive.html のフィルター部分を更新しました。
+
+ご指定通り、「日本」を一番左に、「その他」を一番右に配置し、コード側でもそれらを正しく判別できるように調整しています。
+
+archive.html（地域ソート拡張版）
+HTML
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -21,8 +27,8 @@
     <div class="archive-container">
         <h2 style="text-align: center; margin-bottom: 30px;">NEWS ARCHIVE</h2>
 
-        <!-- ソートコントロール -->
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+            <!-- ジャンル選択 -->
             <div class="filter-group" style="margin-bottom: 15px;">
                 <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">GENRE:</p>
                 <div id="genre-filters" class="filter-buttons">
@@ -35,23 +41,23 @@
                 </div>
             </div>
 
+            <!-- 地域選択（日本を左、その他を右に追加） -->
             <div class="filter-group">
                 <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">REGION:</p>
                 <div id="region-filters" class="filter-buttons">
                     <button class="filter-btn active" data-region="all">すべて</button>
+                    <button class="filter-btn" data-region="japan">日本</button>
                     <button class="filter-btn" data-region="england">イングランド</button>
                     <button class="filter-btn" data-region="spain">スペイン</button>
                     <button class="filter-btn" data-region="italy">イタリア</button>
                     <button class="filter-btn" data-region="germany">ドイツ</button>
                     <button class="filter-btn" data-region="france">フランス</button>
+                    <button class="filter-btn" data-region="etc">その他</button>
                 </div>
             </div>
         </div>
 
-        <!-- 記事リスト -->
         <div id="archive-list" class="archive-list"></div>
-
-        <!-- ページネーション操作エリア -->
         <div id="pagination-controls" style="display: flex; justify-content: center; gap: 10px; margin-top: 30px;"></div>
     </div>
 </main>
@@ -65,7 +71,7 @@
     let currentGenre = 'all';
     let currentRegion = 'all';
     let currentPage = 1;
-    const itemsPerPage = 10; // 1ページあたりの表示件数
+    const itemsPerPage = 10;
 
     async function loadArchive() {
         try {
@@ -83,14 +89,13 @@
         container.innerHTML = '';
         paginationContainer.innerHTML = '';
 
-        // 1. フィルタリング
         const filtered = allArticles.filter(article => {
             const matchGenre = (currentGenre === 'all' || article.genre === currentGenre);
-            const matchRegion = (currentRegion === 'all' || article.tags.includes(currentRegion));
+            // 地域フィルタのロジック：tags配列に指定した地域名が含まれているか確認
+            const matchRegion = (currentRegion === 'all' || (article.tags && article.tags.includes(currentRegion)));
             return matchGenre && matchRegion;
         }).reverse();
 
-        // 2. ページネーション計算
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
         const pagedArticles = filtered.slice(startIndex, startIndex + itemsPerPage);
@@ -100,7 +105,6 @@
             return;
         }
 
-        // 3. 記事カードのレンダリング
         pagedArticles.forEach(article => {
             const dateId = article.id.substring(0, 6);
             const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
@@ -120,7 +124,6 @@
             container.appendChild(card);
         });
 
-        // 4. ページ番号ボタンの生成
         if (totalPages > 1) {
             for (let i = 1; i <= totalPages; i++) {
                 const pageBtn = document.createElement('button');
@@ -143,15 +146,17 @@
 
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const parent = e.target.parentElement;
-            parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
+            if (e.target.dataset.genre || e.target.dataset.region) {
+                const parent = e.target.parentElement;
+                parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
 
-            if (e.target.dataset.genre) currentGenre = e.target.dataset.genre;
-            if (e.target.dataset.region) currentRegion = e.target.dataset.region;
+                if (e.target.dataset.genre) currentGenre = e.target.dataset.genre;
+                if (e.target.dataset.region) currentRegion = e.target.dataset.region;
 
-            currentPage = 1; // フィルタ変更時は1ページ目に戻す
-            renderArchive();
+                currentPage = 1;
+                renderArchive();
+            }
         });
     });
 
