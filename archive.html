@@ -21,9 +21,8 @@
     <div class="archive-container">
         <h2 style="text-align: center; margin-bottom: 30px;">NEWS ARCHIVE</h2>
 
-        <!-- ソートコントロールエリア -->
+        <!-- ソートコントロール -->
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-            <!-- ジャンル選択（WHAT） -->
             <div class="filter-group" style="margin-bottom: 15px;">
                 <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">GENRE:</p>
                 <div id="genre-filters" class="filter-buttons">
@@ -36,7 +35,6 @@
                 </div>
             </div>
 
-            <!-- 地域選択（WHERE） -->
             <div class="filter-group">
                 <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">REGION:</p>
                 <div id="region-filters" class="filter-buttons">
@@ -50,10 +48,11 @@
             </div>
         </div>
 
-        <!-- 記事リスト表示エリア -->
-        <div id="archive-list" class="archive-list">
-            <!-- JSで記事カードを挿入 -->
-        </div>
+        <!-- 記事リスト -->
+        <div id="archive-list" class="archive-list"></div>
+
+        <!-- ページネーション操作エリア -->
+        <div id="pagination-controls" style="display: flex; justify-content: center; gap: 10px; margin-top: 30px;"></div>
     </div>
 </main>
 
@@ -65,37 +64,44 @@
     let allArticles = [];
     let currentGenre = 'all';
     let currentRegion = 'all';
+    let currentPage = 1;
+    const itemsPerPage = 10; // 1ページあたりの表示件数
 
-    // 記事データの読み込み
     async function loadArchive() {
         try {
             const response = await fetch('articles/list.json');
             allArticles = await response.json();
-            renderArticles();
+            renderArchive();
         } catch (e) {
             console.error("Failed to load articles.");
         }
     }
 
-    // 表示のレンダリング
-    function renderArticles() {
+    function renderArchive() {
         const container = document.getElementById('archive-list');
+        const paginationContainer = document.getElementById('pagination-controls');
         container.innerHTML = '';
+        paginationContainer.innerHTML = '';
 
-        // フィルタリングロジック（ジャンル ＋ 地域のAND検索）
+        // 1. フィルタリング
         const filtered = allArticles.filter(article => {
             const matchGenre = (currentGenre === 'all' || article.genre === currentGenre);
             const matchRegion = (currentRegion === 'all' || article.tags.includes(currentRegion));
             return matchGenre && matchRegion;
-        });
+        }).reverse();
 
-        if (filtered.length === 0) {
+        // 2. ページネーション計算
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const pagedArticles = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+        if (pagedArticles.length === 0) {
             container.innerHTML = '<p style="text-align:center; color:#999; padding: 40px;">該当する記事が見つかりません。</p>';
             return;
         }
 
-        // 記事カードの生成
-        filtered.reverse().forEach(article => {
+        // 3. 記事カードのレンダリング
+        pagedArticles.forEach(article => {
             const dateId = article.id.substring(0, 6);
             const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
             
@@ -113,17 +119,28 @@
             `;
             container.appendChild(card);
         });
+
+        // 4. ページ番号ボタンの生成
+        if (totalPages > 1) {
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.innerText = i;
+                pageBtn.className = `filter-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    renderArchive();
+                    window.scrollTo(0, 0);
+                };
+                paginationContainer.appendChild(pageBtn);
+            }
+        }
     }
 
     function getGenreLabel(genre) {
-        const labels = {
-            'transfer': '移籍', 'match': '試合', 'injury': '負傷',
-            'team': 'チーム', 'player': '選手', 'etc': 'その他'
-        };
+        const labels = {'transfer': '移籍', 'match': '試合', 'injury': '負傷', 'team': 'チーム', 'player': '選手', 'etc': 'その他'};
         return labels[genre] || 'その他';
     }
 
-    // フィルタボタンのイベント設定
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const parent = e.target.parentElement;
@@ -133,7 +150,8 @@
             if (e.target.dataset.genre) currentGenre = e.target.dataset.genre;
             if (e.target.dataset.region) currentRegion = e.target.dataset.region;
 
-            renderArticles();
+            currentPage = 1; // フィルタ変更時は1ページ目に戻す
+            renderArchive();
         });
     });
 
