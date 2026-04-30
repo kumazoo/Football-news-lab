@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ゴードンのバイエルン移籍話が破談に？ | Football News Lab</title>
     <link rel="stylesheet" href="../style.css">
-    <!-- Iframelyのスクリプト -->
     <script async src="https://iframely.net/embed.js"></script>
 </head>
 <body>
@@ -16,22 +15,22 @@
 
 <main>
     <article class="article-card">
-        <!-- 1. カテゴリタグ（手動） -->
+        <!-- 1. カテゴリタグ -->
         <span class="tag">移籍・噂</span>
         
-        <!-- 2. タイトル（JSONから自動取得） -->
+        <!-- 2. タイトル -->
         <h2 id="article-title">ゴードンのバイエルン移籍話が破談に？</h2>
 
-        <!-- 3. ジャーナリスト情報（JSONから自動取得） -->
+        <!-- 3. 詳細タグ（タイトルのすぐ下へ移動） -->
+        <div id="tags-container" style="margin-bottom: 10px;"></div>
+
+        <!-- 4. ジャーナリスト情報（タグの下へ移動） -->
         <div id="journalist-info-area"></div>
-        
-        <!-- 4. 詳細タグ（JSONから自動取得してチップ表示） -->
-        <div id="tags-container" style="margin-bottom: 15px;"></div>
 
         <!-- 5. 導入文 -->
         <p>海外の複数メディアでシーズン後の移籍の可能性が報じられているイングランド代表FWアンソニー・ゴードン。中でもある程度の温度感で獲得を検討しているといわれていたのはバイエルン・ミュンヘンだが、ドイツ最多優勝クラブの優先ターゲットは別の選手であるようだ。</p>
 
-        <!-- 6. 引用記事カード（Iframely） -->
+        <!-- 6. 引用記事カード -->
         <div class="iframely-container" style="margin: 25px 0;">
             <div class="iframely-embed">
                 <div class="iframely-responsive">
@@ -88,24 +87,9 @@
             const articleData = allArticles.find(a => a.id === currentArticleId);
 
             if (articleData) {
-                // 1. タイトルの自動反映
                 document.getElementById('article-title').innerText = articleData.title;
 
-                // 2. ジャーナリスト情報の自動反映
-                const infoArea = document.getElementById('journalist-info-area');
-                if (articleData.writer) {
-                    infoArea.innerHTML = `
-                        <div class="journalist-info" style="margin: 10px 0 15px 0;">
-                            <span class="journalist-label">JOURNALIST:</span>
-                            <span class="journalist-name">${articleData.writer}</span>
-                            <span class="journalist-stats">
-                                (的中率: <span class="accuracy-value">${articleData.accuracy}%</span> / 総件数: <span class="count-value">${articleData.count}</span>件)
-                            </span>
-                        </div>
-                    `;
-                }
-
-                // 3. タグのチップ表示
+                // 順番通りタグを先に挿入
                 const tagsContainer = document.getElementById('tags-container');
                 if (articleData.tags) {
                     articleData.tags.forEach(tag => {
@@ -116,7 +100,20 @@
                     });
                 }
 
-                // 4. 関連記事の生成
+                // その次にジャーナリスト情報を挿入
+                const infoArea = document.getElementById('journalist-info-area');
+                if (articleData.writer) {
+                    infoArea.innerHTML = `
+                        <div class="journalist-info" style="margin: 5px 0 15px 0;">
+                            <span class="journalist-label">JOURNALIST:</span>
+                            <span class="journalist-name">${articleData.writer}</span>
+                            <span class="journalist-stats">
+                                (的中率: <span class="accuracy-value">${articleData.accuracy}%</span> / 総件数: <span class="count-value">${articleData.count}</span>件)
+                            </span>
+                        </div>
+                    `;
+                }
+
                 const listElement = document.getElementById('related-list');
                 const related = allArticles.filter(article => {
                     return article.id !== currentArticleId && 
