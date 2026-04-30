@@ -20,13 +20,13 @@
 
     <main>
         <article class="article-card">
-            <!-- タグ表示エリア -->
-            <div id="tags-container"></div>
+            <!-- 1. 記事タイトル -->
+            <h1 id="article-title" style="margin-bottom: 5px;">読み込み中...</h1>
 
-            <!-- 記事タイトル（JSONから自動読み込み） -->
-            <h1 id="article-title" style="margin-bottom: 10px;">読み込み中...</h1>
+            <!-- 2. タグ表示エリア（タイトルの下へ移動） -->
+            <div id="tags-container" style="margin-bottom: 15px;"></div>
 
-            <!-- ジャーナリスト情報（JSONに名前がある場合のみ自動表示） -->
+            <!-- 3. ジャーナリスト情報（JSONに名前がある場合のみ自動表示） -->
             <div id="journalist-info-area"></div>
 
             <hr id="title-divider" style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
@@ -41,7 +41,6 @@
             <div id="iframely-container" style="margin-top: 25px;">
                 <div class="iframely-embed">
                     <div class="iframely-responsive">
-                        <!-- ここに引用元のURLを記載 -->
                         <a href="https://www.goal.com/jp/%E3%83%AA%E3%82%B9%E3%83%88/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%8B%E3%83%BC-%E3%82%B3%E3%82%99%E3%83%BC%E3%83%88%E3%82%99%E3%83%B3%E3%81%AE%E3%83%8F%E3%82%99%E3%82%A4%E3%82%A8%E3%83%AB%E3%83%B3-%E3%83%9F%E3%83%A5%E3%83%B3%E3%83%98%E3%83%B3%E7%A7%BB%E7%B1%8D%E8%A9%B1%E3%81%8B%E3%82%99%E7%A0%B4%E8%AB%87%E3%81%8B-%E3%83%95%E3%82%99%E3%83%B3%E3%83%86%E3%82%99%E3%82%B9%E3%83%AA%E3%83%BC%E3%82%AB%E3%82%99%E7%8E%8B%E8%80%85-%E6%96%B0%E3%81%9F%E3%81%AA%E3%83%88%E3%83%83%E3%83%95%E3%82%9A%E7%A7%BB%E7%B1%8D%E5%80%99%E8%A3%9C%E3%81%AB%E7%85%A7%E6%BA%96/blt7e861c5787b17eab" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light"></a>
                     </div>
                 </div>
@@ -55,24 +54,22 @@
 
     <script>
     async function loadArticleDetail() {
-        // 1. ファイル名から記事IDを取得
         const path = window.location.pathname;
         const articleId = path.split('/').pop().replace('.html', '');
 
         try {
-            // 2. list.jsonを読み込み
             const response = await fetch('../articles/list.json');
             const articles = await response.json();
             const articleData = articles.find(a => a.id === articleId);
 
             if (articleData) {
-                // タイトルの反映
+                // 1. タイトルの反映
                 document.getElementById('article-title').innerText = articleData.title;
 
-                // タグの反映
+                // 2. タグの反映（タイトルの下）
                 const tagsContainer = document.getElementById('tags-container');
-                tagsContainer.innerHTML = ''; // 一度空にする
-                if (articleData.tags) {
+                tagsContainer.innerHTML = ''; // 残存テキストをクリア
+                if (articleData.tags && Array.isArray(articleData.tags)) {
                     articleData.tags.forEach(tag => {
                         const span = document.createElement('span');
                         span.className = 'tag';
@@ -81,7 +78,7 @@
                     });
                 }
 
-                // ジャーナリスト情報の反映
+                // 3. ジャーナリスト情報の反映
                 const infoArea = document.getElementById('journalist-info-area');
                 const divider = document.getElementById('title-divider');
 
@@ -96,17 +93,14 @@
                         </div>
                     `;
                 } else {
-                    // ジャーナリストがいない場合はエリアを非表示にする
                     infoArea.style.display = 'none';
                     divider.style.margin = "0 0 15px 0";
                 }
             }
         } catch (error) {
             console.error('データの読み込みに失敗しました:', error);
-            document.getElementById('article-title').innerText = '記事が見つかりませんでした';
         }
     }
-    // 実行
     loadArticleDetail();
     </script>
 </body>
