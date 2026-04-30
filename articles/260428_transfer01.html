@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Football News Lab</title>
     <link rel="stylesheet" href="../style.css">
-    <!-- Iframelyのスクリプト -->
     <script async src="https://iframely.net/embed.js"></script>
 </head>
 <body>
@@ -20,30 +19,33 @@
 
     <main>
         <article class="article-card">
-            <!-- 1. 記事タイトル -->
+            <!-- タイトル・タグ・ジャーナリスト（ここはJSONから自動反映） -->
             <h1 id="article-title" style="margin-bottom: 5px;">読み込み中...</h1>
-
-            <!-- 2. タグ表示エリア（タイトルの下へ移動） -->
             <div id="tags-container" style="margin-bottom: 15px;"></div>
-
-            <!-- 3. ジャーナリスト情報（JSONに名前がある場合のみ自動表示） -->
             <div id="journalist-info-area"></div>
 
             <hr id="title-divider" style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
 
-            <!-- 記事本文 -->
+            <!-- ここから下の「本文」や「Iframely」は固定で残ります -->
             <div id="article-body">
                 <p>海外の複数メディアでシーズン後の移籍の可能性が報じられているイングランド代表FWアンソニー・ゴードン。</p>
                 <p>中でもある程度の温度感で獲得を検討しているといわれていたのはバイエルン・ミュンヘンだが、ドイツ最多優勝クラブの優先ターゲットは別の選手であるようだ。</p>
-            </div>
-
-            <!-- 引用元（Iframely埋め込み） -->
-            <div id="iframely-container" style="margin-top: 25px;">
-                <div class="iframely-embed">
-                    <div class="iframely-responsive">
-                        <a href="https://www.goal.com/jp/%E3%83%AA%E3%82%B9%E3%83%88/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%8B%E3%83%BC-%E3%82%B3%E3%82%99%E3%83%BC%E3%83%88%E3%82%99%E3%83%B3%E3%81%AE%E3%83%8F%E3%82%99%E3%82%A4%E3%82%A8%E3%83%AB%E3%83%B3-%E3%83%9F%E3%83%A5%E3%83%B3%E3%83%98%E3%83%B3%E7%A7%BB%E7%B1%8D%E8%A9%B1%E3%81%8B%E3%82%99%E7%A0%B4%E8%AB%87%E3%81%8B-%E3%83%95%E3%82%99%E3%83%B3%E3%83%86%E3%82%99%E3%82%B9%E3%83%AA%E3%83%BC%E3%82%AB%E3%82%99%E7%8E%8B%E8%80%85-%E6%96%B0%E3%81%9F%E3%81%AA%E3%83%88%E3%83%83%E3%83%95%E3%82%9A%E7%A7%BB%E7%B1%8D%E5%80%99%E8%A3%9C%E3%81%AB%E7%85%A7%E6%BA%96/blt7e861c5787b17eab" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light"></a>
+                
+                <!-- 画像と引用元 -->
+                <div id="iframely-container" style="margin-top: 25px;">
+                    <div class="iframely-embed">
+                        <div class="iframely-responsive">
+                            <a href="https://www.goal.com/jp/%E3%83%AA%E3%82%B9%E3%83%88/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%8B%E3%83%BC-%E3%82%B3%E3%82%99%E3%83%BC%E3%83%88%E3%82%99%E3%83%B3%E3%81%AE%E3%83%8F%E3%82%99%E3%82%A4%E3%82%A8%E3%83%AB%E3%83%B3-%E3%83%9F%E3%83%A5%E3%83%B3%E3%83%98%E3%83%B3%E7%A7%BB%E7%B1%8D%E8%A9%B1%E3%81%8B%E3%82%99%E7%A0%B4%E8%AB%87%E3%81%8B-%E3%83%95%E3%82%99%E3%83%B3%E3%83%86%E3%82%99%E3%82%B9%E3%83%AA%E3%83%BC%E3%82%AB%E3%82%99%E7%8E%8B%E8%80%85-%E6%96%B0%E3%81%9F%E3%81%AA%E3%83%88%E3%83%83%E3%83%95%E3%82%9A%E7%A7%BB%E7%B1%8D%E5%80%99%E8%A3%9C%E3%81%AB%E7%85%A7%E6%BA%96/blt7e861c5787b17eab" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light"></a>
+                        </div>
                     </div>
                 </div>
+
+                <p style="margin-top:20px;">
+                    アンソニー・ゴードンは本当に最善の選択肢なのか？バイエルン・ミュンヘンには別の主要な補強ターゲットがいると報じられている。｜Goal.com 日本
+                </p>
+                <p>
+                    アンソニー・ゴードンは以前、バイエルン・ミュンヘンの最優先補強候補とされていた。しかし、ブンデスリーガ王者は現在、他の選手に興味を持っているようだ。
+                </p>
             </div>
         </article>
     </main>
@@ -63,13 +65,12 @@
             const articleData = articles.find(a => a.id === articleId);
 
             if (articleData) {
-                // 1. タイトルの反映
+                // JSONからタイトルとタグだけを安全に更新
                 document.getElementById('article-title').innerText = articleData.title;
 
-                // 2. タグの反映（タイトルの下）
                 const tagsContainer = document.getElementById('tags-container');
-                tagsContainer.innerHTML = ''; // 残存テキストをクリア
-                if (articleData.tags && Array.isArray(articleData.tags)) {
+                tagsContainer.innerHTML = '';
+                if (articleData.tags) {
                     articleData.tags.forEach(tag => {
                         const span = document.createElement('span');
                         span.className = 'tag';
@@ -78,10 +79,7 @@
                     });
                 }
 
-                // 3. ジャーナリスト情報の反映
                 const infoArea = document.getElementById('journalist-info-area');
-                const divider = document.getElementById('title-divider');
-
                 if (articleData.writer) {
                     infoArea.innerHTML = `
                         <div class="journalist-info">
@@ -94,11 +92,10 @@
                     `;
                 } else {
                     infoArea.style.display = 'none';
-                    divider.style.margin = "0 0 15px 0";
                 }
             }
         } catch (error) {
-            console.error('データの読み込みに失敗しました:', error);
+            console.error('Data error:', error);
         }
     }
     loadArticleDetail();
