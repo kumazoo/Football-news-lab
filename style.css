@@ -1,5 +1,7 @@
+/* --- Football News Lab 共通スタイル --- */
+
 body {
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
     line-height: 1.6;
     color: #333;
     margin: 0;
@@ -13,13 +15,49 @@ header {
     text-align: center;
 }
 
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
+
+/* ナビゲーション */
+nav {
+    text-align: center;
+    padding: 12px 0;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.nav-btn {
+    text-decoration: none;
+    color: #2e7d32;
+    margin: 0 15px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+
+.nav-btn:hover {
+    opacity: 0.7;
+}
+
 main {
-    max-width: 800px;
+    max-width: 850px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* 注目記事：カードの土台 */
+/* 記事カード共通 */
+.article-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+/* 注目記事（Featured）のタイルレイアウト */
 .featured-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -31,56 +69,51 @@ main {
     position: relative;
     background: #000;
     border-radius: 12px;
-    overflow: hidden; /* ここで場外に突き抜けた文字をカット */
-    height: 260px; /* カードの高さを少し調整 */
+    overflow: hidden;
+    height: 260px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-/* Iframelyを巨大化させて「画像」だけを窓に合わせる */
 .featured-image-mask {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1; /* 背景 */
+    z-index: 1;
     pointer-events: none;
 }
 
 .featured-image-mask .iframely-embed {
-    transform: scale(1.4); /* 少し拡大して余白を消す */
+    transform: scale(1.4);
     transform-origin: top center;
-    margin-top: -5px; /* 上側の余白を微調整 */
+    margin-top: -5px;
 }
 
-/* 前面のリンクレイヤー（最前面に持ってくる） */
 .featured-overlay-link {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 10; /* 数字を大きくして確実に前面へ */
+    z-index: 10;
     text-decoration: none;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    /* 背景を少し暗くして文字を浮かび上がらせる */
     background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%);
 }
 
 .featured-text-content {
     padding: 20px;
-    color: #ffffff !important; /* 強制的に白 */
 }
 
 .featured-title {
     font-size: 1.1rem;
     margin: 0 0 10px 0;
     font-weight: bold;
-    line-height: 1.4;
     color: #ffffff !important;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8); /* 視認性アップ */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
 .featured-read-btn {
@@ -90,34 +123,57 @@ main {
     padding: 5px 12px;
     border-radius: 4px;
     display: inline-block;
-    font-weight: bold;
 }
 
-/* セクションタイトル・最新記事 */
-.section-title {
-    font-size: 1.1rem;
-    color: #2e7d32;
-    border-bottom: 2px solid #2e7d32;
-    margin: 40px 0 15px;
-    padding-bottom: 5px;
-    font-weight: bold;
-}
-
+/* 最新記事リスト（LATEST NEWS） */
 .news-card {
     background: #fff;
     padding: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     border-radius: 8px;
     border: 1px solid #eee;
     display: flex;
     align-items: center;
+    transition: 0.2s;
+    text-decoration: none;
+    color: inherit;
 }
 
-.news-date { color: #888; font-size: 0.8rem; margin-right: 15px; }
-.news-title { font-size: 1rem; font-weight: bold; margin: 0; }
+.news-card:hover {
+    border-color: #2e7d32;
+    transform: translateX(5px);
+}
 
-@media (max-width: 600px) {
-    .featured-grid { grid-template-columns: 1fr; }
+.news-date {
+    color: #888;
+    font-size: 0.85rem;
+    margin-right: 20px;
+    font-family: monospace;
+}
+
+.news-title {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* --- 個別記事用スタイル --- */
+
+/* タグのデザイン */
+#tags-container {
+    margin-top: 5px;
+}
+
+.tag {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 20px; /* 角を丸くしてチップ状に */
+    margin-right: 8px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    border: 1px solid #c8e6c9;
 }
 
 /* ジャーナリスト情報エリア */
@@ -125,13 +181,13 @@ main {
     font-size: 0.85rem;
     color: #555;
     background: #f9f9f9;
-    padding: 8px 12px;
+    padding: 10px 15px;
     border-radius: 4px;
-    border-left: 3px solid #2e7d32;
+    border-left: 4px solid #2e7d32;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 10px 0;
+    gap: 10px;
+    margin: 15px 0;
 }
 
 .journalist-label {
@@ -144,6 +200,7 @@ main {
 .journalist-name {
     font-weight: bold;
     color: #333;
+    font-size: 0.95rem;
 }
 
 .journalist-stats {
@@ -154,4 +211,12 @@ main {
 .accuracy-value {
     color: #e91e63;
     font-weight: bold;
+}
+
+/* スマホ対応 */
+@media (max-width: 650px) {
+    .featured-grid { grid-template-columns: 1fr; }
+    .featured-card { height: 220px; }
+    .news-card { flex-direction: column; align-items: flex-start; }
+    .news-date { margin-bottom: 5px; }
 }
