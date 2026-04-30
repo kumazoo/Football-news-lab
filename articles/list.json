@@ -1,6 +1,7 @@
 [
   {
     "id": "260428_transfer01",
+    "genre": "transfer",
     "title": "ゴードンのバイエルン移籍話が破談に？",
     "tags": ["gordon", "newcastle", "england"],
     "writer": "Fabrizio Romano",
@@ -11,6 +12,7 @@
   },
   {
     "id": "260428_transfer02",
+    "genre": "transfer",
     "title": "【続報】ゴードンの移籍交渉、バイエルンが手を引く可能性",
     "tags": ["gordon", "football", "premierleague", "england"],
     "writer": null,
