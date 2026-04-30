@@ -25,7 +25,7 @@
             
             <!-- 1. フリーワード検索バー（ご指定の位置に追加） -->
             <div class="search-box" style="margin-bottom: 20px;">
-                <input type="text" id="search-input" placeholder="記事タイトルで検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
+                <input type="text" id="search-input" placeholder="記事タイトルやタグで検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
             </div>
 
             <!-- ジャンル選択 -->
@@ -94,8 +94,13 @@
         const filtered = allArticles.filter(article => {
             const matchGenre = (currentGenre === 'all' || article.genre === currentGenre);
             const matchRegion = (currentRegion === 'all' || (article.tags && article.tags.includes(currentRegion)));
-            // タイトルに検索ワードが含まれているか（大文字小文字を区別しない）
-            const matchSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            // 検索対象の拡張：タイトル または タグ配列のいずれかに合致するかを確認
+            const lowerQuery = searchQuery.toLowerCase();
+            const matchTitle = article.title.toLowerCase().includes(lowerQuery);
+            const matchTags = article.tags && article.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
+            
+            const matchSearch = matchTitle || matchTags;
             
             return matchGenre && matchRegion && matchSearch;
         }).reverse();
