@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ニュース一覧 | Football News Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="index.html" style="text-decoration: none; color: inherit;">Football News Lab</a></h1>
+</header>
+
+<nav>
+    <a href="archive.html" class="nav-btn active">ニュース</a>
+    <a href="#" class="nav-btn">ライター</a>
+</nav>
+
+<main>
+    <div class="archive-container">
+        <h2 style="text-align: center; margin-bottom: 30px;">NEWS ARCHIVE</h2>
+
+        <!-- ソートコントロールエリア -->
+        <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+            <!-- ジャンル選択（WHAT） -->
+            <div class="filter-group" style="margin-bottom: 15px;">
+                <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">GENRE:</p>
+                <div id="genre-filters" class="filter-buttons">
+                    <button class="filter-btn active" data-genre="all">すべて</button>
+                    <button class="filter-btn" data-genre="transfer">移籍</button>
+                    <button class="filter-btn" data-genre="match">試合</button>
+                    <button class="filter-btn" data-genre="injury">負傷</button>
+                    <button class="filter-btn" data-genre="team">チーム</button>
+                    <button class="filter-btn" data-genre="player">選手</button>
+                </div>
+            </div>
+
+            <!-- 地域選択（WHERE） -->
+            <div class="filter-group">
+                <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">REGION:</p>
+                <div id="region-filters" class="filter-buttons">
+                    <button class="filter-btn active" data-region="all">すべて</button>
+                    <button class="filter-btn" data-region="england">イングランド</button>
+                    <button class="filter-btn" data-region="spain">スペイン</button>
+                    <button class="filter-btn" data-region="italy">イタリア</button>
+                    <button class="filter-btn" data-region="germany">ドイツ</button>
+                    <button class="filter-btn" data-region="france">フランス</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 記事リスト表示エリア -->
+        <div id="archive-list" class="archive-list">
+            <!-- JSで記事カードを挿入 -->
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p style="text-align: center;">&copy; 2026 Football News Lab</p>
+</footer>
+
+<script>
+    let allArticles = [];
+    let currentGenre = 'all';
+    let currentRegion = 'all';
+
+    // 記事データの読み込み
+    async function loadArchive() {
+        try {
+            const response = await fetch('articles/list.json');
+            allArticles = await response.json();
+            renderArticles();
+        } catch (e) {
+            console.error("Failed to load articles.");
+        }
+    }
+
+    // 表示のレンダリング
+    function renderArticles() {
+        const container = document.getElementById('archive-list');
+        container.innerHTML = '';
+
+        // フィルタリングロジック（ジャンル ＋ 地域のAND検索）
+        const filtered = allArticles.filter(article => {
+            const matchGenre = (currentGenre === 'all' || article.genre === currentGenre);
+            const matchRegion = (currentRegion === 'all' || article.tags.includes(currentRegion));
+            return matchGenre && matchRegion;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#999; padding: 40px;">該当する記事が見つかりません。</p>';
+            return;
+        }
+
+        // 記事カードの生成
+        filtered.reverse().forEach(article => {
+            const dateId = article.id.substring(0, 6);
+            const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
+            
+            const card = document.createElement('div');
+            card.className = 'archive-item';
+            card.innerHTML = `
+                <a href="articles/${article.id}.html" style="text-decoration: none; color: inherit; display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee;">
+                    <div>
+                        <span class="tag tag-${article.genre}" style="font-size: 0.65rem;">${getGenreLabel(article.genre)}</span>
+                        <h3 style="margin: 5px 0; font-size: 1rem;">${article.title}</h3>
+                        <span style="font-size: 0.75rem; color: #999;">${formattedDate}</span>
+                    </div>
+                    <div style="font-size: 1.2rem; color: #ccc;">&rsaquo;</div>
+                </a>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function getGenreLabel(genre) {
+        const labels = {
+            'transfer': '移籍', 'match': '試合', 'injury': '負傷',
+            'team': 'チーム', 'player': '選手', 'etc': 'その他'
+        };
+        return labels[genre] || 'その他';
+    }
+
+    // フィルタボタンのイベント設定
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const parent = e.target.parentElement;
+            parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            if (e.target.dataset.genre) currentGenre = e.target.dataset.genre;
+            if (e.target.dataset.region) currentRegion = e.target.dataset.region;
+
+            renderArticles();
+        });
+    });
+
+    loadArchive();
+</script>
+
+</body>
+</html>

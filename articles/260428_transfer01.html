@@ -13,31 +13,38 @@
     <h1><a href="../index.html" style="text-decoration: none; color: inherit;">Football News Lab</a></h1>
 </header>
 
+<!-- メインメニュー：ニュースのリンク先を一覧ページ（仮）へ変更 -->
+<nav>
+    <a href="../archive.html" class="nav-btn">ニュース</a>
+    <a href="#" class="nav-btn">ライター</a>
+</nav>
+
 <main>
     <article class="article-card">
-        <!-- 1. カテゴリタグ -->
+        <!-- 1. 記事ジャンル -->
         <span class="tag tag-transfer">移籍</span>
         
         <!-- 2. タイトル -->
         <h2 id="article-title">ゴードンのバイエルン移籍話が破談に？</h2>
 
-        <!-- 3. 投稿日（タイトルの下、タグの上に配置） -->
+        <!-- 3. 投稿日 -->
         <div class="post-date" style="font-size: 0.85rem; color: #888; margin-bottom: 10px; font-family: monospace;">
             POSTED: <span id="article-date">0000.00.00</span>
         </div>
 
-        <!-- 4. 詳細タグ -->
+        <!-- 4. 詳細タグ（地域タグ england を含む） -->
         <div id="tags-container" style="margin-bottom: 10px;"></div>
 
         <!-- 5. ジャーナリスト情報 -->
         <div id="journalist-info-area"></div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
         <!-- 6. 導入文 -->
         <div class="original-intro">
             <p>海外の複数メディアでシーズン後の移籍の可能性が報じられているイングランド代表FWアンソニー・ゴードン。中でもある程度の温度感で獲得を検討しているといわれていたのはバイエルン・ミュンヘンだが、ドイツ最多優勝クラブの優先ターゲットは別の選手であるようだ。</p>
         </div>
 
-        <!-- 引用カードと要約のセット枠 -->
         <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
             <!-- 7. 引用記事カード -->
             <div class="iframely-container" style="margin-bottom: 20px;">
@@ -50,7 +57,7 @@
 
             <!-- 8. 要約 -->
             <div class="summary" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
-                <strong style="display: block; margin-bottom: 10px;">■ 要約（ソース：Goal.com）</strong>
+                <strong>■ 要約（ソース：Goal.com）</strong>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li>バイエルン・ミュンヘンが獲得を熱望していたアンソニー・ゴードンの移籍交渉が停滞。</li>
                     <li>クラブ内部では既に優先順位が変更されており、現在は別の若手ウインガーへ照準。</li>
@@ -74,7 +81,7 @@
             <div class="supplementary-content" style="background-color: transparent; padding: 0;">
                 <ul id="related-list" style="margin: 0; padding-left: 20px;"></ul>
                 <div style="margin-top: 10px;">
-                    <a href="../index.html" style="font-size: 13px;">新着記事一覧に戻る</a>
+                    <a href="../archive.html" style="font-size: 13px;">ニュース一覧に戻る</a>
                 </div>
             </div>
         </div>
@@ -86,7 +93,8 @@
 </footer>
 
 <script>
-    const currentArticleTags = ["gordon", "newcastle"]; 
+    // england などの地域タグを含める
+    const currentArticleTags = ["england", "gordon", "newcastle"]; 
     const currentArticleId = "260428_transfer01";
 
     async function loadArticleContent() {
@@ -99,7 +107,6 @@
             if (articleData) {
                 document.getElementById('article-title').innerText = articleData.title;
 
-                // 投稿日の自動反映（IDの260428から2026.04.28を生成）
                 const dateId = articleData.id.substring(0, 6);
                 const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
                 document.getElementById('article-date').innerText = formattedDate;
@@ -109,6 +116,11 @@
                     articleData.tags.forEach(tag => {
                         const span = document.createElement('span');
                         span.className = 'tag'; 
+                        span.style.cursor = 'pointer';
+                        span.onclick = () => {
+                            // 一覧ページへ検索条件を付けて飛ばす想定
+                            window.location.href = `../archive.html?tag=${tag}`;
+                        };
                         span.innerText = tag;
                         tagsContainer.appendChild(span);
                     });
