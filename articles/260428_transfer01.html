@@ -15,25 +15,32 @@
 
 <main>
     <article class="article-card">
-        <!-- カテゴリタグ -->
+        <!-- 1. カテゴリタグ -->
         <span class="tag tag-transfer">移籍</span>
         
-        <!-- タイトル -->
+        <!-- 2. タイトル -->
         <h2 id="article-title">ゴードンのバイエルン移籍話が破談に？</h2>
 
-        <!-- 詳細タグ -->
+        <!-- 3. 投稿日（タイトルの下、タグの上に配置） -->
+        <div class="post-date" style="font-size: 0.85rem; color: #888; margin-bottom: 10px; font-family: monospace;">
+            POSTED: <span id="article-date">0000.00.00</span>
+        </div>
+
+        <!-- 4. 詳細タグ -->
         <div id="tags-container" style="margin-bottom: 10px;"></div>
 
-        <!-- ジャーナリスト情報 -->
+        <!-- 5. ジャーナリスト情報 -->
         <div id="journalist-info-area"></div>
 
-        <!-- 導入文 -->
-        <p>海外の複数メディアでシーズン後の移籍の可能性が報じられているイングランド代表FWアンソニー・ゴードン。中でもある程度の温度感で獲得を検討しているといわれていたのはバイエルン・ミュンヘンだが、ドイツ最多優勝クラブの優先ターゲットは別の選手であるようだ。</p>
+        <!-- 6. 導入文 -->
+        <div class="original-intro">
+            <p>海外の複数メディアでシーズン後の移籍の可能性が報じられているイングランド代表FWアンソニー・ゴードン。中でもある程度の温度感で獲得を検討しているといわれていたのはバイエルン・ミュンヘンだが、ドイツ最多優勝クラブの優先ターゲットは別の選手であるようだ。</p>
+        </div>
 
-        <!-- ★引用カードと要約をひとまとめにするグループ -->
-        <div class="quote-summary-group">
-            <!-- 引用記事カード -->
-            <div class="iframely-container">
+        <!-- 引用カードと要約のセット枠 -->
+        <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
+            <!-- 7. 引用記事カード -->
+            <div class="iframely-container" style="margin-bottom: 20px;">
                 <div class="iframely-embed">
                     <div class="iframely-responsive">
                         <a href="https://www.goal.com/jp/%E3%83%AA%E3%82%B9%E3%83%88/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%8B%E3%83%BC-%E3%82%B3%E3%82%99%E3%83%BC%E3%83%88%E3%82%99%E3%83%B3%E3%81%AE%E3%83%8F%E3%82%99%E3%82%A4%E3%82%A8%E3%83%AB%E3%83%B3-%E3%83%9F%E3%83%A5%E3%83%B3%E3%83%98%E3%83%B3%E7%A7%BB%E7%B1%8D%E8%A9%B1%E3%81%8B%E3%82%99%E7%A0%B4%E8%AB%87%E3%81%8B-%E3%83%95%E3%82%99%E3%83%B3%E3%83%86%E3%82%99%E3%82%B9%E3%83%AA%E3%83%BC%E3%82%AB%E3%82%99%E7%8E%8B%E8%80%85-%E6%96%B0%E3%81%9F%E3%81%AA%E3%83%88%E3%83%83%E3%83%95%E3%82%9A%E7%A7%BB%E7%B1%8D%E5%80%99%E8%A3%9C%E3%81%AB%E7%85%A7%E6%BA%96/blt7e861c5787b17eab" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light"></a>
@@ -41,10 +48,10 @@
                 </div>
             </div>
 
-            <!-- 要約 -->
-            <div class="summary">
-                <strong>■ 要約（ソース：Goal.com）</strong>
-                <ul>
+            <!-- 8. 要約 -->
+            <div class="summary" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
+                <strong style="display: block; margin-bottom: 10px;">■ 要約（ソース：Goal.com）</strong>
+                <ul style="margin: 0; padding-left: 20px;">
                     <li>バイエルン・ミュンヘンが獲得を熱望していたアンソニー・ゴードンの移籍交渉が停滞。</li>
                     <li>クラブ内部では既に優先順位が変更されており、現在は別の若手ウインガーへ照準。</li>
                     <li>今夏でのドイツ移籍の可能性は極めて低くなり、Newcastle残留が現実味を帯びている。</li>
@@ -52,16 +59,16 @@
             </div>
         </div>
 
-        <!-- 選手・用語解説 -->
+        <!-- 9. 選手・用語解説 -->
         <div class="supplementary-info">
-            <h3>📊 Player Profile / アンソニー・ゴードン</h3>
+            <h3>📊 Player Profile / 📌 Keyword</h3>
             <div class="supplementary-content">
-                ニューカッスル・ユナイテッド所属。爆発的なスピードとドリブルを武器とするイングランド代表アタッカー。<br>
+                アンソニー・ゴードン：ニューカッスル・ユナイテッド所属。爆発的なスピードとドリブルを武器とするイングランド代表アタッカー。バイエルン・ミュンヘン：ドイツ・ブンデスリーガの名門クラブ。欧州屈指のスカウティング能力を持つ。<br>
                 <a href="https://ja.wikipedia.org/wiki/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B4%E3%83%BC%E3%83%88%E3%83%B3" target="_blank" class="wiki-link-btn">Wikipediaで詳細を確認</a>
             </div>
         </div>
 
-        <!-- 関連記事 -->
+        <!-- 10. 関連記事 -->
         <div class="supplementary-info" style="border-top: none; margin-top: 15px;">
             <h3>🔗 関連記事</h3>
             <div class="supplementary-content" style="background-color: transparent; padding: 0;">
@@ -91,6 +98,11 @@
 
             if (articleData) {
                 document.getElementById('article-title').innerText = articleData.title;
+
+                // 投稿日の自動反映（IDの260428から2026.04.28を生成）
+                const dateId = articleData.id.substring(0, 6);
+                const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
+                document.getElementById('article-date').innerText = formattedDate;
 
                 const tagsContainer = document.getElementById('tags-container');
                 if (articleData.tags) {
