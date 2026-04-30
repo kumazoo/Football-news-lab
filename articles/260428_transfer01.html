@@ -71,12 +71,15 @@
 
                 // タグの反映
                 const tagsContainer = document.getElementById('tags-container');
-                articleData.tags.forEach(tag => {
-                    const span = document.createElement('span');
-                    span.className = 'tag';
-                    span.innerText = tag;
-                    tagsContainer.appendChild(span);
-                });
+                tagsContainer.innerHTML = ''; // 一度空にする
+                if (articleData.tags) {
+                    articleData.tags.forEach(tag => {
+                        const span = document.createElement('span');
+                        span.className = 'tag';
+                        span.innerText = tag;
+                        tagsContainer.appendChild(span);
+                    });
+                }
 
                 // ジャーナリスト情報の反映
                 const infoArea = document.getElementById('journalist-info-area');
