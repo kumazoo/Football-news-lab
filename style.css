@@ -220,3 +220,35 @@ main {
     .news-card { flex-direction: column; align-items: flex-start; }
     .news-date { margin-bottom: 5px; }
 }
+
+/* --- 引用カードと要約のセット枠 --- */
+.quote-summary-group {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fcfcfc;
+    margin: 25px 0;
+}
+
+/* 枠内のIframely余白調整 */
+.quote-summary-group .iframely-container {
+    margin: 0 0 20px 0 !important;
+}
+
+/* 枠内の要約文のデザイン微調整 */
+.quote-summary-group .summary {
+    background: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+/* --- フッターの中央寄せ --- */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    color: #888;
+    font-size: 0.8rem;
+    border-top: 1px solid #eee;
+    margin-top: 40px;
+}
