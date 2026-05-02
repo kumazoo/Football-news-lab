@@ -76,8 +76,8 @@ async function loadPage() {
         const articles = await response.json();
         
         const latestArticles = articles.slice().reverse();
-
-// --- 1. 注目記事（featured: true）の表示 ---
+        
+        // --- 1. 注目記事（featured: true）の表示 ---
         const featuredSection = document.getElementById('featured-section');
         featuredSection.innerHTML = '';
         const featuredList = latestArticles.filter(a => a.featured).slice(0, 2);
@@ -86,28 +86,14 @@ async function loadPage() {
             const card = document.createElement('div');
             card.className = 'featured-card';
             
-            // X引用など、画像が出ない記事の判定
-            const isNoImageSource = !article.iframely_id || article.source_url.includes('x.com') || article.source_url.includes('twitter.com');
-
-            let imageMaskContent = '';
-
-            if (isNoImageSource) {
-                // 画像がない場合はIframelyを使わず、ロゴを背景に設定
-                card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url('logo_image.png')`;
-                card.style.backgroundSize = 'cover';
-                card.style.backgroundPosition = 'center';
-                imageMaskContent = '<div class="featured-image-mask" style="background: transparent;"></div>';
-            } else {
-                // 画像があるソース（Goal.comなど）はIframelyを生成
-                imageMaskContent = `
-                    <div class="featured-image-mask">
-                        <div class="iframely-embed">
-                            <div class="iframely-responsive">
-                                <a href="${article.source_url}" data-iframely-url="https://iframely.net/${article.iframely_id}?theme=light&media=1"></a>
-                            </div>
+            const imageMaskContent = `
+                <div class="featured-image-mask">
+                    <div class="iframely-embed">
+                        <div class="iframely-responsive">
+                            <a href="${article.source_url}" data-iframely-url="https://iframely.net/${article.iframely_id}?theme=light&media=1"></a>
                         </div>
-                    </div>`;
-            }
+                    </div>
+                </div>`;
 
             card.innerHTML = `
                 ${imageMaskContent}
