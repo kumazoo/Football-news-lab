@@ -429,3 +429,39 @@ footer {
         padding-left: 18px; /* 箇条書きのポインタを最小限に */
     }
 }
+
+/* ヘッダー全体の背景と余白 */
+.main-header {
+    background-color: #2A6A35; /* 決定したカラーコード */
+    padding: 15px 0 25px 0;
+    text-align: center;
+}
+
+/* サイト説明文 */
+.site-description {
+    margin: 0 0 10px 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.1em;
+    font-weight: bold;
+}
+
+/* ロゴ画像の設定 */
+.main-header h1 {
+    margin: 0;
+}
+
+.main-header h1 a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.logo-img {
+    max-width: 400px;
+    width: 95%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    /* 境界線を消す魔法の1行 */
+    mix-blend-mode: multiply;
+}
