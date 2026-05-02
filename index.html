@@ -82,23 +82,34 @@ async function loadPage() {
         const featuredSection = document.getElementById('featured-section');
 
         featuredList.forEach(article => {
-        const card = document.createElement('div');
-        card.className = 'featured-card';
+            const card = document.createElement('div');
+            card.className = 'featured-card';
 
-    // 判定：もし記事データに image があればその画像を表示、なければロゴを表示
-    // X引用の記事（imageなし）の場合は Iframely を出さずにロゴ背景のみにする
+    // 1. 画像の判定（imageがなければロゴ）
     const displayImage = article.image ? article.image : 'transferlab_logo.jpg';
-    card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7)), url('${displayImage}')`;
+    
+    // 2. 背景の設定（ロゴが中央に綺麗に収まるように調整）
+    card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.7)), url('${displayImage}')`;
+    card.style.backgroundSize = 'contain'; // ロゴ全体が見えるように
+    card.style.backgroundRepeat = 'no-repeat';
+    card.style.backgroundPosition = 'center';
+    card.style.backgroundColor = '#1a3d2f'; // 隙間をサイトカラーの濃い緑で埋める
 
-    // 記事に個別の画像（image）がある場合だけ Iframely マスクを表示する設定
-    const imageMaskContent = article.image ? `
-        <div class="featured-image-mask">
-            <div class="iframely-embed">
-                <div class="iframely-responsive">
-                    <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&media=1"></a>
+    // 3. 以前「ゴードン」を表示させていたマスク部分は、画像がある時だけ出す
+    let imageMaskContent = '';
+    if (article.image) {
+        imageMaskContent = `
+            <div class="featured-image-mask">
+                <div class="iframely-embed">
+                    <div class="iframely-responsive">
+                        <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&media=1"></a>
+                    </div>
                 </div>
-            </div>
-        </div>` : ''; 
+            </div>`;
+    } else {
+        // ロゴ表示の時は高さだけ確保する箱を入れる
+        imageMaskContent = '<div style="height: 220px;"></div>';
+    }
 
     card.innerHTML = `
         ${imageMaskContent}
