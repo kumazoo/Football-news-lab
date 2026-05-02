@@ -71,40 +71,43 @@
 <script>
 async function loadPage() {
     try {
+        // キャッシュ対策としてタイムスタンプを付与して読み込み
         const response = await fetch('articles/list.json?v=' + new Date().getTime());
         const articles = await response.json();
         
-        // データの準備：最新順
+        // データの準備：最新順（配列を逆順にする）[cite: 3]
         const latestArticles = articles.slice().reverse();
 
-        // --- 1. 注目記事の表示 ---
-const featuredList = latestArticles.filter(a => a.featured).slice(0, 2);
-const featuredSection = document.getElementById('featured-section');
+        // --- 1. 注目記事（featured: true）の表示 ---
+        const featuredList = latestArticles.filter(a => a.featured).slice(0, 2);
+        const featuredSection = document.getElementById('featured-section');
+        featuredSection.innerHTML = ''; // 重複防止
 
-featuredList.forEach(article => {
-    const card = document.createElement('div');
-    card.className = 'featured-card';
+        featuredList.forEach(article => {
+            const card = document.createElement('div');
+            card.className = 'featured-card';
 
-    const imageMaskContent = `
-        <div class="featured-image-mask">
-            <div class="iframely-embed">
-                <div class="iframely-responsive">
-                    <a href="${article.source_url}" data-iframely-url></a>
-                </div>
-            </div>
-        </div>`;
+            // data-iframely-url を空にすることで、各記事の source_url から画像を自動生成します
+            const imageMaskContent = `
+                <div class="featured-image-mask">
+                    <div class="iframely-embed">
+                        <div class="iframely-responsive">
+                            <a href="${article.source_url}" data-iframely-url></a>
+                        </div>
+                    </div>
+                </div>`;
 
-    card.innerHTML = `
-        ${imageMaskContent}
-        <a href="articles/${article.id}.html" class="featured-overlay-link">
-            <div class="featured-text-content">
-                <h3 class="featured-title">${article.title}</h3>
-                <span class="featured-read-btn">ニュースをチェック</span>
-            </div>
-        </a>
-    `;
-    featuredSection.appendChild(card);
-});
+            card.innerHTML = `
+                ${imageMaskContent}
+                <a href="articles/${article.id}.html" class="featured-overlay-link">
+                    <div class="featured-text-content">
+                        <h3 class="featured-title">${article.title}</h3>
+                        <span class="featured-read-btn">ニュースをチェック</span>
+                    </div>
+                </a>
+            `;
+            featuredSection.appendChild(card);
+        });
 
         // --- 2. トップジャーナリストの表示 ---
         renderTopJournalists(articles);
