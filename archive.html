@@ -102,10 +102,10 @@
         const filterButtons = document.getElementById('genre-filters');
 
         if (mode === 'transfer') {
-            title.innerText = '移籍ニュース アーカイブ';
+            title.innerText = '移籍ニュース';
             filterGroup.style.display = 'none'; // 移籍時はジャンル選択を隠す
         } else if (mode === 'topics') {
-            title.innerText = 'その他トピック アーカイブ';
+            title.innerText = 'その他トピック';
             filterGroup.style.display = 'block'; // トピック時は表示
             filterButtons.innerHTML = `
                 <button class="filter-btn active" data-genre="all">すべて</button>
