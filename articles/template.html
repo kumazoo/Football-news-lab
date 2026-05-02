@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【記事タイトルを入力】 | Football Transfer Lab | トララボ</title>
+    <title>【記事タイトル】 | Football Transfer Lab | トララボ</title>
     <link rel="stylesheet" href="../style.css">
     <script async src="https://iframely.net/embed.js"></script>
 </head>
 <body>
 
 <header class="main-header">
-    <!-- サイト説明文 -->
     <p class="site-description">サッカー移籍情報特化サイト</p>
-
-    <!-- ロゴ画像（記事階層から見たパス ../ に修正済み） -->
     <h1>
         <a href="../index.html">
             <img src="../transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
@@ -29,11 +26,11 @@
 
 <main>
     <article class="article-card">
-        <!-- 1. 記事ジャンル -->
-        <span class="tag tag-transfer">【ジャンル名を入力】</span>
+        <!-- 1. 記事ジャンル（transfer / match / injury / team / player / etc） -->
+        <span class="tag tag-transfer">移籍</span>
         
         <!-- 2. 記事タイトル -->
-        <h2 id="article-title" style="margin-bottom: 10px;">【記事タイトルを入力】</h2>
+        <h2 id="article-title" style="margin-bottom: 10px;">【タイトルを自動反映】</h2>
 
         <!-- 3. 投稿日 -->
         <div class="post-date" style="font-size: 0.85rem; color: #888; margin-bottom: 10px; font-family: monospace;">
@@ -43,30 +40,29 @@
         <!-- 4. 詳細タグ -->
         <div id="tags-container" style="margin-bottom: 10px;"></div>
 
-        <!-- 5. ジャーナリスト情報 -->
+        <!-- 5. ジャーナリスト情報（自動計算結果を表示） -->
         <div id="journalist-info-area"></div>
 
         <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
         <!-- 6. 導入文 -->
         <div class="original-intro">
-            <p>【導入文：ここにあなたの視点を1〜2文で入力】</p>
+            <p>【導入文を入力してください】</p>
         </div>
 
         <!-- 引用カードと注目ポイントのセット枠 -->
         <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
-            <!-- 7. 引用記事カード -->
+            <!-- 7. 引用記事カード（Iframelyのaタグをここに貼り付け） -->
             <div class="iframely-container" style="margin-bottom: 20px;">
-                <!-- ここにIframelyのaタグを貼り付け -->
+                <!-- 例: <a href="..." data-iframely-url></a> -->
             </div>
 
             <!-- 8. 注目ポイント -->
             <div class="summary" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
-                <strong style="display: block; margin-bottom: 10px;">■ 注目ポイント（ソース：【メディア名を入力】）</strong>
+                <strong style="display: block; margin-bottom: 10px;">■ 注目ポイント（ソース：【ソース名】）</strong>
                 <ul style="margin: 0; padding-left: 20px;">
-                    <li>【注目ポイント1】</li>
-                    <li>【注目ポイント2】</li>
-                    <li>【注目ポイント3】</li>
+                    <li>【ポイント1】</li>
+                    <li>【ポイント2】</li>
                 </ul>
             </div>
         </div>
@@ -75,23 +71,17 @@
         <div class="supplementary-info">
             <h3>📊 Player Profile / 📌 Keyword</h3>
             <div class="supplementary-content">
-                【AI等で生成した選手の遍歴や用語の解説文を入力】<br>
+                【解説文を入力してください】<br>
                 <a href="【WikipediaのURL】" target="_blank" class="wiki-link-btn">Wikipediaで詳細を確認</a>
             </div>
         </div>
 
-        <!-- ★ SNSシェアボタン（横並びロゴ版） -->
+        <!-- SNSシェアボタン -->
         <div class="share-section" style="text-align: center; margin: 40px 0; padding: 20px; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee;">
             <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-weight: bold; letter-spacing: 0.05em;">SHARE THIS POST</p>
             <div style="display: flex; justify-content: center; gap: 20px;">
-                <!-- X ボタン -->
-                <a id="share-x-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #000; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; transition: opacity 0.3s;">
-                    𝕏
-                </a>
-                <!-- Facebook ボタン -->
-                <a id="share-fb-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #1877F2; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; font-family: sans-serif; font-weight: bold; transition: opacity 0.3s;">
-                    f
-                </a>
+                <a id="share-x-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #000; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; transition: opacity 0.3s;">𝕏</a>
+                <a id="share-fb-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #1877F2; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; font-family: sans-serif; font-weight: bold; transition: opacity 0.3s;">f</a>
             </div>
         </div>
 
@@ -110,27 +100,44 @@
 
 <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 40px;">
     <div style="margin-bottom: 10px;">
-    <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
-    <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
-    <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
-</div>
+        <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
+        <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
+        <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
+    </div>
     <p style="font-size: 0.75rem; color: #888;">&copy; 2026 Football Transfer Lab</p>
 </footer>
 
 <script>
-    /* 記事ごとにここを書き換えてください */
-    const currentArticleTags = ["tag1", "tag2"]; 
-    const currentArticleId = "XXXXXX_article_id"; 
+    /* 【最重要】記事ごとにここを書き換えてください */
+    const currentArticleTags = ["tag1", "tag2"]; // 関連記事の抽出に使用
+    const currentArticleId = "XXXXXX_article_id"; // list.jsonのIDと完全一致させる
+
+    // ジャーナリスト統計の自動計算関数
+    function calculateJournalistStats(allArticles) {
+        const stats = {};
+        allArticles.forEach(article => {
+            const name = article.journalist;
+            if (!name) return;
+            if (!stats[name]) { stats[name] = { name: name, correct: 0, total: 0 }; }
+            // statusがcorrectまたはincorrectの時のみ集計対象
+            if (article.status === 'correct' || article.status === 'incorrect') {
+                stats[name].total++;
+                if (article.status === 'correct') { stats[name].correct++; }
+            }
+        });
+        return stats;
+    }
 
     async function loadArticleContent() {
         try {
-            const response = await fetch('list.json');
+            // キャッシュ対策としてタイムスタンプを付与して読み込み[cite: 5]
+            const response = await fetch('../articles/list.json?v=' + new Date().getTime());
             if (!response.ok) return;
             const allArticles = await response.json();
             const articleData = allArticles.find(a => a.id === currentArticleId);
 
             if (articleData) {
-                // 1. 各項目の反映（タイトル、日付、タグ、ジャーナリスト）
+                // 1. タイトル、日付、タグの反映
                 document.getElementById('article-title').innerText = articleData.title;
                 const dateId = articleData.id.substring(0, 6);
                 const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
@@ -146,52 +153,49 @@
                     });
                 }
 
+                // 2. ジャーナリスト的中率とバッジの反映[cite: 5]
+                const allStats = calculateJournalistStats(allArticles);
                 const infoArea = document.getElementById('journalist-info-area');
-                if (articleData.journalist) {
+                
+                if (articleData.journalist && allStats[articleData.journalist]) {
+                    const s = allStats[articleData.journalist];
+                    const accuracy = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+                    
+                    let statusBadge = '';
+                    if (articleData.status === 'correct') {
+                        statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle; font-weight:bold;">的中</span>';
+                    } else if (articleData.status === 'incorrect') {
+                        statusBadge = '<span style="background:#666; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle; font-weight:bold;">はずれ</span>';
+                    }
+
                     infoArea.innerHTML = `
                         <div class="journalist-info" style="margin: 5px 0 15px 0;">
                             <span class="journalist-label">JOURNALIST:</span>
                             <span class="journalist-name">${articleData.journalist}</span>
+                            ${statusBadge}
                             <span class="journalist-stats">
-                                (的中率: <span class="accuracy-value">${articleData.accuracy}%</span> / 総件数: <span class="count-value">${articleData.count}</span>件)
+                                (的中率: <span class="accuracy-value">${accuracy}%</span> / 総件数: <span class="count-value">${s.total}</span>件)
                             </span>
                         </div>
                     `;
                 }
 
-                // 2. SNSシェアリンクの動的生成
+                // 3. SNSシェアリンク[cite: 5, 8]
                 const pageUrl = encodeURIComponent(window.location.href);
                 const shareText = encodeURIComponent(`${articleData.title} | Football Transfer Lab`);
-                
-                // X (Twitter)
-                const shareBtnX = document.getElementById('share-x-btn');
-                shareBtnX.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
-                
-                // Facebook
-                const shareBtnFb = document.getElementById('share-fb-btn');
-                shareBtnFb.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+                document.getElementById('share-x-btn').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
+                document.getElementById('share-fb-btn').href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
 
-                // 3. 関連記事の生成
+                // 4. 関連記事の抽出[cite: 5, 8]
                 const listElement = document.getElementById('related-list');
-                const related = allArticles.filter(article => {
-                    return article.id !== currentArticleId && 
-                           article.tags.some(tag => currentArticleTags.includes(tag));
+                const related = allArticles.filter(a => a.id !== currentArticleId && a.tags && a.tags.some(t => currentArticleTags.includes(t)));
+                related.slice(-3).reverse().forEach(a => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="${a.id}.html" style="font-size: 13px;">${a.title}</a>`;
+                    listElement.appendChild(li);
                 });
-                const limitedRelated = related.slice(-3).reverse();
-
-                if (limitedRelated.length === 0) {
-                    listElement.innerHTML = '<li>（関連する過去記事はありません）</li>';
-                } else {
-                    limitedRelated.forEach(article => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<a href="${article.id}.html" style="font-size: 13px;">${article.title}</a>`;
-                        listElement.appendChild(li);
-                    });
-                }
             }
-        } catch (e) {
-            console.error("Content load failed.");
-        }
+        } catch (e) { console.error("Content load failed.", e); }
     }
     loadArticleContent();
 </script>
