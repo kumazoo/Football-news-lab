@@ -400,3 +400,32 @@ footer {
 .journalist-rank-card:nth-child(1) { border-left: 5px solid #ffd700; }
 .journalist-rank-card:nth-child(2) { border-left: 5px solid #c0c0c0; }
 .journalist-rank-card:nth-child(3) { border-left: 5px solid #cd7f32; }
+
+/* スマホでの要約文最適化 */
+@media (max-width: 650px) {
+    /* 1. 記事カード自体の余白を調整して、大元の幅を確保 */
+    .article-card {
+        padding: 15px;
+    }
+
+    /* 2. 要約グループの枠を消して、左右いっぱいに文字を広げる */
+    .quote-summary-group {
+        padding: 10px 0;
+        border: none;
+        background: transparent; /* 背景も白にして記事と一体化させる */
+    }
+
+    /* 3. 要約の中身だけ薄いグレー背景にして「ここが要約」と示す */
+    .quote-summary-group .summary {
+        background: #f5f5f5;
+        border: none;
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 0.9rem; /* 文字サイズを少しだけ小さくして1行の情報を増やす */
+        line-height: 1.5;
+    }
+
+    .quote-summary-group .summary ul {
+        padding-left: 18px; /* 箇条書きのポインタを最小限に */
+    }
+}
