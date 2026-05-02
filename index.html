@@ -71,7 +71,7 @@
 <script>
 async function loadPage() {
     try {
-        const response = await fetch('articles/list.json');
+        const response = await fetch('articles/list.json?v=' + new Date().getTime());
         const articles = await response.json();
         
         // データの準備：最新順
@@ -169,17 +169,40 @@ function renderNewsFeed(list, targetId) {
     });
 }
 
-// ジャーナリストランキング生成用関数
+// ジャーナリストランキング生成用関数（自動集計版）
 function renderTopJournalists(articles) {
     const journalistSection = document.getElementById('top-journalists');
-    const journalistMap = {};
+    const statsMap = {};
+
+    // 1. 全記事をスキャンしてジャーナリストごとに的中・不的中をカウント
     articles.forEach(a => {
-        if (a.journalist) {
-            journalistMap[a.journalist] = { name: a.journalist, accuracy: a.accuracy };
+        const name = a.journalist;
+        if (!name) return;
+
+        if (!statsMap[name]) {
+            statsMap[name] = { name: name, correct: 0, total: 0 };
+        }
+
+        // statusが correct または incorrect の場合のみ計算対象（分母）に含める
+        if (a.status === 'correct' || a.status === 'incorrect') {
+            statsMap[name].total++;
+            if (a.status === 'correct') {
+                statsMap[name].correct++;
+            }
         }
     });
-    const top3 = Object.values(journalistMap).sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
+
+    // 2. 的中率を算出して配列化
+    const journalistList = Object.values(statsMap).map(j => {
+        const accuracy = j.total > 0 ? Math.round((j.correct / j.total) * 100) : 0;
+        return { name: j.name, accuracy: accuracy, totalCount: j.total };
+    });
+
+    // 3. 的中率順にソートしてトップ3を抽出
+    const top3 = journalistList.sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
     
+    // 表示処理（元のデザインを維持）
+    journalistSection.innerHTML = ''; // 重複防止
     journalistSection.style.display = "grid";
     journalistSection.style.gridTemplateColumns = "repeat(auto-fit, minmax(150px, 1fr))";
     journalistSection.style.gap = "15px";
@@ -195,6 +218,7 @@ function renderTopJournalists(articles) {
                 <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
             </div>
             <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
+            <div style="font-size: 0.7rem; color: #888;">(判定件数: ${j.totalCount}件)</div>
         `;
         journalistSection.appendChild(div);
     });
