@@ -71,28 +71,26 @@
 <script>
 async function loadPage() {
     try {
-        // キャッシュ対策としてタイムスタンプを付与して読み込み
+        // キャッシュを強制的に回避して読み込み
         const response = await fetch('articles/list.json?v=' + new Date().getTime());
         const articles = await response.json();
         
-        // データの準備：最新順（配列を逆順にする）[cite: 3]
         const latestArticles = articles.slice().reverse();
 
         // --- 1. 注目記事（featured: true）の表示 ---
         const featuredList = latestArticles.filter(a => a.featured).slice(0, 2);
         const featuredSection = document.getElementById('featured-section');
-        featuredSection.innerHTML = ''; // 重複防止
+        featuredSection.innerHTML = ''; 
 
         featuredList.forEach(article => {
             const card = document.createElement('div');
             card.className = 'featured-card';
 
-            // data-iframely-url を空にすることで、各記事の source_url から画像を自動生成します
             const imageMaskContent = `
                 <div class="featured-image-mask">
                     <div class="iframely-embed">
                         <div class="iframely-responsive">
-                            <a href="${article.source_url}" data-iframely-url></a>
+                            <a href="${article.source_url}" rel="it-should-be-easy"></a>
                         </div>
                     </div>
                 </div>`;
@@ -121,9 +119,14 @@ async function loadPage() {
         renderNewsFeed(otherList, 'other-feed');
 
         // Iframelyの再読み込み
-        if (window.iframely) iframely.load();
+        if (window.iframely) {
+            iframely.load();
+        } else {
+            // スクリプトがまだ読み込まれていない場合、少し待ってから実行
+            setTimeout(() => { if (window.iframely) iframely.load(); }, 1000);
+        }
     } catch (e) {
-        console.error("Failed to load articles.");
+        console.error("Failed to load articles.", e);
     }
 }
 
