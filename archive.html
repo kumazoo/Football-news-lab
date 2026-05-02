@@ -170,14 +170,23 @@
         pagedArticles.forEach(article => {
             const dateId = article.id.substring(0, 6);
             const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
+            
+            // --- 【追加】ステータスに応じた「的中/はずれ」バッジの生成 ---
+            let statusBadge = '';
+            if (article.status === 'correct') {
+                statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.6rem; margin-right:8px; vertical-align:middle; font-weight:bold;">的中</span>';
+            } else if (article.status === 'incorrect') {
+                statusBadge = '<span style="background:#666; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.6rem; margin-right:8px; vertical-align:middle; font-weight:bold;">はずれ</span>';
+            }
+
             const card = document.createElement('div');
             card.className = 'archive-item';
             card.innerHTML = `
                 <a href="articles/${article.id}.html" style="text-decoration: none; color: inherit; display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee;">
                     <div>
                         <span class="tag tag-${article.genre}" style="font-size: 0.65rem;">${getGenreLabel(article.genre)}</span>
-                        <h3 style="margin: 5px 0; font-size: 1rem;">${article.title}</h3>
-                        <span style="font-size: 0.75rem; color: #999;">${formattedDate} | Journalist: ${article.journalist}</span>
+                        <h3 style="margin: 5px 0; font-size: 1rem;">${statusBadge}${article.title}</h3>
+                        <span style="font-size: 0.75rem; color: #999;">${formattedDate} | Journalist: ${article.journalist || '---'}</span>
                     </div>
                     <div style="font-size: 1.2rem; color: #ccc;">&rsaquo;</div>
                 </a>

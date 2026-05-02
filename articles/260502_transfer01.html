@@ -182,16 +182,25 @@
                     const s = allStats[articleData.journalist];
                     const accuracy = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
                     
+                    // 【追加】的中・はずれのバッジを生成
+                    let statusBadge = '';
+                    if (articleData.status === 'correct') {
+                        statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle;">的中</span>';
+                    } else if (articleData.status === 'incorrect') {
+                        statusBadge = '<span style="background:#666; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle;">はずれ</span>';
+                    }
+
                     infoArea.innerHTML = `
-                        <div class="journalist-info" style="margin: 5px 0 15px 0;">
-                            <span class="journalist-label">JOURNALIST:</span>
-                            <span class="journalist-name">${articleData.journalist}</span>
-                            <span class="journalist-stats">
-                                (的中率: <span class="accuracy-value">${accuracy}%</span> / 総件数: <span class="count-value">${s.total}</span>件)
+                    <div class="journalist-info" style="margin: 5px 0 15px 0;">
+                        <span class="journalist-label">JOURNALIST:</span>
+                        <span class="journalist-name">${articleData.journalist}</span>
+                        ${statusBadge} <!-- ここにバッジが表示されます -->
+                        <span class="journalist-stats">
+                            (的中率: <span class="accuracy-value">${accuracy}%</span> / 総件数: <span class="count-value">${s.total}</span>件)
                             </span>
-                        </div>
-                    `;
-                }
+                            </div>
+                            `;
+                        }
 
                 // 4. SNSシェアリンクの生成
                 const pageUrl = encodeURIComponent(window.location.href);
