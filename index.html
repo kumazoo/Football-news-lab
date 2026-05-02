@@ -78,26 +78,30 @@ async function loadPage() {
         const latestArticles = articles.slice().reverse();
 
         // --- 1. 注目記事の表示 ---
-const featuredList = latestArticles.filter(a => a.featured).slice(0, 2);
-const featuredSection = document.getElementById('featured-section');
+        const featuredList = latestArticles.filter(a => a.featured).slice(0, 2);
+        const featuredSection = document.getElementById('featured-section');
 
-featuredList.forEach(article => {
-    const card = document.createElement('div');
-    card.className = 'featured-card';
+        featuredList.forEach(article => {
+        const card = document.createElement('div');
+        card.className = 'featured-card';
 
-    // 【追加：画像判定】
-    // 記事データに image があればそれを使い、なければロゴを表示
-    const displayImage = article.image ? article.image : 'logo_image.png';
+    // 判定：もし記事データに image があればその画像を表示、なければロゴを表示
+    // X引用の記事（imageなし）の場合は Iframely を出さずにロゴ背景のみにする
+    const displayImage = article.image ? article.image : 'transferlab_logo.jpg';
     card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7)), url('${displayImage}')`;
 
-    card.innerHTML = `
+    // 記事に個別の画像（image）がある場合だけ Iframely マスクを表示する設定
+    const imageMaskContent = article.image ? `
         <div class="featured-image-mask">
             <div class="iframely-embed">
                 <div class="iframely-responsive">
                     <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&media=1"></a>
                 </div>
             </div>
-        </div>
+        </div>` : ''; 
+
+    card.innerHTML = `
+        ${imageMaskContent}
         <a href="articles/${article.id}.html" class="featured-overlay-link">
             <div class="featured-text-content">
                 <h3 class="featured-title">${article.title}</h3>
