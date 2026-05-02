@@ -85,13 +85,17 @@ featuredList.forEach(article => {
     const card = document.createElement('div');
     card.className = 'featured-card';
 
-    // 1. 画像があるかどうかを判定（画像がある場合はIframelyを表示）
-    // 確実に表示させるため、条件をシンプルに「source_urlがあるかどうか」にします
+    // Xの引用かつ画像指定がない場合の判定
+    const isXQuoteOnly = !article.image && (article.source_url && (article.source_url.includes('twitter.com') || article.source_url.includes('x.com')));
+
     let imageMaskContent = '';
 
-    if (article.source_url) {
+    if (!isXQuoteOnly && article.source_url) {
+        // --- 1. 画像がある記事（Iframelyを使用） ---
+        // 背景を透明(transparent)に上書きし、Iframelyの読み込みを邪魔しないようにします
+        card.style.background = 'transparent'; 
         imageMaskContent = `
-            <div class="featured-image-mask">
+            <div class="featured-image-mask" style="background: transparent;">
                 <div class="iframely-embed">
                     <div class="iframely-responsive">
                         <a href="${article.source_url}" data-iframely-url></a>
@@ -99,9 +103,10 @@ featuredList.forEach(article => {
                 </div>
             </div>`;
     } else {
-        // 万が一URLがない場合のみロゴ背景にする（フォールバック）
-        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.7)), url('transferlab_logo.jpg')`;
-        card.style.backgroundSize = 'contain';
+        // --- 2. 画像がないX引用記事（新ロゴ logo_image.png を使用） ---
+        const displayImage = 'logo_image.png'; 
+        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url('${displayImage}')`;
+        card.style.backgroundSize = 'cover'; 
         card.style.backgroundRepeat = 'no-repeat';
         card.style.backgroundPosition = 'center';
         card.style.backgroundColor = '#1a3d2f';
