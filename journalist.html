@@ -1,3 +1,11 @@
+大変失礼いたしました。以前にお渡ししたコードから一部変更があったり、全置換の影響で構造が変わっていたりした可能性がございます。
+
+混乱を避けるため、提供いただいた現状の構成に基づき、「ジャーナリスト名クリックで自動検索される機能」を組み込んだ完全な最新コードを作成しました。以下のコードをそのままそれぞれのファイルに全上書きしてください。
+
+1. journalist.html (全上書き用)
+名前をリンク化し、archive.html へパラメータを渡すようにしました。
+
+HTML
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -19,19 +27,15 @@
 
 <main>
     <div class="archive-container">
-        <h2 style="text-align: center; margin-bottom: 30px;">journalist RANKING</h2>
+        <h2 style="text-align: center; margin-bottom: 30px;">JOURNALIST RANKING</h2>
 
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-            <!-- ジャーナリスト名検索 -->
             <div class="search-box">
                 <input type="text" id="journalist-search" placeholder="ジャーナリスト名で検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
             </div>
         </div>
 
-        <div id="journalist-list" class="journalist-list">
-            <!-- ここにランキング形式でジャーナリストが表示されます -->
-        </div>
-
+        <div id="journalist-list" class="journalist-list"></div>
         <div id="pagination-controls" style="display: flex; justify-content: center; gap: 10px; margin-top: 30px;"></div>
     </div>
 </main>
@@ -41,21 +45,19 @@
 </footer>
 
 <script>
-    let alljournalists = [];
+    let allJournalists = [];
     let searchQuery = '';
     let currentPage = 1;
     const itemsPerPage = 10;
 
-    async function loadjournalists() {
+    async function loadJournalists() {
         try {
             const response = await fetch('articles/list.json');
             const articles = await response.json();
             
-            // ジャーナリスト情報の抽出と集約
             const journalistMap = {};
             articles.forEach(article => {
                 if (article.journalist) {
-                    // 最新の的中率と件数を保持（同じ名前のジャーナリストは同一人物として扱う）
                     journalistMap[article.journalist] = {
                         name: article.journalist,
                         accuracy: article.accuracy,
@@ -64,85 +66,67 @@
                 }
             });
 
-            // オブジェクトを配列に変換し、的中率順にソート
-            alljournalists = Object.values(journalistMap).sort((a, b) => b.accuracy - a.accuracy);
-            
-            renderjournalists();
+            allJournalists = Object.values(journalistMap).sort((a, b) => b.accuracy - a.accuracy);
+            renderJournalists();
         } catch (e) {
             console.error("Failed to load journalists.");
         }
     }
 
-    function renderjournalists() {
+    function renderJournalists() {
         const container = document.getElementById('journalist-list');
         const paginationContainer = document.getElementById('pagination-controls');
         container.innerHTML = '';
         paginationContainer.innerHTML = '';
 
-        // 検索フィルタリング
-        const filtered = alljournalists.filter(journalist => 
-            journalist.name.toLowerCase().includes(searchQuery.toLowerCase())
+        const filtered = allJournalists.filter(j => 
+            j.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
-        const pagedjournalists = filtered.slice(startIndex, startIndex + itemsPerPage);
+        const paged = filtered.slice(startIndex, startIndex + itemsPerPage);
 
-        if (pagedjournalists.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#999; padding: 40px;">該当するジャーナリストが見てつかりません。</p>';
-            return;
-        }
-
-        pagedjournalists.forEach((journalist, index) => {
-            // 全体の中での順位を計算
+        paged.forEach((j, index) => {
             const rank = startIndex + index + 1;
-            
             const card = document.createElement('div');
             card.className = 'journalist-rank-card';
             card.innerHTML = `
                 <div class="rank-number">${rank}</div>
                 <div class="journalist-main-info">
-                    <div class="journalist-name">${journalist.name}</div>
+                    <div class="journalist-name">
+                        <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: inherit; border-bottom: 1px dashed #2e7d32;">
+                            ${j.name}
+                        </a>
+                    </div>
                     <div class="journalist-stats-summary">
-                        総記事数: <strong>${journalist.count}</strong> / 
-                        平均的中率: <span class="accuracy-value">${journalist.accuracy}%</span>
+                        総記事数: <strong>${j.count}</strong> / 
+                        的中率: <span class="accuracy-value">${j.accuracy}%</span>
                     </div>
                 </div>
-                <div class="rank-badge">${getRankBadge(rank)}</div>
+                <div class="rank-badge">${rank <= 3 ? ['🥇','🥈','🥉'][rank-1] : ''}</div>
             `;
             container.appendChild(card);
         });
 
-        // ページネーション生成
         if (totalPages > 1) {
             for (let i = 1; i <= totalPages; i++) {
-                const pageBtn = document.createElement('button');
-                pageBtn.innerText = i;
-                pageBtn.className = `filter-btn ${i === currentPage ? 'active' : ''}`;
-                pageBtn.onclick = () => {
-                    currentPage = i;
-                    renderjournalists();
-                    window.scrollTo(0, 0);
-                };
-                paginationContainer.appendChild(pageBtn);
+                const btn = document.createElement('button');
+                btn.innerText = i;
+                btn.className = `filter-btn ${i === currentPage ? 'active' : ''}`;
+                btn.onclick = () => { currentPage = i; renderJournalists(); window.scrollTo(0, 0); };
+                paginationContainer.appendChild(btn);
             }
         }
-    }
-
-    function getRankBadge(rank) {
-        if (rank === 1) return '🥇';
-        if (rank === 2) return '🥈';
-        if (rank === 3) return '🥉';
-        return '';
     }
 
     document.getElementById('journalist-search').addEventListener('input', (e) => {
         searchQuery = e.target.value;
         currentPage = 1;
-        renderjournalists();
+        renderJournalists();
     });
 
-    loadjournalists();
+    loadJournalists();
 </script>
 </body>
 </html>

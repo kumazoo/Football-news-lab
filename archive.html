@@ -23,12 +23,10 @@
 
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
             
-            <!-- 1. フリーワード検索バー（ご指定の位置に追加） -->
             <div class="search-box" style="margin-bottom: 20px;">
-                <input type="text" id="search-input" placeholder="記事タイトルやタグで検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
+                <input type="text" id="search-input" placeholder="記事タイトル、タグ、ジャーナリスト名で検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
             </div>
 
-            <!-- ジャンル選択 -->
             <div class="filter-group" style="margin-bottom: 15px;">
                 <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">GENRE:</p>
                 <div id="genre-filters" class="filter-buttons">
@@ -41,7 +39,6 @@
                 </div>
             </div>
 
-            <!-- 地域選択 -->
             <div class="filter-group">
                 <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">REGION:</p>
                 <div id="region-filters" class="filter-buttons">
@@ -70,9 +67,20 @@
     let allArticles = [];
     let currentGenre = 'all';
     let currentRegion = 'all';
-    let searchQuery = ''; // 検索ワード用変数を追加
+    let searchQuery = ''; 
     let currentPage = 1;
     const itemsPerPage = 10;
+
+    // URLパラメータのチェック
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramJournalist = urlParams.get('journalist');
+    if (paramJournalist) {
+        searchQuery = paramJournalist;
+        // ページ読み込み時に検索窓に値をセット
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('search-input').value = paramJournalist;
+        });
+    }
 
     async function loadArchive() {
         try {
@@ -90,17 +98,16 @@
         container.innerHTML = '';
         paginationContainer.innerHTML = '';
 
-        // フィルタリングロジック（ジャンル + 地域 + 検索ワード のAND検索）
         const filtered = allArticles.filter(article => {
             const matchGenre = (currentGenre === 'all' || article.genre === currentGenre);
             const matchRegion = (currentRegion === 'all' || (article.tags && article.tags.includes(currentRegion)));
             
-            // 検索対象の拡張：タイトル または タグ配列のいずれかに合致するかを確認
             const lowerQuery = searchQuery.toLowerCase();
             const matchTitle = article.title.toLowerCase().includes(lowerQuery);
             const matchTags = article.tags && article.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
+            const matchJournalist = article.journalist && article.journalist.toLowerCase().includes(lowerQuery);
             
-            const matchSearch = matchTitle || matchTags;
+            const matchSearch = matchTitle || matchTags || matchJournalist;
             
             return matchGenre && matchRegion && matchSearch;
         }).reverse();
@@ -125,7 +132,7 @@
                     <div>
                         <span class="tag tag-${article.genre}" style="font-size: 0.65rem;">${getGenreLabel(article.genre)}</span>
                         <h3 style="margin: 5px 0; font-size: 1rem;">${article.title}</h3>
-                        <span style="font-size: 0.75rem; color: #999;">${formattedDate}</span>
+                        <span style="font-size: 0.75rem; color: #999;">${formattedDate} | Journalist: ${article.journalist}</span>
                     </div>
                     <div style="font-size: 1.2rem; color: #ccc;">&rsaquo;</div>
                 </a>
@@ -153,10 +160,9 @@
         return labels[genre] || 'その他';
     }
 
-    // 検索入力イベントの監視
     document.getElementById('search-input').addEventListener('input', (e) => {
         searchQuery = e.target.value;
-        currentPage = 1; // 検索時は1ページ目に戻す
+        currentPage = 1;
         renderArchive();
     });
 
