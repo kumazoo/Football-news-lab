@@ -10,7 +10,10 @@
 <body>
 
 <header class="main-header">
+    <!-- サイト説明文 -->
     <p class="site-description">サッカー移籍情報特化サイト</p>
+
+    <!-- ロゴ画像（記事階層から見たパス ../ に修正済み） -->
     <h1>
         <a href="../index.html">
             <img src="../transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
@@ -50,6 +53,7 @@
             <p>【導入文：ここにあなたの視点を1〜2文で入力】</p>
         </div>
 
+        <!-- 引用カードと要約のセット枠 -->
         <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
             <!-- 7. 引用記事カード -->
             <div class="iframely-container" style="margin-bottom: 20px;">
@@ -76,12 +80,19 @@
             </div>
         </div>
 
-        <!-- ★ 追加：Xシェアボタン -->
+        <!-- ★ SNSシェアボタン（横並びロゴ版） -->
         <div class="share-section" style="text-align: center; margin: 40px 0; padding: 20px; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee;">
-            <p style="font-size: 0.75rem; color: #888; margin-bottom: 12px; font-weight: bold; letter-spacing: 0.05em;">SHARE THIS POST</p>
-            <a id="share-x-btn" href="#" target="_blank" style="display: inline-block; background-color: #000; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 0.85rem; transition: opacity 0.3s;">
-               <span style="font-size: 1rem; vertical-align: middle; margin-right: 5px;">𝕏</span> でポストする
-            </a>
+            <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-weight: bold; letter-spacing: 0.05em;">SHARE THIS POST</p>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <!-- X ボタン -->
+                <a id="share-x-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #000; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; transition: opacity 0.3s;">
+                    𝕏
+                </a>
+                <!-- Facebook ボタン -->
+                <a id="share-fb-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #1877F2; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; font-family: sans-serif; font-weight: bold; transition: opacity 0.3s;">
+                    f
+                </a>
+            </div>
         </div>
 
         <!-- 10. 関連記事 -->
@@ -114,15 +125,12 @@
             const articleData = allArticles.find(a => a.id === currentArticleId);
 
             if (articleData) {
-                // タイトルの反映
+                // 1. 各項目の反映（タイトル、日付、タグ、ジャーナリスト）
                 document.getElementById('article-title').innerText = articleData.title;
-
-                // 投稿日の反映
                 const dateId = articleData.id.substring(0, 6);
                 const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
                 document.getElementById('article-date').innerText = formattedDate;
 
-                // 詳細タグの反映
                 const tagsContainer = document.getElementById('tags-container');
                 if (articleData.tags) {
                     articleData.tags.forEach(tag => {
@@ -133,7 +141,6 @@
                     });
                 }
 
-                // ジャーナリスト情報の反映
                 const infoArea = document.getElementById('journalist-info-area');
                 if (articleData.journalist) {
                     infoArea.innerHTML = `
@@ -147,13 +154,19 @@
                     `;
                 }
 
-                // Xシェアリンクの生成
-                const shareBtn = document.getElementById('share-x-btn');
+                // 2. SNSシェアリンクの動的生成
                 const pageUrl = encodeURIComponent(window.location.href);
                 const shareText = encodeURIComponent(`${articleData.title} | Football Transfer Lab`);
-                shareBtn.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
+                
+                // X (Twitter)
+                const shareBtnX = document.getElementById('share-x-btn');
+                shareBtnX.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
+                
+                // Facebook
+                const shareBtnFb = document.getElementById('share-fb-btn');
+                shareBtnFb.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
 
-                // 関連記事の生成
+                // 3. 関連記事の生成
                 const listElement = document.getElementById('related-list');
                 const related = allArticles.filter(article => {
                     return article.id !== currentArticleId && 

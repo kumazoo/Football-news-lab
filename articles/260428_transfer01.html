@@ -10,10 +10,12 @@
 <body>
 
 <header class="main-header">
+    <!-- サイト説明文 -->
     <p class="site-description">サッカー移籍情報特化サイト</p>
+
+    <!-- ロゴ画像（パス修正済み） -->
     <h1>
         <a href="../index.html">
-            <!-- フォルダ階層に合わせてパスを ../ に修正 -->
             <img src="../transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
         </a>
     </h1>
@@ -27,25 +29,32 @@
 
 <main>
     <article class="article-card">
+        <!-- 1. 記事ジャンル -->
         <span class="tag tag-transfer">移籍</span>
         
+        <!-- 2. タイトル -->
         <h2 id="article-title">ゴードンのバイエルン移籍話が破談に？</h2>
 
+        <!-- 3. 投稿日 -->
         <div class="post-date" style="font-size: 0.85rem; color: #888; margin-bottom: 10px; font-family: monospace;">
             POSTED: <span id="article-date">0000.00.00</span>
         </div>
 
+        <!-- 4. 詳細タグ -->
         <div id="tags-container" style="margin-bottom: 10px;"></div>
 
+        <!-- 5. ジャーナリスト情報 -->
         <div id="journalist-info-area"></div>
 
         <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
+        <!-- 6. 導入文 -->
         <div class="original-intro">
             <p>海外の複数メディアでシーズン後の移籍の可能性が報じられているイングランド代表FWアンソニー・ゴードン。中中でもあった程度の温度感で獲得を検討しているといわれていたのはバイエルン・ミュンヘンだが、ドイツ最多優勝クラブの優先ターゲットは別の選手であるようだ。</p>
         </div>
 
         <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
+            <!-- 7. 引用記事カード -->
             <div class="iframely-container" style="margin-bottom: 20px;">
                 <div class="iframely-embed">
                     <div class="iframely-responsive">
@@ -54,6 +63,7 @@
                 </div>
             </div>
 
+            <!-- 8. 要約 -->
             <div class="summary" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
                 <strong>■ 要約（ソース：Goal.com）</strong>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -64,6 +74,7 @@
             </div>
         </div>
 
+        <!-- 9. 選手・用語解説 -->
         <div class="supplementary-info">
             <h3>📊 Player Profile / 📌 Keyword</h3>
             <div class="supplementary-content">
@@ -72,14 +83,22 @@
             </div>
         </div>
 
-        <!-- ★ 追加：Xシェアボタンセクション -->
+        <!-- ★ SNSシェアボタン（横並びロゴ版） -->
         <div class="share-section" style="text-align: center; margin: 40px 0; padding: 20px; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee;">
-            <p style="font-size: 0.75rem; color: #888; margin-bottom: 12px; font-weight: bold; letter-spacing: 0.05em;">SHARE THIS POST</p>
-            <a id="share-x-btn" href="#" target="_blank" style="display: inline-block; background-color: #000; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 0.85rem; transition: opacity 0.3s;">
-               <span style="font-size: 1rem; vertical-align: middle; margin-right: 5px;">𝕏</span> でポストする
-            </a>
+            <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-weight: bold; letter-spacing: 0.05em;">SHARE THIS POST</p>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <!-- X ボタン -->
+                <a id="share-x-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #000; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; transition: opacity 0.3s;">
+                    𝕏
+                </a>
+                <!-- Facebook ボタン -->
+                <a id="share-fb-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #1877F2; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; font-family: sans-serif; font-weight: bold; transition: opacity 0.3s;">
+                    f
+                </a>
+            </div>
         </div>
 
+        <!-- 10. 関連記事 -->
         <div class="supplementary-info" style="border-top: none; margin-top: 15px;">
             <h3>🔗 関連記事</h3>
             <div class="supplementary-content" style="background-color: transparent; padding: 0;">
@@ -141,12 +160,17 @@
                     `;
                 }
 
-                // ★ 追加：Xシェアボタンの動的生成
-                const shareBtn = document.getElementById('share-x-btn');
+                // SNSシェアリンクの動的生成
                 const pageUrl = encodeURIComponent(window.location.href);
                 const shareText = encodeURIComponent(`${articleData.title} | Football Transfer Lab`);
-                // ハッシュタグに「トララボ」と「サッカー移籍」を付与
-                shareBtn.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
+                
+                // X (Twitter)
+                const shareBtnX = document.getElementById('share-x-btn');
+                shareBtnX.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
+                
+                // Facebook
+                const shareBtnFb = document.getElementById('share-fb-btn');
+                shareBtnFb.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
 
                 const listElement = document.getElementById('related-list');
                 const related = allArticles.filter(article => {
