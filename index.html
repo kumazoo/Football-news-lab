@@ -92,10 +92,10 @@ featuredList.forEach(article => {
 
     if (!isXQuoteOnly && article.source_url) {
         // --- 1. 画像がある記事（Iframelyを使用） ---
-        // 背景を透明(transparent)に上書きし、Iframelyの読み込みを邪魔しないようにします
-        card.style.background = 'transparent'; 
+        // 強制的に背景を透明化し、CSS側のグラデーションを無効化します
+        card.style.setProperty('background', 'transparent', 'important');
         imageMaskContent = `
-            <div class="featured-image-mask" style="background: transparent;">
+            <div class="featured-image-mask" style="background: transparent !important;">
                 <div class="iframely-embed">
                     <div class="iframely-responsive">
                         <a href="${article.source_url}" data-iframely-url></a>
@@ -105,7 +105,8 @@ featuredList.forEach(article => {
     } else {
         // --- 2. 画像がないX引用記事（新ロゴ logo_image.png を使用） ---
         const displayImage = 'logo_image.png'; 
-        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url('${displayImage}')`;
+        // こちらもCSS側の設定を強制的に上書きします
+        card.style.setProperty('background-image', `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url('${displayImage}')`, 'important');
         card.style.backgroundSize = 'cover'; 
         card.style.backgroundRepeat = 'no-repeat';
         card.style.backgroundPosition = 'center';
