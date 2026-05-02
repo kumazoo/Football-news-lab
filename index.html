@@ -18,35 +18,32 @@
 </nav>
 
 <main>
-    <!-- 注目記事エリア -->
-    <h2 class="section-title">FEATURED</h2>
-    <section id="featured-section" class="featured-grid">
-        <!-- JSで生成 -->
-    </section>
+    <!-- 1. 注目記事エリア -->
+    <h2 class="section-title">注目記事</h2>
+    <section id="featured-section" class="featured-grid"></section>
 
-    <!-- バナー広告枠（仮） -->
-    <div style="width: 100%; height: 90px; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 30px 0; color: #888; font-size: 12px;">
-        ADVERTISEMENT
-    </div>
+    <!-- 2. 広告枠 -->
+    <div style="width: 100%; height: 90px; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 30px 0; color: #888; font-size: 12px;">ADVERTISEMENT</div>
 
-    <!-- TOP JOURNALIST エリア -->
-    <h2 class="section-title">TOP JOURNALIST</h2>
-    <section id="top-journalists" class="journalist-mini-grid">
-        <!-- JSで上位3名を表示 -->
-    </section>
-    
-    <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
+    <!-- 3. トップジャーナリスト -->
+    <h2 class="section-title">トップジャーナリスト</h2>
+    <section id="top-journalists" class="journalist-mini-grid"></section>
+    <div style="text-align: center; margin: 20px 0 50px;">
         <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのジャーナリストを見る</a>
     </div>
 
-    <!-- 最新記事一覧 -->
-    <h2 class="section-title">LATEST NEWS</h2>
-    <section id="news-feed" class="news-feed">
-        <!-- JSで生成 -->
-    </section>
+    <!-- 4. 最新の移籍記事 -->
+    <h2 class="section-title">最新の移籍記事</h2>
+    <section id="transfer-feed" class="news-feed"></section>
+    <div style="text-align: center; margin: 20px 0 50px;">
+        <a href="archive.html?genre=transfer" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての移籍記事を見る</a>
+    </div>
 
-    <div style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
-        <a href="archive.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての記事を見る</a>
+    <!-- 5. その他トピック -->
+    <h2 class="section-title">その他のトピック</h2>
+    <section id="other-feed" class="news-feed"></section>
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
+        <a href="archive.html?genre=other" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">その他の記事を見る</a>
     </div>
 </main>
 
@@ -63,12 +60,12 @@ async function loadPage() {
         const response = await fetch('articles/list.json');
         const articles = await response.json();
         
-        const featuredSection = document.getElementById('featured-section');
-        const newsFeed = document.getElementById('news-feed');
-        const journalistSection = document.getElementById('top-journalists');
+        // データの準備：最新順
+        const latestArticles = articles.slice().reverse();
 
-        // 1. 注目記事を表示[cite: 3]
-        const featuredList = articles.filter(a => a.featured).slice(-2).reverse();
+        // --- 1. 注目記事の表示 ---
+        const featuredList = latestArticles.filter(a => a.featured).slice(0, 2);
+        const featuredSection = document.getElementById('featured-section');
         featuredList.forEach(article => {
             const card = document.createElement('div');
             card.className = 'featured-card';
@@ -90,60 +87,82 @@ async function loadPage() {
             featuredSection.appendChild(card);
         });
 
-        // 2. TOP JOURNALIST (的中率上位3名) を表示
-        const journalistMap = {};
-        articles.forEach(a => {
-            if (a.journalist) {
-                journalistMap[a.journalist] = { name: a.journalist, accuracy: a.accuracy };
-            }
-        });
-        const top3 = Object.values(journalistMap).sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
-        
-        // グリッドスタイルの適用
-        journalistSection.style.display = "grid";
-        journalistSection.style.gridTemplateColumns = "repeat(auto-fit, minmax(150px, 1fr))";
-        journalistSection.style.gap = "15px";
-        journalistSection.style.marginBottom = "20px";
+        // --- 2. トップジャーナリストの表示 ---
+        renderTopJournalists(articles);
 
-        top3.forEach((j, idx) => {
-            const medal = ['🥇', '🥈', '🥉'][idx];
-            const div = document.createElement('div');
-            div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
-            div.innerHTML = `
-                <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
-                <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
-                    <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2e7d32; border-bottom: 1px dashed #2e7d32;">${j.name}</a>
-                </div>
-                <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
-            `;
-            journalistSection.appendChild(div);
-        });
+        // --- 3. 最新の移籍記事 (genre: transfer) の表示 ---
+        const transferList = latestArticles.filter(a => a.genre === 'transfer').slice(0, 5);
+        renderNewsFeed(transferList, 'transfer-feed');
 
-        // 3. 最新記事一覧（最新5件）[cite: 3]
-        articles.slice().reverse().slice(0, 5).forEach(article => {
-            const item = document.createElement('a');
-            item.href = `articles/${article.id}.html`;
-            item.className = 'news-item-link';
-            
-            const dateStr = article.id.substring(0,6);
-            const formattedDate = `20${dateStr.substring(0,2)}.${dateStr.substring(2,4)}.${dateStr.substring(4,6)}`;
+        // --- 4. その他トピック (genre: transfer 以外) の表示 ---
+        const otherList = latestArticles.filter(a => a.genre !== 'transfer').slice(0, 5);
+        renderNewsFeed(otherList, 'other-feed');
 
-            item.innerHTML = `
-                <article class="news-card">
-                    <div class="news-meta">
-                        <span class="news-date">${formattedDate}</span>
-                        <h3 class="news-title">${article.title}</h3>
-                    </div>
-                </article>
-            `;
-            newsFeed.appendChild(item);
-        });
-
+        // Iframelyの再読み込み
         if (window.iframely) iframely.load();
     } catch (e) {
         console.error("Failed to load articles.");
     }
 }
+
+// ニュースフィード生成用共通関数
+function renderNewsFeed(list, targetId) {
+    const container = document.getElementById(targetId);
+    if (list.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">現在、新しい記事はありません。</p>';
+        return;
+    }
+    list.forEach(article => {
+        const item = document.createElement('a');
+        item.href = `articles/${article.id}.html`;
+        item.className = 'news-item-link';
+        
+        const dateStr = article.id.substring(0,6);
+        const formattedDate = `20${dateStr.substring(0,2)}.${dateStr.substring(2,4)}.${dateStr.substring(4,6)}`;
+
+        item.innerHTML = `
+            <article class="news-card">
+                <div class="news-meta">
+                    <span class="news-date">${formattedDate}</span>
+                    <h3 class="news-title">${article.title}</h3>
+                </div>
+            </article>
+        `;
+        container.appendChild(item);
+    });
+}
+
+// ジャーナリストランキング生成用関数
+function renderTopJournalists(articles) {
+    const journalistSection = document.getElementById('top-journalists');
+    const journalistMap = {};
+    articles.forEach(a => {
+        if (a.journalist) {
+            journalistMap[a.journalist] = { name: a.journalist, accuracy: a.accuracy };
+        }
+    });
+    const top3 = Object.values(journalistMap).sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
+    
+    journalistSection.style.display = "grid";
+    journalistSection.style.gridTemplateColumns = "repeat(auto-fit, minmax(150px, 1fr))";
+    journalistSection.style.gap = "15px";
+    journalistSection.style.marginBottom = "20px";
+
+    top3.forEach((j, idx) => {
+        const medal = ['🥇', '🥈', '🥉'][idx];
+        const div = document.createElement('div');
+        div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
+        div.innerHTML = `
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
+            <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
+                <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2e7d32; border-bottom: 1px dashed #2e7d32;">${j.name}</a>
+            </div>
+            <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
+        `;
+        journalistSection.appendChild(div);
+    });
+}
+
 loadPage();
 </script>
 

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ニュース一覧 | Football News Lab</title>
+    <title>ニュース一覧 | Football Transfer Lab</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <h1><a href="index.html" style="text-decoration: none; color: inherit;">Football News Lab</a></h1>
+    <h1><a href="index.html" style="text-decoration: none; color: inherit;">Football Transfer Lab</a></h1>
 </header>
 
 <nav>
@@ -23,22 +23,22 @@
 
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
             
+            <!-- フリーワード検索バー -->
             <div class="search-box" style="margin-bottom: 20px;">
                 <input type="text" id="search-input" placeholder="記事タイトル、タグ、ジャーナリスト名で検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
             </div>
 
+            <!-- ジャンル選択 -->
             <div class="filter-group" style="margin-bottom: 15px;">
                 <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">GENRE:</p>
                 <div id="genre-filters" class="filter-buttons">
                     <button class="filter-btn active" data-genre="all">すべて</button>
                     <button class="filter-btn" data-genre="transfer">移籍</button>
-                    <button class="filter-btn" data-genre="match">試合</button>
-                    <button class="filter-btn" data-genre="injury">負傷</button>
-                    <button class="filter-btn" data-genre="team">チーム</button>
-                    <button class="filter-btn" data-genre="player">選手</button>
+                    <button class="filter-btn" data-genre="other">その他トピック</button> <!-- ジャンル表記を変更 -->
                 </div>
             </div>
 
+            <!-- 地域選択 -->
             <div class="filter-group">
                 <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">REGION:</p>
                 <div id="region-filters" class="filter-buttons">
@@ -60,7 +60,7 @@
 </main>
 
 <footer>
-    <p style="text-align: center;">&copy; 2026 Football News Lab</p>
+    <p style="text-align: center;">&copy; 2026 Football Transfer Lab</p>
 </footer>
 
 <script>
@@ -71,21 +71,34 @@
     let currentPage = 1;
     const itemsPerPage = 10;
 
-    // URLパラメータのチェック
+    // --- URLパラメータの初期解析 ---
     const urlParams = new URLSearchParams(window.location.search);
+    
+    // 1. ジャーナリスト検索用パラメータ
     const paramJournalist = urlParams.get('journalist');
     if (paramJournalist) {
         searchQuery = paramJournalist;
-        // ページ読み込み時に検索窓に値をセット
-        window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('search-input').value = paramJournalist;
-        });
+    }
+
+    // 2. ジャンル検索用パラメータ (transfer / other)
+    const paramGenre = urlParams.get('genre');
+    if (paramGenre) {
+        currentGenre = paramGenre;
     }
 
     async function loadArchive() {
         try {
             const response = await fetch('articles/list.json');
             allArticles = await response.json();
+            
+            // 初回表示のボタン状態を反映
+            updateActiveFilterButtons();
+            
+            // 検索窓に値を反映
+            if (searchQuery) {
+                document.getElementById('search-input').value = searchQuery;
+            }
+
             renderArchive();
         } catch (e) {
             console.error("Failed to load articles.");
@@ -99,14 +112,22 @@
         paginationContainer.innerHTML = '';
 
         const filtered = allArticles.filter(article => {
-            const matchGenre = (currentGenre === 'all' || article.genre === currentGenre);
+            // ジャンルのフィルタリング (移籍か、それ以外か)
+            let matchGenre = true;
+            if (currentGenre === 'transfer') {
+                matchGenre = (article.genre === 'transfer');
+            } else if (currentGenre === 'other') {
+                matchGenre = (article.genre !== 'transfer');
+            }
+
+            // 地域のフィルタリング[cite: 2]
             const matchRegion = (currentRegion === 'all' || (article.tags && article.tags.includes(currentRegion)));
             
+            // 検索ワードのフィルタリング[cite: 2]
             const lowerQuery = searchQuery.toLowerCase();
             const matchTitle = article.title.toLowerCase().includes(lowerQuery);
             const matchTags = article.tags && article.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
             const matchJournalist = article.journalist && article.journalist.toLowerCase().includes(lowerQuery);
-            
             const matchSearch = matchTitle || matchTags || matchJournalist;
             
             return matchGenre && matchRegion && matchSearch;
@@ -160,6 +181,13 @@
         return labels[genre] || 'その他';
     }
 
+    // パラメータに基づいてボタンの「active」クラスを更新する
+    function updateActiveFilterButtons() {
+        document.querySelectorAll('#genre-filters .filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.genre === currentGenre);
+        });
+    }
+
     document.getElementById('search-input').addEventListener('input', (e) => {
         searchQuery = e.target.value;
         currentPage = 1;
@@ -168,17 +196,22 @@
 
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            if (e.target.dataset.genre || e.target.dataset.region) {
-                const parent = e.target.parentElement;
-                parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            const genre = e.target.dataset.genre;
+            const region = e.target.dataset.region;
+
+            if (genre) {
+                currentGenre = genre;
+                document.querySelectorAll('#genre-filters .filter-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
-
-                if (e.target.dataset.genre) currentGenre = e.target.dataset.genre;
-                if (e.target.dataset.region) currentRegion = e.target.dataset.region;
-
-                currentPage = 1;
-                renderArchive();
             }
+            if (region) {
+                currentRegion = region;
+                document.querySelectorAll('#region-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+
+            currentPage = 1;
+            renderArchive();
         });
     });
 
