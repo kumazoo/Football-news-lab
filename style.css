@@ -462,6 +462,6 @@ footer {
     height: auto;
     display: block;
     margin: 0 auto;
-    /* 境界線を消す魔法の1行 */
-    mix-blend-mode: multiply;
+    mix-blend-mode: screen; 
+    filter: brightness(1.1) contrast(1.1);
 }
