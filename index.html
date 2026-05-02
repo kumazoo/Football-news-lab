@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Transfer Lab | サッカー移籍情報特化サイト</title>
+    <title>Football Transfer Lab | トララボ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="main-header">
+    <!-- サイト説明文 -->
     <p class="site-description">サッカー移籍情報特化サイト</p>
-    <h1><a href="index.html"><img src="transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img"></a></h1>
+
+    <!-- ロゴ画像 -->
+    <h1>
+        <a href="index.html">
+            <img src="transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
+        </a>
+    </h1>
 </header>
 
-<nav>
+<nav style="text-align: center; margin-top: 15px;">
     <a href="journalist.html" class="nav-btn">ジャーナリスト</a>
     <a href="archive.html?genre=transfer" class="nav-btn">移籍ニュース</a>
     <a href="archive.html?genre=other" class="nav-btn">トピック</a>
@@ -24,82 +31,160 @@
     <h2 class="section-title">注目ニュース</h2>
     <section id="featured-section" class="featured-grid"></section>
 
-    <!-- 2. 新着記事一覧エリア -->
-    <h2 class="section-title">新着ニュース</h2>
-    <section id="recent-list" class="article-list"></section>
+    <!-- 2. 広告枠 -->
+    <div style="width: 100%; height: 90px; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 30px 0; color: #888; font-size: 12px;">ADVERTISEMENT</div>
 
-    <div style="text-align: center; margin-top: 30px;">
-        <a href="archive.html" class="view-more">もっと見る</a>
+    <!-- 3. トップジャーナリスト -->
+    <h2 class="section-title">トップジャーナリスト</h2>
+    <section id="top-journalists" class="journalist-mini-grid"></section>
+    <div style="text-align: center; margin: 20px 0 50px;">
+        <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのジャーナリストを見る</a>
+    </div>
+
+    <!-- 4. 最新の移籍記事 -->
+    <h2 class="section-title">最新の移籍ニュース</h2>
+    <section id="transfer-feed" class="news-feed"></section>
+    <div style="text-align: center; margin: 20px 0 50px;">
+        <a href="archive.html?genre=transfer" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての移籍ニュースを見る</a>
+    </div>
+
+    <!-- 5. その他トピック -->
+    <h2 class="section-title">最新のトピック</h2>
+    <section id="other-feed" class="news-feed"></section>
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
+        <a href="archive.html?genre=other" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのトピックを見る</a>
     </div>
 </main>
 
 <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 40px;">
     <div style="margin-bottom: 10px;">
-        <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
-        <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
-        <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
-    </div>
+    <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
+    <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
+    <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
+</div>
     <p style="font-size: 0.75rem; color: #888;">&copy; 2026 Football Transfer Lab</p>
 </footer>
 
+<!-- Iframelyの読み込みスクリプト -->
+<script async src="https://iframely.net/embed.js"></script>
+
 <script>
-    async function loadIndexContent() {
-        try {
-            // list.jsonを取得（キャッシュ対策のためクエリを付与）
-            const response = await fetch('list.json?v=' + new Date().getTime());
-            if (!response.ok) return;
-            const allArticles = await response.json();
+async function loadPage() {
+    try {
+        const response = await fetch('articles/list.json');
+        const articles = await response.json();
+        
+        // データの準備：最新順
+        const latestArticles = articles.slice().reverse();
 
-            // --- 1. 注目記事の表示 (最新2件) ---
-            const featuredSection = document.getElementById('featured-section');
-            const featuredArticles = allArticles.slice(0, 2); // 最新2件
+        // --- 1. 注目記事の表示 ---
+const featuredList = latestArticles.filter(a => a.featured).slice(0, 2);
+const featuredSection = document.getElementById('featured-section');
 
-            featuredArticles.forEach(article => {
-                const card = document.createElement('div');
-                card.className = 'featured-card';
-                
-                // 画像判定：記事データにimageプロパティがあればそれを使い、なければロゴを表示
-                // list.jsonにimage項目がなくても、これで自動的にロゴになります
-                const bgImage = article.image ? article.image : 'transferlab_logo.jpg';
-                
-                card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7)), url('${bgImage}')`;
-                
-                card.innerHTML = `
-                    <div class="featured-content">
-                        <h3>${article.title}</h3>
-                        <a href="articles/${article.id}.html" class="btn">ニュースをチェック</a>
-                    </div>
-                `;
-                featuredSection.appendChild(card);
-            });
+featuredList.forEach(article => {
+    const card = document.createElement('div');
+    card.className = 'featured-card';
 
-            // --- 2. 新着記事リストの表示 (最新5件) ---
-            const recentList = document.getElementById('recent-list');
-            const recentArticles = allArticles.slice(0, 5); // 最新5件
+    // 【追加：画像判定】
+    // 記事データに image があればそれを使い、なければロゴを表示
+    const displayImage = article.image ? article.image : 'transferlab_logo.jpg';
+    card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7)), url('${displayImage}')`;
 
-            recentArticles.forEach(article => {
-                const item = document.createElement('article');
-                item.className = 'article-card';
-                
-                // ジャンルに応じたタグの色分け
-                const tagClass = article.genre === 'transfer' ? 'tag-transfer' : 'tag-other';
-                const tagText = article.genre === 'transfer' ? '移籍' : 'トピック';
+    card.innerHTML = `
+        <div class="featured-image-mask">
+            <div class="iframely-embed">
+                <div class="iframely-responsive">
+                    <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&media=1"></a>
+                </div>
+            </div>
+        </div>
+        <a href="articles/${article.id}.html" class="featured-overlay-link">
+            <div class="featured-text-content">
+                <h3 class="featured-title">${article.title}</h3>
+                <span class="featured-read-btn">ニュースをチェック</span>
+            </div>
+        </a>
+    `;
+    featuredSection.appendChild(card);
+});
 
-                item.innerHTML = `
-                    <span class="tag ${tagClass}">${tagText}</span>
-                    <h3><a href="articles/${article.id}.html">${article.title}</a></h3>
-                    <p class="article-meta">JOURNALIST: ${article.journalist} (${article.accuracy}%) | ${article.id.substring(0,6)}</p>
-                `;
-                recentList.appendChild(item);
-            });
+        // --- 2. トップジャーナリストの表示 ---
+        renderTopJournalists(articles);
 
-        } catch (e) {
-            console.error("Index content load failed.", e);
-        }
+        // --- 3. 最新の移籍記事 (genre: transfer) の表示 ---
+        const transferList = latestArticles.filter(a => a.genre === 'transfer').slice(0, 5);
+        renderNewsFeed(transferList, 'transfer-feed');
+
+        // --- 4. その他トピック (genre: transfer 以外) の表示 ---
+        const otherList = latestArticles.filter(a => a.genre !== 'transfer').slice(0, 5);
+        renderNewsFeed(otherList, 'other-feed');
+
+        // Iframelyの再読み込み
+        if (window.iframely) iframely.load();
+    } catch (e) {
+        console.error("Failed to load articles.");
     }
+}
 
-    // 読み込み実行
-    loadIndexContent();
+// ニュースフィード生成用共通関数
+function renderNewsFeed(list, targetId) {
+    const container = document.getElementById(targetId);
+    if (list.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">現在、新しい記事はありません。</p>';
+        return;
+    }
+    list.forEach(article => {
+        const item = document.createElement('a');
+        item.href = `articles/${article.id}.html`;
+        item.className = 'news-item-link';
+        
+        const dateStr = article.id.substring(0,6);
+        const formattedDate = `20${dateStr.substring(0,2)}.${dateStr.substring(2,4)}.${dateStr.substring(4,6)}`;
+
+        item.innerHTML = `
+            <article class="news-card">
+                <div class="news-meta">
+                    <span class="news-date">${formattedDate}</span>
+                    <h3 class="news-title">${article.title}</h3>
+                </div>
+            </article>
+        `;
+        container.appendChild(item);
+    });
+}
+
+// ジャーナリストランキング生成用関数
+function renderTopJournalists(articles) {
+    const journalistSection = document.getElementById('top-journalists');
+    const journalistMap = {};
+    articles.forEach(a => {
+        if (a.journalist) {
+            journalistMap[a.journalist] = { name: a.journalist, accuracy: a.accuracy };
+        }
+    });
+    const top3 = Object.values(journalistMap).sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
+    
+    journalistSection.style.display = "grid";
+    journalistSection.style.gridTemplateColumns = "repeat(auto-fit, minmax(150px, 1fr))";
+    journalistSection.style.gap = "15px";
+    journalistSection.style.marginBottom = "20px";
+
+    top3.forEach((j, idx) => {
+        const medal = ['🥇', '🥈', '🥉'][idx];
+        const div = document.createElement('div');
+        div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
+        div.innerHTML = `
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
+            <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
+                <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
+            </div>
+            <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
+        `;
+        journalistSection.appendChild(div);
+    });
+}
+
+loadPage();
 </script>
 
 </body>
