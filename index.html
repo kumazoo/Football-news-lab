@@ -86,6 +86,13 @@ async function loadPage() {
             const card = document.createElement('div');
             card.className = 'featured-card';
             
+            // Xの引用などで画像がない場合、用意した logo_image.png を背景に設定
+            if (!article.iframely_id || article.source_url.includes('x.com') || article.source_url.includes('twitter.com')) {
+                card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url('logo_image.png')`;
+                card.style.backgroundSize = 'cover';
+                card.style.backgroundPosition = 'center';
+            }
+
             const imageMaskContent = `
                 <div class="featured-image-mask">
                     <div class="iframely-embed">
