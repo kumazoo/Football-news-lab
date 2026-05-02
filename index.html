@@ -85,14 +85,11 @@ featuredList.forEach(article => {
     const card = document.createElement('div');
     card.className = 'featured-card';
 
-    // image項目があるか、またはsource_urlがX(twitter)以外の場合は画像優先
-    // 「画像を指定せずXを引用したい」場合のみロゴ背景にする
-    const isXQuoteOnly = !article.image && (article.source_url && article.source_url.includes('twitter.com') || article.source_url.includes('x.com'));
-
+    // 1. 画像があるかどうかを判定（画像がある場合はIframelyを表示）
+    // 確実に表示させるため、条件をシンプルに「source_urlがあるかどうか」にします
     let imageMaskContent = '';
 
-    if (!isXQuoteOnly) {
-        // 画像がある記事は元のIframely表示を復活
+    if (article.source_url) {
         imageMaskContent = `
             <div class="featured-image-mask">
                 <div class="iframely-embed">
@@ -102,9 +99,8 @@ featuredList.forEach(article => {
                 </div>
             </div>`;
     } else {
-        // 画像指定がないX引用記事のみロゴ背景＋高さ確保
-        const displayImage = 'logo_image.png';
-        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.7)), url('${displayImage}')`;
+        // 万が一URLがない場合のみロゴ背景にする（フォールバック）
+        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.7)), url('transferlab_logo.jpg')`;
         card.style.backgroundSize = 'contain';
         card.style.backgroundRepeat = 'no-repeat';
         card.style.backgroundPosition = 'center';
