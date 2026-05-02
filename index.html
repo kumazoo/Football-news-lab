@@ -97,13 +97,13 @@ featuredList.forEach(article => {
             <div class="featured-image-mask">
                 <div class="iframely-embed">
                     <div class="iframely-responsive">
-                        <a href="${article.source_url}" data-iframely-url="https://iframely.net/UzVCqlcc?theme=light&media=1"></a>
+                        <a href="${article.source_url}" data-iframely-url></a>
                     </div>
                 </div>
             </div>`;
     } else {
         // 画像指定がないX引用記事のみロゴ背景＋高さ確保
-        const displayImage = 'transferlab_logo.jpg';
+        const displayImage = 'logo_image.png';
         card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.7)), url('${displayImage}')`;
         card.style.backgroundSize = 'contain';
         card.style.backgroundRepeat = 'no-repeat';
