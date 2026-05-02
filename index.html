@@ -8,13 +8,13 @@
 </head>
 <body>
 
-<header style="background-color: #2e7d32; padding: 15px 0 25px 0; text-align: center;">
-    <!-- 1. サイトの説明文（ロゴの上に配置） -->
+<header style="background-color: #2A6A35; padding: 15px 0 25px 0; text-align: center;">
+    <!-- サイト説明文 -->
     <p style="margin: 0 0 10px 0; font-size: 0.75rem; color: rgba(255,255,255,0.9); letter-spacing: 0.1em; font-weight: bold;">
         サッカー移籍情報特化サイト
     </p>
 
-    <!-- 2. ロゴ画像 -->
+    <!-- ロゴ画像 -->
     <h1 style="margin: 0;">
         <a href="index.html" style="display: inline-block; text-decoration: none;">
             <img src="transferlab_logo.jpg" alt="Football Transfer Lab" style="max-width: 400px; width: 95%; height: auto; display: block; margin: 0 auto;">
@@ -44,14 +44,14 @@
     </div>
 
     <!-- 4. 最新の移籍記事 -->
-    <h2 class="section-title">最新の移籍記事</h2>
+    <h2 class="section-title">最新の移籍ニュース</h2>
     <section id="transfer-feed" class="news-feed"></section>
     <div style="text-align: center; margin: 20px 0 50px;">
         <a href="archive.html?genre=transfer" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての移籍記事を見る</a>
     </div>
 
     <!-- 5. その他トピック -->
-    <h2 class="section-title">その他のトピック</h2>
+    <h2 class="section-title">最新のトピック</h2>
     <section id="other-feed" class="news-feed"></section>
     <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
         <a href="archive.html?genre=other" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">その他の記事を見る</a>
@@ -59,7 +59,7 @@
 </main>
 
 <footer>
-    &copy; 2026 Football News Lab
+    &copy; 2026 Football Transfer Lab
 </footer>
 
 <!-- Iframelyの読み込みスクリプト -->
@@ -166,7 +166,7 @@ function renderTopJournalists(articles) {
         div.innerHTML = `
             <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
             <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
-                <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2e7d32; border-bottom: 1px dashed #2e7d32;">${j.name}</a>
+                <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
             </div>
             <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
         `;

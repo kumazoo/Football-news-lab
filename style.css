@@ -9,7 +9,7 @@ body {
 }
 
 header {
-    background-color: #276b30;
+    background-color: #2A6A35;
     color: white;
     padding: 1.5rem;
     text-align: center;
@@ -31,7 +31,7 @@ nav {
 
 .nav-btn {
     text-decoration: none;
-    color: #276b30;
+    color: #2A6A35;
     margin: 0 15px;
     font-weight: bold;
     font-size: 0.95rem;
@@ -118,7 +118,7 @@ main {
 
 .featured-read-btn {
     font-size: 0.8rem;
-    background: #276b30;
+    background: #2A6A35;
     color: #fff;
     padding: 5px 12px;
     border-radius: 4px;
@@ -140,7 +140,7 @@ main {
 }
 
 .news-card:hover {
-    border-color: #276b30;
+    border-color: #2A6A35;
     transform: translateX(5px);
 }
 
@@ -166,7 +166,7 @@ main {
 .tag {
     display: inline-block;
     background: #e8f5e9;
-    color: #276b30;;
+    color: #2A6A35;;
     font-size: 0.75rem;
     padding: 3px 10px;
     border-radius: 20px; /* 角を丸くしてチップ状に */
@@ -183,7 +183,7 @@ main {
     background: #f9f9f9;
     padding: 10px 15px;
     border-radius: 4px;
-    border-left: 4px solid #276b30;;
+    border-left: 4px solid #2A6A35;;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -192,7 +192,7 @@ main {
 
 .journalist-label {
     font-weight: bold;
-    color: #276b30;;
+    color: #2A6A35;;
     font-size: 0.7rem;
     letter-spacing: 0.05em;
 }
@@ -333,9 +333,9 @@ footer {
 }
 
 .filter-btn.active {
-    background: #276b30;;
+    background: #2A6A35;;
     color: #fff;
-    border-color: #276b30;;
+    border-color: #2A6A35;;
 }
 
 .archive-item:hover {
@@ -343,7 +343,7 @@ footer {
 }
 
 .nav-btn.active {
-    border-bottom: 2px solid #276b30;;
+    border-bottom: 2px solid #2A6A35;;
     font-weight: bold;
 }
 
@@ -363,13 +363,13 @@ footer {
 .journalist-rank-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    border-color: #276b30;;
+    border-color: #2A6A35;;
 }
 
 .rank-number {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #276b30;;
+    color: #2A6A35;;
     width: 50px;
     text-align: center;
     font-family: 'Arial Black', sans-serif;
