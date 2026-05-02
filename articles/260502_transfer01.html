@@ -124,20 +124,46 @@
     const currentArticleTags = ["カゼミーロ", "マンチェスターユナイテッド", "イングランド", "その他"]; 
     const currentArticleId = "260502_transfer01"; 
 
+    // ジャーナリストごとの統計を自動計算する共通関数
+    function calculateJournalistStats(allArticles) {
+        const stats = {};
+        allArticles.forEach(article => {
+            const name = article.journalist;
+            if (!name) return;
+
+            if (!stats[name]) {
+                stats[name] = { name: name, correct: 0, total: 0 };
+            }
+
+            if (article.status === 'correct' || article.status === 'incorrect') {
+                stats[name].total++;
+                if (article.status === 'correct') {
+                    stats[name].correct++;
+                }
+            }
+        });
+
+        // 扱いやすいようにオブジェクト形式で返す
+        return stats;
+    }
+
     async function loadArticleContent() {
         try {
-            const response = await fetch('list.json');
+            // キャッシュ対策をしてlist.jsonを読み込み
+            const response = await fetch('../articles/list.json?v=' + new Date().getTime());
             if (!response.ok) return;
             const allArticles = await response.json();
+            
             const articleData = allArticles.find(a => a.id === currentArticleId);
 
             if (articleData) {
-                // 1. 各項目の反映（タイトル、日付、タグ、ジャーナリスト）
+                // 1. タイトルと日付の反映
                 document.getElementById('article-title').innerText = articleData.title;
                 const dateId = articleData.id.substring(0, 6);
                 const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
                 document.getElementById('article-date').innerText = formattedDate;
 
+                // 2. タグの反映
                 const tagsContainer = document.getElementById('tags-container');
                 if (articleData.tags) {
                     articleData.tags.forEach(tag => {
@@ -148,36 +174,36 @@
                     });
                 }
 
+                // 3. 【重要】ジャーナリスト情報の自動計算と反映
+                const allStats = calculateJournalistStats(allArticles);
                 const infoArea = document.getElementById('journalist-info-area');
-                if (articleData.journalist) {
+                
+                if (articleData.journalist && allStats[articleData.journalist]) {
+                    const s = allStats[articleData.journalist];
+                    const accuracy = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+                    
                     infoArea.innerHTML = `
                         <div class="journalist-info" style="margin: 5px 0 15px 0;">
                             <span class="journalist-label">JOURNALIST:</span>
                             <span class="journalist-name">${articleData.journalist}</span>
                             <span class="journalist-stats">
-                                (的中率: <span class="accuracy-value">${articleData.accuracy}%</span> / 総件数: <span class="count-value">${articleData.count}</span>件)
+                                (的中率: <span class="accuracy-value">${accuracy}%</span> / 総件数: <span class="count-value">${s.total}</span>件)
                             </span>
                         </div>
                     `;
                 }
 
-                // 2. SNSシェアリンクの動的生成
+                // 4. SNSシェアリンクの生成
                 const pageUrl = encodeURIComponent(window.location.href);
                 const shareText = encodeURIComponent(`${articleData.title} | Football Transfer Lab`);
-                
-                // X (Twitter)
-                const shareBtnX = document.getElementById('share-x-btn');
-                shareBtnX.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
-                
-                // Facebook
-                const shareBtnFb = document.getElementById('share-fb-btn');
-                shareBtnFb.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+                document.getElementById('share-x-btn').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
+                document.getElementById('share-fb-btn').href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
 
-                // 3. 関連記事の生成
+                // 5. 関連記事の生成
                 const listElement = document.getElementById('related-list');
                 const related = allArticles.filter(article => {
                     return article.id !== currentArticleId && 
-                           article.tags.some(tag => currentArticleTags.includes(tag));
+                           article.tags && article.tags.some(tag => currentArticleTags.includes(tag));
                 });
                 const limitedRelated = related.slice(-3).reverse();
 
@@ -192,7 +218,7 @@
                 }
             }
         } catch (e) {
-            console.error("Content load failed.");
+            console.error("Content load failed.", e);
         }
     }
     loadArticleContent();
