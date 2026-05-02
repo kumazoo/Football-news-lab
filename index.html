@@ -29,13 +29,14 @@
         ADVERTISEMENT
     </div>
 
-    <!-- 【新設】TOP JOURNALIST エリア -->
+    <!-- TOP JOURNALIST エリア -->
     <h2 class="section-title">TOP JOURNALIST</h2>
-    <section id="top-journalists" class="journalist-mini-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+    <section id="top-journalists" class="journalist-mini-grid">
         <!-- JSで上位3名を表示 -->
     </section>
-    <div style="text-align: center; margin-bottom: 50px;">
-        <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 8px 30px; font-size: 0.85rem; background-color: #fff; color: #333; border: 1px solid #ddd; border-radius: 20px;">すべてのジャーナリストを見る</a>
+    
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
+        <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのジャーナリストを見る</a>
     </div>
 
     <!-- 最新記事一覧 -->
@@ -53,6 +54,7 @@
     &copy; 2026 Football News Lab
 </footer>
 
+<!-- Iframelyの読み込みスクリプト -->
 <script async src="https://iframely.net/embed.js"></script>
 
 <script>
@@ -65,7 +67,7 @@ async function loadPage() {
         const newsFeed = document.getElementById('news-feed');
         const journalistSection = document.getElementById('top-journalists');
 
-        // 1. 注目記事を表示
+        // 1. 注目記事を表示[cite: 3]
         const featuredList = articles.filter(a => a.featured).slice(-2).reverse();
         featuredList.forEach(article => {
             const card = document.createElement('div');
@@ -97,25 +99,32 @@ async function loadPage() {
         });
         const top3 = Object.values(journalistMap).sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
         
+        // グリッドスタイルの適用
+        journalistSection.style.display = "grid";
+        journalistSection.style.gridTemplateColumns = "repeat(auto-fit, minmax(150px, 1fr))";
+        journalistSection.style.gap = "15px";
+        journalistSection.style.marginBottom = "20px";
+
         top3.forEach((j, idx) => {
             const medal = ['🥇', '🥈', '🥉'][idx];
             const div = document.createElement('div');
-            div.style = "background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
+            div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
             div.innerHTML = `
-                <div style="font-size: 1.2rem; margin-bottom: 5px;">${medal}</div>
-                <div style="font-weight: bold; font-size: 0.9rem; margin-bottom: 5px;">
-                    <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2e7d32;">${j.name}</a>
+                <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
+                <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
+                    <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2e7d32; border-bottom: 1px dashed #2e7d32;">${j.name}</a>
                 </div>
-                <div style="font-size: 0.75rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
+                <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
             `;
             journalistSection.appendChild(div);
         });
 
-        // 3. 最新記事一覧（最新5件）
+        // 3. 最新記事一覧（最新5件）[cite: 3]
         articles.slice().reverse().slice(0, 5).forEach(article => {
             const item = document.createElement('a');
             item.href = `articles/${article.id}.html`;
             item.className = 'news-item-link';
+            
             const dateStr = article.id.substring(0,6);
             const formattedDate = `20${dateStr.substring(0,2)}.${dateStr.substring(2,4)}.${dateStr.substring(4,6)}`;
 
