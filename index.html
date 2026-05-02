@@ -85,34 +85,15 @@ featuredList.forEach(article => {
     const card = document.createElement('div');
     card.className = 'featured-card';
 
-    // Xの引用かつ画像指定がない場合の判定
-    const isXQuoteOnly = !article.image && (article.source_url && (article.source_url.includes('twitter.com') || article.source_url.includes('x.com')));
-
-    let imageMaskContent = '';
-
-    if (!isXQuoteOnly && article.source_url) {
-        // --- 1. 画像がある記事（Iframelyを使用） ---
-        // 強制的に背景を透明化し、CSS側のグラデーションを無効化します
-        card.style.setProperty('background', 'transparent', 'important');
-        imageMaskContent = `
-            <div class="featured-image-mask" style="background: transparent !important;">
-                <div class="iframely-embed">
-                    <div class="iframely-responsive">
-                        <a href="${article.source_url}" data-iframely-url></a>
-                    </div>
+    // 以前の正常に動いていたシンプルなIframely表示に戻します
+    const imageMaskContent = `
+        <div class="featured-image-mask">
+            <div class="iframely-embed">
+                <div class="iframely-responsive">
+                    <a href="${article.source_url}" data-iframely-url></a>
                 </div>
-            </div>`;
-    } else {
-        // --- 2. 画像がないX引用記事（新ロゴ logo_image.png を使用） ---
-        const displayImage = 'logo_image.png'; 
-        // こちらもCSS側の設定を強制的に上書きします
-        card.style.setProperty('background-image', `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url('${displayImage}')`, 'important');
-        card.style.backgroundSize = 'cover'; 
-        card.style.backgroundRepeat = 'no-repeat';
-        card.style.backgroundPosition = 'center';
-        card.style.backgroundColor = '#1a3d2f';
-        imageMaskContent = '<div style="height: 220px;"></div>';
-    }
+            </div>
+        </div>`;
 
     card.innerHTML = `
         ${imageMaskContent}
