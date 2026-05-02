@@ -19,7 +19,7 @@
 
 <main>
     <div class="archive-container">
-        <h2 style="text-align: center; margin-bottom: 30px;">NEWS ARCHIVE</h2>
+        <h2 id="archive-title" style="text-align: center; margin-bottom: 30px;">NEWS ARCHIVE</h2>
 
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
             
@@ -28,13 +28,11 @@
                 <input type="text" id="search-input" placeholder="記事タイトル、タグ、ジャーナリスト名で検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
             </div>
 
-            <!-- ジャンル選択 -->
+            <!-- ジャンル選択（動的に出し分けます） -->
             <div class="filter-group" style="margin-bottom: 15px;">
-                <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">GENRE:</p>
+                <p id="genre-label" style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">GENRE:</p>
                 <div id="genre-filters" class="filter-buttons">
-                    <button class="filter-btn active" data-genre="all">すべて</button>
-                    <button class="filter-btn" data-genre="transfer">移籍</button>
-                    <button class="filter-btn" data-genre="other">その他トピック</button> <!-- ジャンル表記を変更 -->
+                    <!-- JSでボタンが生成されます -->
                 </div>
             </div>
 
@@ -65,36 +63,35 @@
 
 <script>
     let allArticles = [];
+    let mode = 'all'; // 'transfer' or 'topics' or 'all'
     let currentGenre = 'all';
     let currentRegion = 'all';
     let searchQuery = ''; 
     let currentPage = 1;
     const itemsPerPage = 10;
 
-    // --- URLパラメータの初期解析 ---
+    // --- URLパラメータの解析 ---
     const urlParams = new URLSearchParams(window.location.search);
-    
-    // 1. ジャーナリスト検索用パラメータ
+    const paramGenre = urlParams.get('genre'); // indexからの'transfer' or 'other'
     const paramJournalist = urlParams.get('journalist');
-    if (paramJournalist) {
-        searchQuery = paramJournalist;
+
+    if (paramGenre === 'transfer') {
+        mode = 'transfer';
+        currentGenre = 'transfer';
+    } else if (paramGenre === 'other') {
+        mode = 'topics';
+        currentGenre = 'all';
     }
 
-    // 2. ジャンル検索用パラメータ (transfer / other)
-    const paramGenre = urlParams.get('genre');
-    if (paramGenre) {
-        currentGenre = paramGenre;
-    }
+    if (paramJournalist) searchQuery = paramJournalist;
 
     async function loadArchive() {
         try {
             const response = await fetch('articles/list.json');
             allArticles = await response.json();
             
-            // 初回表示のボタン状態を反映
-            updateActiveFilterButtons();
+            setupGenreButtons();
             
-            // 検索窓に値を反映
             if (searchQuery) {
                 document.getElementById('search-input').value = searchQuery;
             }
@@ -105,6 +102,49 @@
         }
     }
 
+    // モードに合わせてボタンを生成
+    function setupGenreButtons() {
+        const container = document.getElementById('genre-filters');
+        const title = document.getElementById('archive-title');
+        container.innerHTML = '';
+
+        if (mode === 'transfer') {
+            title.innerText = '移籍ニュース アーカイブ';
+            container.innerHTML = `<button class="filter-btn active" data-genre="transfer">移籍</button>`;
+        } else if (mode === 'topics') {
+            title.innerText = 'その他トピック アーカイブ';
+            container.innerHTML = `
+                <button class="filter-btn active" data-genre="all">すべて</button>
+                <button class="filter-btn" data-genre="match">試合</button>
+                <button class="filter-btn" data-genre="injury">負傷</button>
+                <button class="filter-btn" data-genre="team">チーム</button>
+                <button class="filter-btn" data-genre="player">選手</button>
+                <button class="filter-btn" data-genre="etc">その他</button>
+            `;
+        } else {
+            title.innerText = 'すべてのニュース';
+            container.innerHTML = `
+                <button class="filter-btn active" data-genre="all">すべて</button>
+                <button class="filter-btn" data-genre="transfer">移籍</button>
+                <button class="filter-btn" data-genre="match">試合</button>
+                <button class="filter-btn" data-genre="injury">負傷</button>
+                <button class="filter-btn" data-genre="team">チーム</button>
+                <button class="filter-btn" data-genre="player">選手</button>
+            `;
+        }
+
+        // 生成したボタンにイベントリスナーを追加
+        container.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentGenre = e.target.dataset.genre;
+                currentPage = 1;
+                renderArchive();
+            });
+        });
+    }
+
     function renderArchive() {
         const container = document.getElementById('archive-list');
         const paginationContainer = document.getElementById('pagination-controls');
@@ -112,27 +152,26 @@
         paginationContainer.innerHTML = '';
 
         const filtered = allArticles.filter(article => {
-            // ジャンルのフィルタリング (移籍か、それ以外か)
-            let matchGenre = true;
-            if (currentGenre === 'transfer') {
-                matchGenre = (article.genre === 'transfer');
-            } else if (currentGenre === 'other') {
-                matchGenre = (article.genre !== 'transfer');
-            }
+            // 1. モードによる大きな切り分け
+            if (mode === 'transfer' && article.genre !== 'transfer') return false;
+            if (mode === 'topics' && article.genre === 'transfer') return false;
 
-            // 地域のフィルタリング[cite: 2]
+            // 2. 詳細ジャンルの絞り込み
+            const matchGenre = (currentGenre === 'all' || article.genre === currentGenre);
+            
+            // 3. 地域
             const matchRegion = (currentRegion === 'all' || (article.tags && article.tags.includes(currentRegion)));
             
-            // 検索ワードのフィルタリング[cite: 2]
+            // 4. 検索ワード
             const lowerQuery = searchQuery.toLowerCase();
-            const matchTitle = article.title.toLowerCase().includes(lowerQuery);
-            const matchTags = article.tags && article.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
-            const matchJournalist = article.journalist && article.journalist.toLowerCase().includes(lowerQuery);
-            const matchSearch = matchTitle || matchTags || matchJournalist;
+            const matchSearch = article.title.toLowerCase().includes(lowerQuery) || 
+                               (article.tags && article.tags.some(tag => tag.toLowerCase().includes(lowerQuery))) ||
+                               (article.journalist && article.journalist.toLowerCase().includes(lowerQuery));
             
             return matchGenre && matchRegion && matchSearch;
         }).reverse();
 
+        // ページネーションと表示処理（省略せず現行通り）
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
         const pagedArticles = filtered.slice(startIndex, startIndex + itemsPerPage);
@@ -145,7 +184,6 @@
         pagedArticles.forEach(article => {
             const dateId = article.id.substring(0, 6);
             const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
-            
             const card = document.createElement('div');
             card.className = 'archive-item';
             card.innerHTML = `
@@ -166,11 +204,7 @@
                 const pageBtn = document.createElement('button');
                 pageBtn.innerText = i;
                 pageBtn.className = `filter-btn ${i === currentPage ? 'active' : ''}`;
-                pageBtn.onclick = () => {
-                    currentPage = i;
-                    renderArchive();
-                    window.scrollTo(0, 0);
-                };
+                pageBtn.onclick = () => { currentPage = i; renderArchive(); window.scrollTo(0, 0); };
                 paginationContainer.appendChild(pageBtn);
             }
         }
@@ -181,35 +215,17 @@
         return labels[genre] || 'その他';
     }
 
-    // パラメータに基づいてボタンの「active」クラスを更新する
-    function updateActiveFilterButtons() {
-        document.querySelectorAll('#genre-filters .filter-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.genre === currentGenre);
-        });
-    }
-
     document.getElementById('search-input').addEventListener('input', (e) => {
         searchQuery = e.target.value;
         currentPage = 1;
         renderArchive();
     });
 
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    document.querySelectorAll('#region-filters .filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const genre = e.target.dataset.genre;
-            const region = e.target.dataset.region;
-
-            if (genre) {
-                currentGenre = genre;
-                document.querySelectorAll('#genre-filters .filter-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-            if (region) {
-                currentRegion = region;
-                document.querySelectorAll('#region-filters .filter-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-
+            document.querySelectorAll('#region-filters .filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            currentRegion = e.target.dataset.region;
             currentPage = 1;
             renderArchive();
         });
@@ -217,6 +233,5 @@
 
     loadArchive();
 </script>
-
 </body>
 </html>
