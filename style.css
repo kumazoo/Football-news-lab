@@ -462,8 +462,6 @@ footer {
     height: auto;
     display: block;
     margin: 0 auto;
-    /* 境界線のトゲトゲを抑える */
-    outline: 1px solid transparent; 
-    /* 1ピクセルだけ内側に影を落として境界を誤魔化す */
-    box-shadow: 0 0 5px 2px #2A6A35;
+    -webkit-mask-image: radial-gradient(circle, black 96%, transparent 100%);
+    mask-image: radial-gradient(circle, black 96%, transparent 100%);
 }
