@@ -87,7 +87,7 @@ featuredList.forEach(article => {
 
     // 【追加：画像判定】
     // 記事データに image があればそれを使い、なければロゴを表示
-    const displayImage = article.image ? article.image : 'transferlab_logo.jpg';
+    const displayImage = article.image ? article.image : 'logo_image.png';
     card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7)), url('${displayImage}')`;
 
     card.innerHTML = `
