@@ -471,3 +471,43 @@ footer {
     -webkit-mask-image: radial-gradient(circle, black 96%, transparent 100%);
     mask-image: radial-gradient(circle, black 96%, transparent 100%);
 }
+
+/* --- サイドバーレイアウト用の設定 --- */
+.content-wrapper {
+    display: flex;
+    gap: 40px; /* メインとサイドバーの間の余白 */
+    align-items: flex-start;
+}
+
+.main-content {
+    flex: 1; /* 左側を広げる */
+    min-width: 0; /* width崩れ防止 */
+}
+
+.sidebar {
+    width: 300px; /* サイドバーの幅を固定 */
+}
+
+/* サイドバー内のランキングカードを縦一列に調整 */
+#top-journalists {
+    display: flex !important;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- レスポンシブ調整（スマホ・タブレット用） --- */
+@media (max-width: 950px) {
+    .content-wrapper {
+        flex-direction: column; /* 縦並びに切り替え */
+    }
+    
+    .sidebar {
+        width: 100%; /* スマホ時は横幅いっぱい */
+        margin-top: 40px;
+    }
+
+    #top-journalists {
+        display: grid !important; /* スマホ時は元のグリッド表示に戻す */
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}

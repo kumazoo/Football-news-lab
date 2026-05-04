@@ -27,32 +27,39 @@
 </nav>
 
 <main>
-    <!-- 1. 注目記事エリア -->
-    <h2 class="section-title">注目ニュース</h2>
-    <section id="featured-section" class="featured-grid"></section>
+    <div class="content-wrapper">
+        <!-- 左側：メイン記事エリア -->
+        <div class="main-content">
+            <!-- 1. 注目記事エリア -->
+            <h2 class="section-title">注目ニュース</h2>
+            <section id="featured-section" class="featured-grid"></section>
 
-    <!-- 2. 広告枠 -->
-    <div style="width: 100%; height: 90px; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 30px 0; color: #888; font-size: 12px;">ADVERTISEMENT</div>
+            <!-- 2. 広告枠 -->
+            <div style="width: 100%; height: 90px; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 30px 0; color: #888; font-size: 12px;">ADVERTISEMENT</div>
 
-    <!-- 3. トップジャーナリスト -->
-    <h2 class="section-title">トップジャーナリスト</h2>
-    <section id="top-journalists" class="journalist-mini-grid"></section>
-    <div style="text-align: center; margin: 20px 0 50px;">
-        <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのジャーナリストを見る</a>
-    </div>
+            <!-- 3. 最新の移籍記事 -->
+            <h2 class="section-title">最新の移籍ニュース</h2>
+            <section id="transfer-feed" class="news-feed"></section>
+            <div style="text-align: center; margin: 20px 0 50px;">
+                <a href="archive.html?genre=transfer" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての移籍ニュースを見る</a>
+            </div>
 
-    <!-- 4. 最新の移籍記事 -->
-    <h2 class="section-title">最新の移籍ニュース</h2>
-    <section id="transfer-feed" class="news-feed"></section>
-    <div style="text-align: center; margin: 20px 0 50px;">
-        <a href="archive.html?genre=transfer" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての移籍ニュースを見る</a>
-    </div>
+            <!-- 4. その他トピック -->
+            <h2 class="section-title">最新のトピック</h2>
+            <section id="other-feed" class="news-feed"></section>
+            <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
+                <a href="archive.html?genre=other" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのトピックを見る</a>
+            </div>
+        </div>
 
-    <!-- 5. その他トピック -->
-    <h2 class="section-title">最新のトピック</h2>
-    <section id="other-feed" class="news-feed"></section>
-    <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
-        <a href="archive.html?genre=other" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのトピックを見る</a>
+        <!-- 右側：サイドバーエリア -->
+        <aside class="sidebar">
+            <h2 class="section-title">トップジャーナリスト</h2>
+            <section id="top-journalists" class="journalist-mini-grid"></section>
+            <div style="text-align: center; margin: 20px 0 50px;">
+                <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: block; padding: 12px 0; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold; font-size: 0.8rem;">すべてのランキングを見る</a>
+            </div>
+        </aside>
     </div>
 </main>
 
