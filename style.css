@@ -492,12 +492,12 @@ footer {
 
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
-    /* 1. レイアウトの土台：flexを解除して、単純な縦並びに戻す */
+    /* 1. レイアウトを単純な「縦並び」にする (flexを使わない) */
     .content-wrapper {
         display: block;
     }
 
-    /* 2. 各箱の横幅：サイドバーもメインも、画面いっぱいに広げる */
+    /* 2. サイドバーとメインを画面いっぱいに広げる */
     .sidebar,
     .main-content {
         width: 100%;
@@ -506,24 +506,19 @@ footer {
         position: static;
     }
 
-    /* 3. 並び順：物理的に順番を変えたい場合、ここだけflexを使い最小限に指定 */
+    /* 3. ボタンの幅を固定し、左右中央に寄せる */
+    .view-all-btn {
+        display: block;
+        width: 200px;
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    /* 4. 並び順：もしサイドバーを上にしたい場合、ここだけflexを使う */
     .content-wrapper {
         display: flex;
         flex-direction: column;
     }
-    .sidebar { order: -1; } /* 確実に一番上へ */
+    .sidebar { order: -1; }
     .main-content { order: 1; }
-
-    /* 4. サイドバー内のボタン：幅を固定(200px)して中央に配置 */
-    .sidebar .view-all-btn {
-        display: block;
-        width: 200px;
-        margin: 20px auto;
-    }
-
-    /* 5. 内部の余白調整：JS側で付与される余白を上書き(ここは0にする) */
-    #top-journalists {
-        margin-bottom: 0;
-        padding: 0 10px; /* 左右に少し余裕を持たせる */
-    }
 }
