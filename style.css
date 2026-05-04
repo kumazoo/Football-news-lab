@@ -475,24 +475,19 @@ footer {
 /* --- サイドバーレイアウト用の設定 --- */
 .content-wrapper {
     display: flex;
-    gap: 40px; /* メインとサイドバーの間の余白 */
-    align-items: flex-start;
+    gap: 40px;
+    align-items: flex-start; /* 中身が少なくても引き伸ばされないように */
 }
 
 .main-content {
-    flex: 1; /* 左側を広げる */
-    min-width: 0; /* width崩れ防止 */
+    flex: 1;
+    min-width: 0;
 }
 
 .sidebar {
-    width: 300px; /* サイドバーの幅を固定 */
-}
-
-/* サイドバー内のランキングカードを縦一列に調整 */
-#top-journalists {
-    display: flex !important;
-    flex-direction: column;
-    gap: 15px;
+    width: 300px;
+    position: sticky; /* スクロールに合わせて追従させる（任意） */
+    top: 20px;
 }
 
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
