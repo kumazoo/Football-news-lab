@@ -500,31 +500,40 @@ footer {
 
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
-    /* 1. レイアウトを縦並びにする */
+    /* 1. レイアウトを縦並びにして順番を入れ替え */
     .content-wrapper {
         display: flex;
         flex-direction: column;
     }
 
-    /* 2. サイドバーの設定：幅を100%ではなく「中身に合わせる」か「固定」にする */
-    .sidebar {
-        order: -1;
-        width: auto;         /* 100%をやめて、中身のサイズ（200px）に委ねる */
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* 中身（ボタン）を中央に寄せる */
-        margin-bottom: 30px;
-    }
-
-    /* 3. メインコンテンツ（最新ニュースなど）の設定 */
+    /* 2. メインコンテンツ：幅を画面いっぱいに広げる */
     .main-content {
         width: 100%;
         margin: 0;
+        padding: 0;
     }
 
-    /* 4. ボタン自体の設定：ここでも200pxを念押し */
-    .view-all-btn {
-        width: 200px;
+    /* 3. サイドバー：幅を100%にし、追従（sticky）を強制解除 */
+    .sidebar {
+        width: 100% !important; /* コンテンツが縮むのを防ぐ */
+        position: static !important; /* 画面上にとどまるのを止める */
+        order: -1; /* 一番上に配置 */
+        margin: 0 0 30px 0;
+        padding: 0;
+    }
+
+    /* 4. サイドバー内のボタン：幅を200pxに固定して中央寄せ */
+    .sidebar .view-all-btn {
         display: block;
+        width: 200px;
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    /* 5. グリッド等の余白調整 */
+    #top-journalists {
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
     }
 }
