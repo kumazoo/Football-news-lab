@@ -490,6 +490,14 @@ footer {
     top: 20px;
 }
 
+/* PC・スマホ共通：サイドバー内のボタンの大きさを強制固定する */
+.sidebar .view-all-btn {
+    display: block;
+    width: 200px;        /* ここでサイズを数値で固定 */
+    margin: 20px auto;   /* 左右をautoにして中央に配置 */
+    text-align: center;
+}
+
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
     /* 1. レイアウトを単純な「縦並び」にする (flexを使わない) */
@@ -504,14 +512,6 @@ footer {
         margin: 0;
         padding: 0;
         position: static;
-    }
-
-    /* 3. ボタンの幅を固定し、左右中央に寄せる */
-    .view-all-btn {
-        display: block;
-        width: 200px;
-        margin: 20px auto;
-        text-align: center;
     }
 
     /* 4. 並び順：もしサイドバーを上にしたい場合、ここだけflexを使う */
