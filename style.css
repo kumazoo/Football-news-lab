@@ -492,38 +492,46 @@ footer {
 
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
+    /* 全体レイアウト：サイドバーを上に、メインを下に配置 */
     .content-wrapper {
-        display: flex; /* 順番を操作するためにflexを維持 */
-        flex-direction: column; 
+        display: flex;
+        flex-direction: column;
     }
 
-    /* 1. メインコンテンツ内の各要素に順番を指定 */
+    /* 旧サイドバー：PC用の固定と余白を完全にリセット */
+    .sidebar {
+        order: 0;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 0 !important; /* PC用の40pxをリセット */
+        padding-bottom: 0 !important;
+        position: static !important;
+    }
+
+    /* 旧メインコンテンツ：横幅を100%に戻し、順序を下に */
     .main-content {
         display: block;
         width: 100%;
         order: 1;
     }
 
-    /* 2. サイドバー（ランキング）をメインより前に持ってくる */
-    .sidebar {
-        order: 0; /* 数字が小さい方が上に配置される */
-        width: 100%;
-        margin-top: 20px;
-        margin-bottom: 0;
-        position: static !important;
-    }
-
+    /* トップジャーナリスト：JS側の余白をリセットし、グリッド表示を強制 */
     #top-journalists {
-        margin-bottom: 0 !important;
         display: grid !important;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+        margin-bottom: 0 !important; /* JSによる20px指定をリセット */
     }
 
+    /* ボタン：サイドバーの100%幅に引きずられないようサイズを固定して中央寄せ */
     .sidebar .view-all-btn {
-        width: fit-content;    /* 中の文字に合わせて幅を調整 */
-        min-width: 200px;      /* 他のボタンと最小幅を揃える */
-        margin-left: auto;     /* 左右中央に配置 */
-        margin-right: auto;
-        display: block;        /* 中央寄せを有効にするため */
+        width: fit-content !important;
+        min-width: 200px !important;
+        margin: 0 auto !important; /* 上下のマージンをリセットし、左右中央へ */
+        display: block !important;
+    }
+
+    /* 隣接セクションとの調整：直後の見出しの余白を他と揃える */
+    .main-content .section-title:first-of-type {
+        margin-top: 20px !important;
     }
 }
