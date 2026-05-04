@@ -500,25 +500,31 @@ footer {
 
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
-    /* 1. レイアウトを単純な「縦並び」にする (flexを使わない) */
-    .content-wrapper {
-        display: block;
-    }
-
-    /* 2. サイドバーとメインを画面いっぱいに広げる */
-    .sidebar,
-    .main-content {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        position: static;
-    }
-
-    /* 4. 並び順：もしサイドバーを上にしたい場合、ここだけflexを使う */
+    /* 1. レイアウトを縦並びにする */
     .content-wrapper {
         display: flex;
         flex-direction: column;
     }
-    .sidebar { order: -1; }
-    .main-content { order: 1; }
+
+    /* 2. サイドバーの設定：幅を100%ではなく「中身に合わせる」か「固定」にする */
+    .sidebar {
+        order: -1;
+        width: auto;         /* 100%をやめて、中身のサイズ（200px）に委ねる */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* 中身（ボタン）を中央に寄せる */
+        margin-bottom: 30px;
+    }
+
+    /* 3. メインコンテンツ（最新ニュースなど）の設定 */
+    .main-content {
+        width: 100%;
+        margin: 0;
+    }
+
+    /* 4. ボタン自体の設定：ここでも200pxを念押し */
+    .view-all-btn {
+        width: 200px;
+        display: block;
+    }
 }
