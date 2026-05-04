@@ -500,40 +500,33 @@ footer {
 
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
-    /* 1. レイアウトを縦並びにして順番を入れ替え */
+    /* 1. レイアウトを縦に並べる */
     .content-wrapper {
         display: flex;
         flex-direction: column;
     }
 
-    /* 2. メインコンテンツ：幅を画面いっぱいに広げる */
+    /* 2. サイドバー：画面上にとどまる（sticky）のを強制解除し、幅を100%にする[cite: 1] */
+    .sidebar {
+        order: -1;
+        width: 100% !important;
+        position: static !important; /* これで追従が止まる可能性があります */
+        margin-bottom: 30px;
+        padding: 0;
+    }
+
+    /* 3. メインコンテンツ：幅を100%に固定[cite: 1] */
     .main-content {
         width: 100%;
         margin: 0;
         padding: 0;
     }
 
-    /* 3. サイドバー：幅を100%にし、追従（sticky）を強制解除 */
-    .sidebar {
-        width: 100% !important; /* コンテンツが縮むのを防ぐ */
-        position: static !important; /* 画面上にとどまるのを止める */
-        order: -1; /* 一番上に配置 */
-        margin: 0 0 30px 0;
-        padding: 0;
-    }
-
-    /* 4. サイドバー内のボタン：幅を200pxに固定して中央寄せ */
-    .sidebar .view-all-btn {
+    /* 4. ボタン：サイドバー内であることを明示し、幅を200pxに固定[cite: 1] */
+    .sidebar a.view-all-btn {
         display: block;
         width: 200px;
         margin: 20px auto;
         text-align: center;
-    }
-
-    /* 5. グリッド等の余白調整 */
-    #top-journalists {
-        width: 100%;
-        padding: 0 10px;
-        box-sizing: border-box;
     }
 }
