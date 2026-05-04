@@ -53,7 +53,7 @@
 
         <!-- 右側：サイドバー（ランキング） -->
         <aside class="sidebar">
-            <h2 class="section-title">ランキング</h2>
+            <h2 class="section-title">トップ ジャーナリスト</h2>
             <section id="top-journalists"></section>
             <div style="text-align: center; margin: 20px 0 50px;">
                 <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: block; padding: 12px 0; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold; font-size: 0.8rem;">全ランキングを見る</a>
@@ -193,28 +193,29 @@ function renderTopJournalists(articles) {
     });
 
     // 3. 的中率順にソートしてトップ3を抽出
-    const top3 = journalistList.sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
+    const top5 = journalistList.sort((a, b) => b.accuracy - a.accuracy).slice(0, 5);
     
     // 表示処理（元のデザインを維持）
     journalistSection.innerHTML = ''; // 重複防止
-    journalistSection.style.display = "grid";
     journalistSection.style.gap = "15px";
     journalistSection.style.marginBottom = "20px";
 
-    top3.forEach((j, idx) => {
-        const medal = ['🥇', '🥈', '🥉'][idx];
-        const div = document.createElement('div');
-        div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
-        div.innerHTML = `
-            <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
-            <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
-                <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
-            </div>
-            <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
-            <div style="font-size: 0.7rem; color: #888;">(判定件数: ${j.totalCount}件)</div>
-        `;
-        journalistSection.appendChild(div);
-    });
+    top5.forEach((j, idx) => {
+    const medals = ['🥇', '🥈', '🥉', '❹', '❺'];
+    const medal = medals[idx];
+
+    const div = document.createElement('div');
+    div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
+    div.innerHTML = `
+        <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
+        <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
+            <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
+        </div>
+        <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
+        <div style="font-size: 0.7rem; color: #888;">(判定件数: ${j.totalCount}件)</div>
+    `;
+    journalistSection.appendChild(div);
+});
 }
 
 loadPage();
