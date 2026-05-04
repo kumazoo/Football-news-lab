@@ -27,38 +27,32 @@
 </nav>
 
 <main>
-    <!-- 【上段】全幅エリア：注目ニュースのみ -->
+    <!-- 1. 注目記事エリア -->
     <h2 class="section-title">注目ニュース</h2>
     <section id="featured-section" class="featured-grid"></section>
 
-    <!-- 広告枠（これも全幅） -->
+    <!-- 2. 広告枠 -->
     <div style="width: 100%; height: 90px; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 30px 0; color: #888; font-size: 12px;">ADVERTISEMENT</div>
 
-    <!-- 【下段】2カラムエリア：ここから左右に分ける -->
-    <div class="content-wrapper">
-        <!-- 左側：最新ニュース・トピック -->
-        <div class="main-content">
-            <h2 class="section-title">最新の移籍ニュース</h2>
-            <section id="transfer-feed" class="news-feed"></section>
-            <div style="text-align: center; margin: 20px 0 50px;">
-                <a href="archive.html?genre=transfer" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての移籍ニュースを見る</a>
-            </div>
+    <!-- 3. トップジャーナリスト -->
+    <h2 class="section-title">トップジャーナリスト</h2>
+    <section id="top-journalists" class="journalist-mini-grid"></section>
+    <div style="text-align: center; margin: 20px 0 50px;">
+        <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのジャーナリストを見る</a>
+    </div>
 
-            <h2 class="section-title">最新のトピック</h2>
-            <section id="other-feed" class="news-feed"></section>
-            <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
-                <a href="archive.html?genre=other" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのトピックを見る</a>
-            </div>
-        </div>
+    <!-- 4. 最新の移籍記事 -->
+    <h2 class="section-title">最新の移籍ニュース</h2>
+    <section id="transfer-feed" class="news-feed"></section>
+    <div style="text-align: center; margin: 20px 0 50px;">
+        <a href="archive.html?genre=transfer" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての移籍ニュースを見る</a>
+    </div>
 
-        <!-- 右側：サイドバー（ランキング） -->
-        <aside class="sidebar">
-            <h2 class="section-title">トップ ジャーナリスト</h2>
-            <section id="top-journalists"></section>
-            <div style="text-align: center; margin: 20px 0 50px;">
-                <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: block; padding: 12px 0; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold; font-size: 0.8rem;">すべてのジャーナリストを見る</a>
-            </div>
-        </aside>
+    <!-- 5. その他トピック -->
+    <h2 class="section-title">最新のトピック</h2>
+    <section id="other-feed" class="news-feed"></section>
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
+        <a href="archive.html?genre=other" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのトピックを見る</a>
     </div>
 </main>
 
@@ -193,29 +187,29 @@ function renderTopJournalists(articles) {
     });
 
     // 3. 的中率順にソートしてトップ3を抽出
-    const top5 = journalistList.sort((a, b) => b.accuracy - a.accuracy).slice(0, 5);
+    const top3 = journalistList.sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
     
     // 表示処理（元のデザインを維持）
     journalistSection.innerHTML = ''; // 重複防止
+    journalistSection.style.display = "grid";
+    journalistSection.style.gridTemplateColumns = "repeat(auto-fit, minmax(150px, 1fr))";
     journalistSection.style.gap = "15px";
     journalistSection.style.marginBottom = "20px";
 
-    top5.forEach((j, idx) => {
-    const medals = ['🥇', '🥈', '🥉', '❹', '❺'];
-    const medal = medals[idx];
-
-    const div = document.createElement('div');
-    div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
-    div.innerHTML = `
-        <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
-        <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
-            <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
-        </div>
-        <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
-        <div style="font-size: 0.7rem; color: #888;">(判定件数: ${j.totalCount}件)</div>
-    `;
-    journalistSection.appendChild(div);
-});
+    top3.forEach((j, idx) => {
+        const medal = ['🥇', '🥈', '🥉'][idx];
+        const div = document.createElement('div');
+        div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
+        div.innerHTML = `
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">${medal}</div>
+            <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
+                <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
+            </div>
+            <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
+            <div style="font-size: 0.7rem; color: #888;">(判定件数: ${j.totalCount}件)</div>
+        `;
+        journalistSection.appendChild(div);
+    });
 }
 
 loadPage();
