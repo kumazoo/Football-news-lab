@@ -515,10 +515,15 @@ footer {
 
     #top-journalists {
         margin-bottom: 0 !important;
-    }
-
-    #top-journalists {
         display: grid !important;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+    }
+
+    .sidebar .view-all-btn {
+        width: fit-content;    /* 中の文字に合わせて幅を調整 */
+        min-width: 200px;      /* 他のボタンと最小幅を揃える */
+        margin-left: auto;     /* 左右中央に配置 */
+        margin-right: auto;
+        display: block;        /* 中央寄せを有効にするため */
     }
 }
