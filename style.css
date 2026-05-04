@@ -499,9 +499,9 @@ footer {
 
     /* 1. メインコンテンツ内の各要素に順番を指定 */
     .main-content {
-        display: flex;
-        flex-direction: column;
-        order: 1; /* 全体の中で後回しに設定 */
+        display: block;
+        width: 100%;
+        order: 1;
     }
 
     /* 2. サイドバー（ランキング）をメインより前に持ってくる */
