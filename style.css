@@ -493,16 +493,27 @@ footer {
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
     .content-wrapper {
-        flex-direction: column; /* 縦並びに切り替え */
+        display: flex; /* 順番を操作するためにflexを維持 */
+        flex-direction: column; 
     }
-    
+
+    /* 1. メインコンテンツ内の各要素に順番を指定 */
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        order: 1; /* 全体の中で後回しに設定 */
+    }
+
+    /* 2. サイドバー（ランキング）をメインより前に持ってくる */
     .sidebar {
-        width: 100%; /* スマホ時は横幅いっぱい */
-        margin-top: 40px;
+        order: 0; /* 数字が小さい方が上に配置される */
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 40px;
     }
 
     #top-journalists {
-        display: grid !important; /* スマホ時は元のグリッド表示に戻す */
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
     }
 }
