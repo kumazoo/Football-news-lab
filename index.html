@@ -192,8 +192,8 @@ function renderTopJournalists(articles) {
         return { name: j.name, accuracy: accuracy, totalCount: j.total };
     });
 
-    // 3. 的中率順にソートしてトップ3を抽出
-    const top3 = journalistList.sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
+    // 3. 的中率順にソートしてトップ5を抽出
+    const top5 = journalistList.sort((a, b) => b.accuracy - a.accuracy).slice(0, 5);
     
     // 表示処理（元のデザインを維持）
     journalistSection.innerHTML = ''; // 重複防止
@@ -202,7 +202,8 @@ function renderTopJournalists(articles) {
     journalistSection.style.marginBottom = "20px";
 
     top3.forEach((j, idx) => {
-        const medal = ['🥇', '🥈', '🥉'][idx];
+        const medals = ['🥇', '🥈', '🥉', '❹', '❺'];
+        const medal = medals[idx];
         const div = document.createElement('div');
         div.style = "background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
         div.innerHTML = `
