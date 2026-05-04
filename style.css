@@ -492,46 +492,42 @@ footer {
 
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
-    /* 全体レイアウト：サイドバーを上に、メインを下に配置 */
     .content-wrapper {
         display: flex;
         flex-direction: column;
     }
 
-    /* 旧サイドバー：PC用の固定と余白を完全にリセット */
-    .sidebar {
-        order: 0;
-        width: 100%;
-        margin-top: 20px;
-        margin-bottom: 0 !important; /* PC用の40pxをリセット */
+    /* サイドバーの余白と固定を強制解除 */
+    aside.sidebar {
+        order: 0 !important;
+        width: 100% !important;
+        margin-bottom: 0 !important;
         padding-bottom: 0 !important;
         position: static !important;
     }
 
-    /* 旧メインコンテンツ：横幅を100%に戻し、順序を下に */
-    .main-content {
-        display: block;
-        width: 100%;
-        order: 1;
+    /* メインコンテンツの横幅を確保 */
+    main.main-content {
+        display: block !important;
+        width: 100% !important;
+        order: 1 !important;
     }
 
-    /* トップジャーナリスト：JS側の余白をリセットし、グリッド表示を強制 */
-    #top-journalists {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
-        margin-bottom: 0 !important; /* JSによる20px指定をリセット */
-    }
-
-    /* ボタン：サイドバーの100%幅に引きずられないようサイズを固定して中央寄せ */
-    .sidebar .view-all-btn {
+    /* ボタンの横幅を「中の文字」に合わせ、中央に寄せる */
+    aside.sidebar .view-all-btn {
+        display: block !important;
         width: fit-content !important;
         min-width: 200px !important;
-        margin: 0 auto !important; /* 上下のマージンをリセットし、左右中央へ */
-        display: block !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        margin-bottom: 0 !important;
     }
 
-    /* 隣接セクションとの調整：直後の見出しの余白を他と揃える */
-    .main-content .section-title:first-of-type {
-        margin-top: 20px !important;
+    /* JS側の余白を強制的にゼロにする */
+    section#top-journalists {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
     }
 }
