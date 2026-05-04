@@ -492,42 +492,38 @@ footer {
 
 /* --- レスポンシブ調整（スマホ・タブレット用） --- */
 @media (max-width: 950px) {
+    /* 1. レイアウトの土台：flexを解除して、単純な縦並びに戻す */
+    .content-wrapper {
+        display: block;
+    }
+
+    /* 2. 各箱の横幅：サイドバーもメインも、画面いっぱいに広げる */
+    .sidebar,
+    .main-content {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        position: static;
+    }
+
+    /* 3. 並び順：物理的に順番を変えたい場合、ここだけflexを使い最小限に指定 */
     .content-wrapper {
         display: flex;
         flex-direction: column;
     }
+    .sidebar { order: -1; } /* 確実に一番上へ */
+    .main-content { order: 1; }
 
-    /* サイドバーの余白と固定を強制解除 */
-    aside.sidebar {
-        order: 0 !important;
-        width: 100% !important;
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
-        position: static !important;
+    /* 4. サイドバー内のボタン：幅を固定(200px)して中央に配置 */
+    .sidebar .view-all-btn {
+        display: block;
+        width: 200px;
+        margin: 20px auto;
     }
 
-    /* メインコンテンツの横幅を確保 */
-    main.main-content {
-        display: block !important;
-        width: 100% !important;
-        order: 1 !important;
-    }
-
-    /* ボタンの横幅を「中の文字」に合わせ、中央に寄せる */
-    aside.sidebar .view-all-btn {
-        display: block !important;
-        width: fit-content !important;
-        min-width: 200px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        margin-bottom: 0 !important;
-    }
-
-    /* JS側の余白を強制的にゼロにする */
-    section#top-journalists {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
+    /* 5. 内部の余白調整：JS側で付与される余白を上書き(ここは0にする) */
+    #top-journalists {
+        margin-bottom: 0;
+        padding: 0 10px; /* 左右に少し余裕を持たせる */
     }
 }
