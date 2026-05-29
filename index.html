@@ -191,7 +191,7 @@ function renderTopJournalists(articles) {
         if (b.accuracy !== a.accuracy) {
             return b.accuracy - a.accuracy;
         }
-        return b.total - a.total; // 的中率が同じなら総記事数が多い方を上に
+        return b.totalCount - a.totalCount; // 的中率が同じなら総記事数が多い方を上に
     }).slice(0, 3);
     
     // 表示処理（元のデザインを維持）
