@@ -149,6 +149,10 @@
                     articleData.tags.forEach(tag => {
                         const span = document.createElement('span');
                         span.className = 'tag'; 
+                        span.style.cursor = 'pointer';
+                        span.onclick = () => {
+                            window.location.href = `../archive.html?tag=${tag}`;
+                        };
                         span.innerText = tag;
                         tagsContainer.appendChild(span);
                     });
