@@ -100,12 +100,29 @@
     async function loadArchive() {
         try {
             const response = await fetch('articles/list.json');
-            allArticles = await response.json();
+            const fetchedArticles = await response.json();
+            
+            // 1. URLから「?tag=xxx」のパラメータを取得する
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedTag = urlParams.get('tag');
+
+            // 2. タグが指定されている場合は絞り込み、ない場合は全件を入れる
+            if (selectedTag) {
+                allArticles = fetchedArticles.filter(article => 
+                    article.tags && article.tags.map(t => t.toLowerCase()).includes(selectedTag.toLowerCase())
+                );
+                
+                // ページ上部のタイトルを「# ENGLAND」などに書き換える
+                document.getElementById('archive-title').innerText = `# ${selectedTag.toUpperCase()}`;
+            } else {
+                allArticles = fetchedArticles;
+            }
+
             setupGenreUI();
             if (searchQuery) document.getElementById('search-input').value = searchQuery;
             renderArchive();
         } catch (e) {
-            console.error("Failed to load articles.");
+            console.error("Failed to load articles.", e);
         }
     }
 
