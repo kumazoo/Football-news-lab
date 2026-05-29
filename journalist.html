@@ -62,20 +62,46 @@
             const articles = await response.json();
             
             const journalistMap = {};
+            
+            // 1. list.json内のデータから直接記事数と的中数を集計する
             articles.forEach(article => {
                 if (article.journalist) {
-                    journalistMap[article.journalist] = {
-                        name: article.journalist,
-                        accuracy: article.accuracy,
-                        count: article.count
-                    };
+                    const name = article.journalist.trim();
+                    if (!journalistMap[name]) {
+                        journalistMap[name] = {
+                            name: name,
+                            totalCount: 0,
+                            correctCount: 0
+                        };
+                    }
+                    journalistMap[name].totalCount++;
+                    if (article.status === 'correct') {
+                        journalistMap[name].correctCount++;
+                    }
                 }
             });
 
-            allJournalists = Object.values(journalistMap).sort((a, b) => b.accuracy - a.accuracy);
+            // 2. 的中率を計算して配列化
+            allJournalists = Object.values(journalistMap).map(j => {
+                const accuracy = j.totalCount > 0 ? Math.round((j.correctCount / j.totalCount) * 100) : 0;
+                return {
+                    name: j.name,
+                    accuracy: accuracy,
+                    totalCount: j.totalCount
+                };
+            });
+
+            // 3. ソート適用：的中率が同じなら総記事数（totalCount）が多い順
+            allJournalists.sort((a, b) => {
+                if (b.accuracy !== a.accuracy) {
+                    return b.accuracy - a.accuracy;
+                }
+                return b.totalCount - a.totalCount;
+            });
+
             renderJournalists();
         } catch (e) {
-            console.error("Failed to load journalists.");
+            console.error("Failed to load journalists.", e);
         }
     }
 
