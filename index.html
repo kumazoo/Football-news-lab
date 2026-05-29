@@ -187,7 +187,12 @@ function renderTopJournalists(articles) {
     });
 
     // 3. 的中率順にソートしてトップ3を抽出
-    const top3 = journalistList.sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
+    const top3 = journalistList.sort((a, b) => {
+        if (b.accuracy !== a.accuracy) {
+            return b.accuracy - a.accuracy;
+        }
+        return b.total - a.total; // 的中率が同じなら総記事数が多い方を上に
+    }).slice(0, 3);
     
     // 表示処理（元のデザインを維持）
     journalistSection.innerHTML = ''; // 重複防止
