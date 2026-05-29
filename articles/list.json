@@ -1,17 +1,6 @@
 [
   {
-    "id": "260428_transfer01",
-    "iframely_id": "UzVCqlcc",
-    "genre": "transfer",
-    "title": "ゴードンのバイエルン移籍話が破談に？",
-    "tags": ["gordon", "newcastle", "england"],
-    "journalist": null,
-    "status": "pending",
-    "source_url": "https://www.goal.com/jp/%E3%83%AA%E3%82%B9%E3%83%88/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%8B%E3%83%BC-%E3%82%B3%E3%82%99%E3%83%BC%E3%83%88%E3%82%99%E3%83%B3%E3%81%AE%E3%83%8F%E3%82%99%E3%82%A4%E3%82%A8%E3%83%AB%E3%83%B3-%E3%83%9F%E3%83%A5%E3%83%B3%E3%83%98%E3%83%B3%E7%A7%BB%E7%B1%8D%E8%A9%B1%E3%81%8B%E3%82%99%E7%A0%B4%E8%AB%87%E3%81%8B-%E3%83%95%E3%82%99%E3%83%B3%E3%83%86%E3%82%99%E3%82%B9%E3%83%AA%E3%83%BC%E3%82%AB%E3%82%99%E7%8E%8B%E8%80%85-%E6%96%B0%E3%81%9F%E3%81%AA%E3%83%88%E3%83%83%E3%83%95%E3%82%9A%E7%A7%BB%E7%B1%8D%E5%80%99%E8%A3%9C%E3%81%AB%E7%85%A7%E6%BA%96/blt7e861c5787b17eab",
-    "featured": true
-  },
-  {
-    "id": "260123_transfer01",
+    "id": "260124_transfer01",
     "iframely_id": "4NMglghH",
     "genre": "transfer",
     "title": "ヌワネリ、マルセイユへのローン移籍が決定",
@@ -19,6 +8,17 @@
     "journalist": "Sam Blitz",
     "status": "correct",
     "source_url": "https://www.skysports.com/football/news/11095/13498066/ethan-nwaneri-marseille-complete-loan-signing-of-arsenal-teenager-until-end-of-the-season",
+    "featured": true
+  },
+  {
+    "id": "260128_transfer01",
+    "iframely_id": "c7j2EwvU",
+    "genre": "transfer",
+    "title": "タミー・アブラハムがアストン・ヴィラ移籍で久しぶりのプレミアリーグ復帰",
+    "tags": ["england", "arsenal", "nwaneri", "marseille", "france"],
+    "journalist": "null",
+    "status": "correct",
+    "source_url": "https://www.skysports.com/football/news/11095/13492801/tammy-abraham-transfer-news-striker-joins-aston-villa-in-lb18-2m-deal",
     "featured": true
   }
 ]
