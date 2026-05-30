@@ -20,35 +20,44 @@
 
 <nav>
     <a href="../journalist.html" class="nav-btn">ジャーナリスト</a>
-    <a href="../archive.html?genre=rumor" class="nav-btn">噂ニュース</a>
-    <a href="../archive.html?genre=confirmed" class="nav-btn">確定ニュース</a>
+    <a href="../archive.html?genre=transfer" class="nav-btn">移籍ニュース</a>
+    <a href="../archive.html?genre=other" class="nav-btn">トピック</a>
 </nav>
 
 <main>
     <article class="article-card">
-        <span id="article-genre-badge" class="tag">---</span>
+        <!-- 1. 記事ジャンル（transfer / match / injury / team / player / etc） -->
+        <span class="tag tag-transfer">移籍</span>
         
+        <!-- 2. 記事タイトル -->
         <h2 id="article-title" style="margin-bottom: 10px;">ヌワネリ、マルセイユへのローン移籍が決定</h2>
 
+        <!-- 3. 投稿日 -->
         <div class="post-date" style="font-size: 0.85rem; color: #888; margin-bottom: 10px; font-family: monospace;">
             POSTED: <span id="article-date">2026.01.23</span>
         </div>
 
+        <!-- 4. 詳細タグ -->
         <div id="tags-container" style="margin-bottom: 10px;"></div>
 
+        <!-- 5. ジャーナリスト情報（自動計算結果を表示） -->
         <div id="journalist-info-area"></div>
 
         <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
+        <!-- 6. 導入文 -->
         <div class="original-intro">
             <p>アーセナルのヤングスター、イーサン・ヌワネリは出場機会と成長を求めてフランスへ。シーズン終了までのローン移籍で合意に達したようだ。</p>
         </div>
 
+        <!-- 引用カードと注目ポイントのセット枠 -->
         <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
+            <!-- 7. 引用記事カード（Iframelyのaタグをここに貼り付け） -->
             <div class="iframely-container" style="margin-bottom: 20px;">
                 <div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 56.25%; padding-top: 120px;"><a href="https://www.skysports.com/football/news/11095/13498066/ethan-nwaneri-marseille-complete-loan-signing-of-arsenal-teenager-until-end-of-the-season" data-iframely-url="https://iframely.net/4NMglghH?theme=light"></a></div></div><script async src="https://iframely.net/embed.js"></script>
             </div>
 
+            <!-- 8. 注目ポイント -->
             <div class="summary" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
                 <strong style="display: block; margin-bottom: 10px;">■ 注目ポイント（ソース：Sky Sports）</strong>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -59,6 +68,7 @@
             </div>
         </div>
 
+        <!-- 9. 選手・用語解説 -->
         <div class="supplementary-info">
             <h3>📊 Player Profile / イーサン・ヌワネリ</h3>
             <div class="supplementary-content">
@@ -67,6 +77,7 @@
             </div>
         </div>
 
+        <!-- SNSシェアボタン -->
         <div class="share-section" style="text-align: center; margin: 40px 0; padding: 20px; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee;">
             <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-weight: bold; letter-spacing: 0.05em;">SHARE THIS POST</p>
             <div style="display: flex; justify-content: center; gap: 20px;">
@@ -75,12 +86,13 @@
             </div>
         </div>
 
+        <!-- 10. 関連記事 -->
         <div class="supplementary-info" style="border-top: none; margin-top: 15px;">
             <h3>🔗 関連記事</h3>
             <div class="supplementary-content" style="background-color: transparent; padding: 0;">
                 <ul id="related-list" style="margin: 0; padding-left: 20px;"></ul>
                 <div style="margin-top: 10px;">
-                    <a id="back-to-archive-btn" href="../archive.html?genre=confirmed" style="font-size: 13px;">確定ニュース一覧に戻る</a>
+                    <a href="../archive.html?genre=transfer" style="font-size: 13px;">移籍ニュース一覧に戻る</a>
                 </div>
             </div>
         </div>
@@ -89,10 +101,10 @@
 
 <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 40px;">
     <div style="margin-bottom: 10px;">
-        <a href="../about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
-        <a href="../contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
-        <a href="../privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
-    </div>
+    <a href="../about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
+    <a href="../contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
+    <a href="../privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
+</div>
     <p style="font-size: 0.75rem; color: #888;">&copy; 2026 Football Transfer Lab</p>
 </footer>
 
@@ -101,60 +113,31 @@
     const currentArticleTags = ["england", "france", "arsenal", "marseille", "nwaneri"]; // 関連記事の抽出に使用
     const currentArticleId = "260124_transfer01"; // list.jsonのIDと完全一致させる
 
-    // ジャーナリスト統計の自動計算関数（配列対応＆役割分離版）
+    // ジャーナリスト統計の自動計算関数
     function calculateJournalistStats(allArticles) {
         const stats = {};
         allArticles.forEach(article => {
-            const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
-            
-            journalists.forEach(rawName => {
-                const name = rawName.trim();
-                if (!name) return;
-                
-                if (!stats[name]) { 
-                    stats[name] = { name: name, confirmedCount: 0, rumorCorrect: 0, rumorTotal: 0 }; 
-                }
-                
-                if (article.genre === 'confirmed') {
-                    stats[name].confirmedCount++;
-                } else if (article.genre === 'rumor' || article.genre === 'transfer' || !article.genre) {
-                    if (article.status === 'correct' || article.status === 'incorrect') {
-                        stats[name].rumorTotal++;
-                        if (article.status === 'correct') { stats[name].rumorCorrect++; }
-                    }
-                }
-            });
+            const name = article.journalist;
+            if (!name) return;
+            if (!stats[name]) { stats[name] = { name: name, correct: 0, total: 0 }; }
+            // statusがcorrectまたはincorrectの時のみ集計対象
+            if (article.status === 'correct' || article.status === 'incorrect') {
+                stats[name].total++;
+                if (article.status === 'correct') { stats[name].correct++; }
+            }
         });
         return stats;
     }
 
     async function loadArticleContent() {
         try {
-            // キャッシュ対策としてタイムスタンプを付与して読み込み
+            // キャッシュ対策としてタイムスタンプを付与して読み込み[cite: 5]
             const response = await fetch('../articles/list.json?v=' + new Date().getTime());
             if (!response.ok) return;
             const allArticles = await response.json();
             const articleData = allArticles.find(a => a.id === currentArticleId);
 
             if (articleData) {
-                // 0. ジャンルバッジと戻るボタンの切り替え判定（過去のtransferはrumor扱い）
-                let articleGenre = articleData.genre;
-                if (articleGenre === 'transfer' || !articleGenre) articleGenre = 'rumor';
-
-                const badgeElement = document.getElementById('article-genre-badge');
-                const backBtnElement = document.getElementById('back-to-archive-btn');
-                
-                badgeElement.className = `tag tag-${articleGenre}`;
-                if (articleGenre === 'confirmed') {
-                    badgeElement.innerText = '確定';
-                    backBtnElement.href = '../archive.html?genre=confirmed';
-                    backBtnElement.innerText = '確定ニュース一覧に戻る';
-                } else {
-                    badgeElement.innerText = '噂';
-                    backBtnElement.href = '../archive.html?genre=rumor';
-                    backBtnElement.innerText = '噂ニュース一覧に戻る';
-                }
-
                 // 1. タイトル、日付、タグの反映
                 document.getElementById('article-title').innerText = articleData.title;
                 const dateId = articleData.id.substring(0, 6);
@@ -175,55 +158,40 @@
                     });
                 }
 
-                // 2. ジャーナリスト的中率とバッジの反映（連名・複数記者対応）
+                // 2. ジャーナリスト的中率とバッジの反映[cite: 5]
                 const allStats = calculateJournalistStats(allArticles);
                 const infoArea = document.getElementById('journalist-info-area');
-                infoArea.innerHTML = ''; // 初期化
-
-                const currentJournalists = Array.isArray(articleData.journalist) ? articleData.journalist : (articleData.journalist ? [articleData.journalist] : []);
                 
-                if (currentJournalists.length > 0) {
-                    let htmlContent = '';
+                if (articleData.journalist && allStats[articleData.journalist]) {
+                    const s = allStats[articleData.journalist];
+                    const accuracy = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
                     
-                    currentJournalists.forEach(rawName => {
-                        const name = rawName.trim();
-                        if (!name || !allStats[name]) return;
-                        
-                        const s = allStats[name];
-                        const accuracy = s.rumorTotal > 0 ? Math.round((s.rumorCorrect / s.rumorTotal) * 100) : 0;
-                        
-                        let statusBadge = '';
-                        // 噂（rumor）記事の時だけ、個別カードの横に「的中/はずれ」を出す
-                        if (articleGenre === 'rumor') {
-                            if (articleData.status === 'correct') {
-                                statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle; font-weight:bold;">的中</span>';
-                            } else if (articleData.status === 'incorrect') {
-                                statusBadge = '<span style="background:#666; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle; font-weight:bold;">はずれ</span>';
-                            }
-                        }
+                    let statusBadge = '';
+                    if (articleData.status === 'correct') {
+                        statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle; font-weight:bold;">的中</span>';
+                    } else if (articleData.status === 'incorrect') {
+                        statusBadge = '<span style="background:#666; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle; font-weight:bold;">はずれ</span>';
+                    }
 
-                        htmlContent += `
-                            <div class="journalist-info" style="margin: 5px 0 10px 0; padding: 5px 0; border-bottom: 1px dotted #f0f0f0;">
-                                <span class="journalist-label" style="font-size: 0.8rem; color:#666; font-weight:bold;">JOURNALIST:</span>
-                                <span class="journalist-name" style="font-weight:bold; color:#2A6A35; margin-left:5px;">${name}</span>
-                                ${statusBadge}
-                                <span class="journalist-stats" style="font-size:0.75rem; color:#888; margin-left:10px;">
-                                    (確定: ${s.confirmedCount}件 / 噂的中率: <span class="accuracy-value" style="color:#e91e63; font-weight:bold;">${accuracy}%</span> [判定:${s.rumorTotal}件])
-                                </span>
-                            </div>
-                        `;
-                    });
-                    
-                    infoArea.innerHTML = htmlContent;
+                    infoArea.innerHTML = `
+                        <div class="journalist-info" style="margin: 5px 0 15px 0;">
+                            <span class="journalist-label">JOURNALIST:</span>
+                            <span class="journalist-name">${articleData.journalist}</span>
+                            ${statusBadge}
+                            <span class="journalist-stats">
+                                (的中率: <span class="accuracy-value">${accuracy}%</span> / 総件数: <span class="count-value">${s.total}</span>件)
+                            </span>
+                        </div>
+                    `;
                 }
 
-                // 3. SNSシェアリンク
+                // 3. SNSシェアリンク[cite: 5, 8]
                 const pageUrl = encodeURIComponent(window.location.href);
                 const shareText = encodeURIComponent(`${articleData.title} | Football Transfer Lab`);
                 document.getElementById('share-x-btn').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}&hashtags=トララボ,サッカー移籍`;
                 document.getElementById('share-fb-btn').href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
 
-                // 4. 関連記事の抽出
+                // 4. 関連記事の抽出[cite: 5, 8]
                 const listElement = document.getElementById('related-list');
                 const related = allArticles.filter(a => a.id !== currentArticleId && a.tags && a.tags.some(t => currentArticleTags.includes(t)));
                 related.slice(-3).reverse().forEach(a => {
