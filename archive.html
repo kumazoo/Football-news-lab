@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Transfer Lab | トララボ</title>
+    <title>ニュース一覧 | Football Transfer Lab</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="main-header">
     <p class="site-description">サッカー移籍情報特化サイト</p>
-
     <h1>
         <a href="index.html">
             <img src="transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
@@ -18,7 +17,7 @@
     </h1>
 </header>
 
-<nav style="text-align: center; margin-top: 15px;">
+<nav id="main-nav">
     <a href="journalist.html" class="nav-btn">ジャーナリスト</a>
     <a href="archive.html?genre=rumor" class="nav-btn">噂ニュース</a>
     <a href="archive.html?genre=confirmed" class="nav-btn">確定ニュース</a>
@@ -76,15 +75,24 @@
 
     if (paramGenre === 'rumor' || paramGenre === 'transfer') {
         mode = 'rumor';
-        const navRumor = document.getElementById('nav-rumor');
-        if (navRumor) navRumor.classList.add('active');
     } else if (paramGenre === 'confirmed') {
         mode = 'confirmed';
-        const navConfirmed = document.getElementById('nav-confirmed');
-        if (navConfirmed) navConfirmed.classList.add('active');
     }
 
     if (paramJournalist) searchQuery = paramJournalist;
+
+    // 💡 HTMLにIDがなくても、hrefの文字を直接見て自動でナビゲーションを光らせる処理
+    function highlightNavigation() {
+        const navButtons = document.querySelectorAll('#main-nav .nav-btn');
+        navButtons.forEach(btn => {
+            const href = btn.getAttribute('href');
+            if (mode === 'rumor' && (href.includes('genre=rumor') || href.includes('genre=transfer'))) {
+                btn.classList.add('active');
+            } else if (mode === 'confirmed' && href.includes('genre=confirmed')) {
+                btn.classList.add('active');
+            }
+        });
+    }
 
     async function loadArchive() {
         try {
@@ -112,6 +120,8 @@
             }
 
             if (searchQuery) document.getElementById('search-input').value = searchQuery;
+            
+            highlightNavigation(); // ナビ点灯処理を実行
             renderArchive();
         } catch (e) {
             console.error("Failed to load articles.", e);
