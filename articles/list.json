@@ -1,5 +1,27 @@
 [
   {
+    "id": "250830_transfer01",
+    "iframely_id": "TijW0Fgu",
+    "genre": "transfer",
+    "title": "フォレストがヨーロッパリーグに向けニコロ・サヴォーナを補強",
+    "tags": ["england", "italia", "nottinghamforest", "juventus", "savona"],
+    "journalist": "Matt Davis",
+    "status": "correct",
+    "source_url": "https://www.bbc.com/sport/football/articles/cpv0gx7ln1xo",
+    "featured": false
+  },
+  {
+    "id": "250830_transfer02",
+    "iframely_id": "Asdkvbwp",
+    "genre": "transfer",
+    "title": "ニューカッスルがクラブ史上最高額でドイツの新星ヴォルテマーデを獲得",
+    "tags": ["england", "germany", "newcastle", "stuttgart", "woltemade"],
+    "journalist": "Ciaran Kelly",
+    "status": "correct",
+    "source_url": "https://www.bbc.com/sport/football/articles/c9vdzl3gek3o",
+    "featured": false
+  },
+  {
     "id": "260109_transfer01",
     "iframely_id": "JT0Bkmh5",
     "genre": "transfer",
