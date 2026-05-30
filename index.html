@@ -9,10 +9,8 @@
 <body>
 
 <header class="main-header">
-    <!-- サイト説明文 -->
     <p class="site-description">サッカー移籍情報特化サイト</p>
 
-    <!-- ロゴ画像 -->
     <h1>
         <a href="index.html">
             <img src="transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
@@ -22,50 +20,44 @@
 
 <nav style="text-align: center; margin-top: 15px;">
     <a href="journalist.html" class="nav-btn">ジャーナリスト</a>
-    <a href="archive.html?genre=transfer" class="nav-btn">移籍ニュース</a>
-    <a href="archive.html?genre=other" class="nav-btn">トピック</a>
+    <a href="archive.html?genre=rumor" class="nav-btn">噂ニュース</a>
+    <a href="archive.html?genre=confirmed" class="nav-btn">確定ニュース</a>
 </nav>
 
 <main>
-    <!-- 1. 注目記事エリア -->
     <h2 class="section-title">注目ニュース</h2>
     <section id="featured-section" class="featured-grid"></section>
 
-    <!-- 2. 広告枠 -->
     <div style="width: 100%; height: 90px; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 30px 0; color: #888; font-size: 12px;">ADVERTISEMENT</div>
 
-    <!-- 3. トップジャーナリスト -->
     <h2 class="section-title">トップジャーナリスト</h2>
     <section id="top-journalists" class="journalist-mini-grid"></section>
     <div style="text-align: center; margin: 20px 0 50px;">
         <a href="journalist.html" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのジャーナリストを見る</a>
     </div>
 
-    <!-- 4. 最新の移籍記事 -->
-    <h2 class="section-title">最新の移籍ニュース</h2>
-    <section id="transfer-feed" class="news-feed"></section>
+    <h2 class="section-title">最新の噂ニュース</h2>
+    <section id="rumor-feed" class="news-feed"></section>
     <div style="text-align: center; margin: 20px 0 50px;">
-        <a href="archive.html?genre=transfer" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての移籍ニュースを見る</a>
+        <a href="archive.html?genre=rumor" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての噂ニュースを見る</a>
     </div>
 
-    <!-- 5. その他トピック -->
-    <h2 class="section-title">最新のトピック</h2>
-    <section id="other-feed" class="news-feed"></section>
+    <h2 class="section-title">最新の確定ニュース</h2>
+    <section id="confirmed-feed" class="news-feed"></section>
     <div style="text-align: center; margin-top: 20px; margin-bottom: 0px;">
-        <a href="archive.html?genre=other" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべてのトピックを見る</a>
+        <a href="archive.html?genre=confirmed" class="filter-btn" style="text-decoration: none; display: inline-block; padding: 12px 40px; background-color: #333; color: #fff; border-radius: 25px; font-weight: bold;">すべての確定ニュースを見る</a>
     </div>
 </main>
 
 <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 40px;">
     <div style="margin-bottom: 10px;">
-    <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
-    <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
-    <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
-</div>
+        <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
+        <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
+        <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
+    </div>
     <p style="font-size: 0.75rem; color: #888;">&copy; 2026 Football Transfer Lab</p>
 </footer>
 
-<!-- Iframelyの読み込みスクリプト -->
 <script async src="https://iframely.net/embed.js"></script>
 
 <script>
@@ -110,13 +102,13 @@ async function loadPage() {
         // --- 2. トップジャーナリストの表示 ---
         renderTopJournalists(articles);
 
-        // --- 3. 最新の移籍記事 (genre: transfer) の表示 ---
-        const transferList = latestArticles.filter(a => a.genre === 'transfer').slice(0, 5);
-        renderNewsFeed(transferList, 'transfer-feed');
+        // --- 3. 最新の噂ニュース (genre: rumor) の表示 (従来のtransferも移行措置として拾う) ---
+        const rumorList = latestArticles.filter(a => a.genre === 'rumor' || a.genre === 'transfer').slice(0, 5);
+        renderNewsFeed(rumorList, 'rumor-feed');
 
-        // --- 4. その他トピック (genre: transfer 以外) の表示 ---
-        const otherList = latestArticles.filter(a => a.genre !== 'transfer').slice(0, 5);
-        renderNewsFeed(otherList, 'other-feed');
+        // --- 4. 最新の確定ニュース (genre: confirmed) の表示 ---
+        const confirmedList = latestArticles.filter(a => a.genre === 'confirmed').slice(0, 5);
+        renderNewsFeed(confirmedList, 'confirmed-feed');
 
         // Iframelyの再読み込み
         if (window.iframely) {
@@ -133,6 +125,7 @@ async function loadPage() {
 // ニュースフィード生成用共通関数
 function renderNewsFeed(list, targetId) {
     const container = document.getElementById(targetId);
+    container.innerHTML = ''; // 重複防止で初期化を追加
     if (list.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">現在、新しい記事はありません。</p>';
         return;
@@ -162,46 +155,50 @@ function renderTopJournalists(articles) {
     const journalistSection = document.getElementById('top-journalists');
     const statsMap = {};
 
-    // 1. 全記事をスキャンしてジャーナリストごとに的中・不的中をカウント
+    // 1. 全記事をスキャンしてジャーナリストごとに「確定数」「噂数」「噂的中」をカウント
     articles.forEach(a => {
-        // データが配列ならそのまま使い、文字列なら1マスの配列に包み、null等なら空配列にする
         const journalists = Array.isArray(a.journalist) ? a.journalist : (a.journalist ? [a.journalist] : []);
         
-        // 記事に含まれる記者全員分、ループを回して1人ずつ集計
         journalists.forEach(rawName => {
             const name = rawName.trim();
             if (!name) return;
 
             if (!statsMap[name]) {
-                statsMap[name] = { name: name, correct: 0, total: 0 };
+                statsMap[name] = { name: name, confirmedCount: 0, rumorCorrect: 0, rumorTotal: 0 };
             }
 
-            // statusが correct または incorrect の場合のみ計算対象（分母）に含める
-            if (a.status === 'correct' || a.status === 'incorrect') {
-                statsMap[name].total++;
-                if (a.status === 'correct') {
-                    statsMap[name].correct++;
+            // 確定ニュース（confirmed）のカウント
+            if (a.genre === 'confirmed') {
+                statsMap[name].confirmedCount++;
+            } 
+            // 噂ニュース（rumor または 従来のtransfer）のカウント
+            else if (a.genre === 'rumor' || a.genre === 'transfer' || !a.genre) {
+                if (a.status === 'correct' || a.status === 'incorrect') {
+                    statsMap[name].rumorTotal++;
+                    if (a.status === 'correct') {
+                        statsMap[name].rumorCorrect++;
+                    }
                 }
             }
         });
     });
 
-    // 2. 的中率を算出して配列化
+    // 2. 噂の的中率を算出して配列化
     const journalistList = Object.values(statsMap).map(j => {
-        const accuracy = j.total > 0 ? Math.round((j.correct / j.total) * 100) : 0;
-        return { name: j.name, accuracy: accuracy, totalCount: j.total };
+        const accuracy = j.rumorTotal > 0 ? Math.round((j.rumorCorrect / j.rumorTotal) * 100) : 0;
+        return { name: j.name, accuracy: accuracy, rumorTotal: j.rumorTotal, confirmedCount: j.confirmedCount };
     });
 
-    // 3. 的中率順にソートしてトップ3を抽出
+    // 3. 噂の的中率順にソートしてトップ3を抽出（同じなら噂の判定件数が多い順）
     const top3 = journalistList.sort((a, b) => {
         if (b.accuracy !== a.accuracy) {
             return b.accuracy - a.accuracy;
         }
-        return b.totalCount - a.totalCount; // 的中率が同じなら総記事数が多い方を上に
+        return b.rumorTotal - a.rumorTotal;
     }).slice(0, 3);
     
     // 表示処理（元のデザインを維持）
-    journalistSection.innerHTML = ''; // 重複防止
+    journalistSection.innerHTML = ''; 
     journalistSection.style.display = "grid";
     journalistSection.style.gridTemplateColumns = "repeat(auto-fit, minmax(150px, 1fr))";
     journalistSection.style.gap = "15px";
@@ -216,8 +213,8 @@ function renderTopJournalists(articles) {
             <div style="font-weight: bold; font-size: 1rem; margin-bottom: 8px;">
                 <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
             </div>
-            <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold;">的中率: ${j.accuracy}%</div>
-            <div style="font-size: 0.7rem; color: #888;">(判定件数: ${j.totalCount}件)</div>
+            <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold; margin-bottom: 4px;">噂的中率: ${j.accuracy}%</div>
+            <div style="font-size: 0.7rem; color: #888;">(確定: ${j.confirmedCount}件 / 噂判定: ${j.rumorTotal}件)</div>
         `;
         journalistSection.appendChild(div);
     });

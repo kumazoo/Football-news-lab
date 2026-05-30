@@ -9,10 +9,8 @@
 <body>
 
 <header class="main-header">
-    <!-- サイト説明文 -->
     <p class="site-description">サッカー移籍情報特化サイト</p>
 
-    <!-- ロゴ画像 -->
     <h1>
         <a href="index.html">
             <img src="transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
@@ -21,10 +19,9 @@
 </header>
 
 <nav id="main-nav">
-    <!-- JSまたは手動で上記ナビゲーションを記載 -->
     <a href="journalist.html" class="nav-btn">ジャーナリスト</a>
-    <a href="archive.html?genre=transfer" id="nav-transfer" class="nav-btn">移籍ニュース</a>
-    <a href="archive.html?genre=other" id="nav-topics" class="nav-btn">トピック</a>
+    <a href="archive.html?genre=rumor" id="nav-rumor" class="nav-btn">噂ニュース</a>
+    <a href="archive.html?genre=confirmed" id="nav-confirmed" class="nav-btn">確定ニュース</a>
 </nav>
 
 <main>
@@ -35,12 +32,6 @@
             
             <div class="search-box" style="margin-bottom: 20px;">
                 <input type="text" id="search-input" placeholder="記事タイトル、タグ、ジャーナリスト名で検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
-            </div>
-
-            <!-- ジャンル選択（移籍時は非表示） -->
-            <div id="genre-filter-group" class="filter-group" style="margin-bottom: 15px; display: none;">
-                <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #666;">GENRE:</p>
-                <div id="genre-filters" class="filter-buttons"></div>
             </div>
 
             <div class="filter-group">
@@ -65,17 +56,16 @@
 
 <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 40px;">
     <div style="margin-bottom: 10px;">
-    <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
-    <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
-    <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
-</div>
+        <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
+        <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
+        <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
+    </div>
     <p style="font-size: 0.75rem; color: #888;">&copy; 2026 Football Transfer Lab</p>
 </footer>
 
 <script>
     let allArticles = [];
     let mode = 'all'; 
-    let currentGenre = 'all';
     let currentRegion = 'all';
     let searchQuery = ''; 
     let currentPage = 1;
@@ -85,14 +75,13 @@
     const paramGenre = urlParams.get('genre');
     const paramJournalist = urlParams.get('journalist');
 
-    if (paramGenre === 'transfer') {
-        mode = 'transfer';
-        currentGenre = 'transfer';
-        document.getElementById('nav-transfer').classList.add('active');
-    } else if (paramGenre === 'other') {
-        mode = 'topics';
-        currentGenre = 'all';
-        document.getElementById('nav-topics').classList.add('active');
+    // 移行判定：旧transfer、新rumorを「噂モード」とする
+    if (paramGenre === 'rumor' || paramGenre === 'transfer') {
+        mode = 'rumor';
+        document.getElementById('nav-rumor').classList.add('active');
+    } else if (paramGenre === 'confirmed') {
+        mode = 'confirmed';
+        document.getElementById('nav-confirmed').classList.add('active');
     }
 
     if (paramJournalist) searchQuery = paramJournalist;
@@ -111,49 +100,21 @@
                 allArticles = fetchedArticles.filter(article => 
                     article.tags && article.tags.map(t => t.toLowerCase()).includes(selectedTag.toLowerCase())
                 );
-                
-                // ページ上部のタイトルを「# ENGLAND」などに書き換える
                 document.getElementById('archive-title').innerText = `# ${selectedTag.toUpperCase()}`;
             } else {
                 allArticles = fetchedArticles;
+                // 通常時のタイトル設定
+                if (mode === 'rumor') {
+                    document.getElementById('archive-title').innerText = '噂ニュース';
+                } else if (mode === 'confirmed') {
+                    document.getElementById('archive-title').innerText = '確定ニュース';
+                }
             }
 
-            setupGenreUI();
             if (searchQuery) document.getElementById('search-input').value = searchQuery;
             renderArchive();
         } catch (e) {
             console.error("Failed to load articles.", e);
-        }
-    }
-
-    function setupGenreUI() {
-        const title = document.getElementById('archive-title');
-        const filterGroup = document.getElementById('genre-filter-group');
-        const filterButtons = document.getElementById('genre-filters');
-
-        if (mode === 'transfer') {
-            title.innerText = '移籍ニュース';
-            filterGroup.style.display = 'none'; // 移籍時はジャンル選択を隠す
-        } else if (mode === 'topics') {
-            title.innerText = 'その他トピック';
-            filterGroup.style.display = 'block'; // トピック時は表示
-            filterButtons.innerHTML = `
-                <button class="filter-btn active" data-genre="all">すべて</button>
-                <button class="filter-btn" data-genre="match">試合</button>
-                <button class="filter-btn" data-genre="injury">負傷</button>
-                <button class="filter-btn" data-genre="team">チーム</button>
-                <button class="filter-btn" data-genre="player">選手</button>
-                <button class="filter-btn" data-genre="etc">その他</button>
-            `;
-            filterButtons.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.onclick = (e) => {
-                    filterButtons.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    currentGenre = e.target.dataset.genre;
-                    currentPage = 1;
-                    renderArchive();
-                };
-            });
         }
     }
 
@@ -164,9 +125,14 @@
         paginationContainer.innerHTML = '';
 
         const filtered = allArticles.filter(article => {
-            if (mode === 'transfer' && article.genre !== 'transfer') return false;
-            if (mode === 'topics' && article.genre === 'transfer') return false;
-            const matchGenre = (currentGenre === 'all' || article.genre === currentGenre);
+            // 旧データのジャンル判定を噂（rumor）へ寄せる
+            let articleGenre = article.genre;
+            if (articleGenre === 'transfer' || !articleGenre) articleGenre = 'rumor';
+
+            // ナビゲーションモードによる絞り込み
+            if (mode === 'rumor' && articleGenre !== 'rumor') return false;
+            if (mode === 'confirmed' && articleGenre !== 'confirmed') return false;
+
             const matchRegion = (currentRegion === 'all' || (article.tags && article.tags.includes(currentRegion)));
             const lowerQuery = searchQuery.toLowerCase();
             
@@ -175,9 +141,8 @@
             
             const matchSearch = article.title.toLowerCase().includes(lowerQuery) || 
                                (article.tags && article.tags.some(tag => tag.toLowerCase().includes(lowerQuery))) ||
-                               // 複数いる記者の中に、検索ワードに一致する人が1人でもいるか判定
                                (journalists.some(j => j.toLowerCase().includes(lowerQuery)));
-            return matchGenre && matchRegion && matchSearch;
+            return matchRegion && matchSearch;
         }).reverse();
 
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
@@ -194,13 +159,18 @@
             const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
             
             let statusBadge = '';
-            if (article.status === 'correct') {
-                statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.6rem; margin-right:8px; vertical-align:middle; font-weight:bold;">的中</span>';
-            } else if (article.status === 'incorrect') {
-                statusBadge = '<span style="background:#666; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.6rem; margin-right:8px; vertical-align:middle; font-weight:bold;">はずれ</span>';
+            // 噂（rumor）のみ、的中・はずれバッジを出すルールに制限
+            let articleGenre = article.genre;
+            if (articleGenre === 'transfer' || !articleGenre) articleGenre = 'rumor';
+
+            if (articleGenre === 'rumor') {
+                if (article.status === 'correct') {
+                    statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.6rem; margin-right:8px; vertical-align:middle; font-weight:bold;">的中</span>';
+                } else if (article.status === 'incorrect') {
+                    statusBadge = '<span style="background:#666; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.6rem; margin-right:8px; vertical-align:middle; font-weight:bold;">はずれ</span>';
+                }
             }
 
-            // 💡 配列内の記者名をカンマ（, ）区切りの文字列に変換して表示
             const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
             const journalistText = journalists.length > 0 ? journalists.join(', ') : '---';
 
@@ -209,7 +179,7 @@
             card.innerHTML = `
                 <a href="articles/${article.id}.html" style="text-decoration: none; color: inherit; display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee;">
                     <div>
-                        <span class="tag tag-${article.genre}" style="font-size: 0.65rem;">${getGenreLabel(article.genre)}</span>
+                        <span class="tag tag-${articleGenre}" style="font-size: 0.65rem;">${articleGenre === 'confirmed' ? '確定' : '噂'}</span>
                         <h3 style="margin: 5px 0; font-size: 1rem;">${statusBadge}${article.title}</h3>
                         <span style="font-size: 0.75rem; color: #999;">${formattedDate} | Journalist: ${journalistText}</span>
                     </div>
@@ -228,11 +198,6 @@
                 paginationContainer.appendChild(pageBtn);
             }
         }
-    }
-
-    function getGenreLabel(genre) {
-        const labels = {'transfer': '移籍', 'match': '試合', 'injury': '負傷', 'team': 'チーム', 'player': '選手', 'etc': 'その他'};
-        return labels[genre] || 'その他';
     }
 
     document.getElementById('search-input').addEventListener('input', (e) => {

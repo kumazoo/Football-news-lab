@@ -9,10 +9,8 @@
 <body>
 
 <header class="main-header">
-    <!-- サイト説明文 -->
     <p class="site-description">サッカー移籍情報特化サイト</p>
 
-    <!-- ロゴ画像 -->
     <h1>
         <a href="index.html">
             <img src="transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
@@ -22,8 +20,8 @@
 
 <nav style="text-align: center; margin-top: 15px;">
     <a href="journalist.html" class="nav-btn">ジャーナリスト</a>
-    <a href="archive.html?genre=transfer" class="nav-btn">移籍ニュース</a>
-    <a href="archive.html?genre=other" class="nav-btn">トピック</a>
+    <a href="archive.html?genre=rumor" class="nav-btn">噂ニュース</a>
+    <a href="archive.html?genre=confirmed" class="nav-btn">確定ニュース</a>
 </nav>
 
 <main>
@@ -43,10 +41,10 @@
 
 <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 40px;">
     <div style="margin-bottom: 10px;">
-    <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
-    <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
-    <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
-</div>
+        <a href="about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
+        <a href="contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
+        <a href="privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
+    </div>
     <p style="font-size: 0.75rem; color: #888;">&copy; 2026 Football Transfer Lab</p>
 </footer>
 
@@ -63,12 +61,10 @@
             
             const journalistMap = {};
             
-            // 1. list.json内のデータから直接記事数と的中数を集計する
+            // 1. list.json内のデータから「確定数」「噂数」「噂的中」をそれぞれ分立して集計
             articles.forEach(article => {
-                // データが配列ならそのまま使い、文字列なら1マスの配列に包み、null等なら空配列にする
                 const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
 
-                // 記事に含まれる記者全員分、ループを回して1人ずつ集計
                 journalists.forEach(rawName => {
                     const name = rawName.trim();
                     if (!name) return;
@@ -76,33 +72,42 @@
                     if (!journalistMap[name]) {
                         journalistMap[name] = {
                             name: name,
-                            totalCount: 0,
-                            correctCount: 0
+                            confirmedCount: 0,
+                            rumorCorrect: 0,
+                            rumorTotal: 0
                         };
                     }
-                    journalistMap[name].totalCount++;
-                    if (article.status === 'correct') {
-                        journalistMap[name].correctCount++;
+                    
+                    if (article.genre === 'confirmed') {
+                        journalistMap[name].confirmedCount++;
+                    } else if (article.genre === 'rumor' || article.genre === 'transfer' || !article.genre) {
+                        if (article.status === 'correct' || article.status === 'incorrect') {
+                            journalistMap[name].rumorTotal++;
+                            if (article.status === 'correct') {
+                                journalistMap[name].rumorCorrect++;
+                            }
+                        }
                     }
                 });
             });
 
-            // 2. 的中率を計算して配列化
+            // 2. 噂の的中率を計算して配列化
             allJournalists = Object.values(journalistMap).map(j => {
-                const accuracy = j.totalCount > 0 ? Math.round((j.correctCount / j.totalCount) * 100) : 0;
+                const accuracy = j.rumorTotal > 0 ? Math.round((j.rumorCorrect / j.rumorTotal) * 100) : 0;
                 return {
                     name: j.name,
                     accuracy: accuracy,
-                    totalCount: j.totalCount
+                    rumorTotal: j.rumorTotal,
+                    confirmedCount: j.confirmedCount
                 };
             });
 
-            // 3. ソート適用：的中率が同じなら総記事数（totalCount）が多い順
+            // 3. ソート適用：噂の的中率順 ➔ 的中率が同じなら噂の件数（rumorTotal）が多い順
             allJournalists.sort((a, b) => {
                 if (b.accuracy !== a.accuracy) {
                     return b.accuracy - a.accuracy;
                 }
-                return b.totalCount - a.totalCount;
+                return b.rumorTotal - a.rumorTotal;
             });
 
             renderJournalists();
@@ -137,9 +142,9 @@
                             ${j.name}
                         </a>
                     </div>
-                    <div class="journalist-stats-summary">
-                        総記事数: <strong>${j.totalCount}</strong> / 
-                        的中率: <span class="accuracy-value">${j.accuracy}%</span>
+                    <div class="journalist-stats-summary" style="font-size: 0.85rem; color: #555; margin-top: 5px;">
+                        確定ニュース: <strong style="color: #2A6A35;">${j.confirmedCount}</strong> 件 / 
+                        噂ニュース: <strong>${j.rumorTotal}</strong> 件 (噂的中率: <span class="accuracy-value" style="color: #e91e63; font-weight: bold;">${j.accuracy}%</span>)
                     </div>
                 </div>
                 <div class="rank-badge">${rank <= 3 ? ['🥇','🥈','🥉'][rank-1] : ''}</div>
