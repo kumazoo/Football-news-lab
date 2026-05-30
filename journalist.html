@@ -65,8 +65,14 @@
             
             // 1. list.json内のデータから直接記事数と的中数を集計する
             articles.forEach(article => {
-                if (article.journalist) {
-                    const name = article.journalist.trim();
+                // データが配列ならそのまま使い、文字列なら1マスの配列に包み、null等なら空配列にする
+                const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
+
+                // 記事に含まれる記者全員分、ループを回して1人ずつ集計
+                journalists.forEach(rawName => {
+                    const name = rawName.trim();
+                    if (!name) return;
+
                     if (!journalistMap[name]) {
                         journalistMap[name] = {
                             name: name,
@@ -78,7 +84,7 @@
                     if (article.status === 'correct') {
                         journalistMap[name].correctCount++;
                     }
-                }
+                });
             });
 
             // 2. 的中率を計算して配列化
