@@ -24,9 +24,15 @@
     <a href="archive.html?genre=confirmed" id="nav-confirmed" class="nav-btn">確定ニュース</a>
 </nav>
 
+<nav style="text-align: center; margin-top: 15px;">
+    <a href="journalist.html" class="nav-btn">ジャーナリスト</a>
+    <a href="archive.html?genre=rumor" class="nav-btn">噂ニュース</a>
+    <a href="archive.html?genre=confirmed" class="nav-btn">確定ニュース</a>
+</nav>
+
 <main>
     <div class="archive-container">
-        <h2 id="archive-title" style="text-align: center; margin-bottom: 30px;">NEWS ARCHIVE</h2>
+        <h2 id="page-archive-title" style="text-align: center; margin-bottom: 30px;">NEWS ARCHIVE</h2>
 
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
             
@@ -77,10 +83,12 @@
 
     if (paramGenre === 'rumor' || paramGenre === 'transfer') {
         mode = 'rumor';
-        document.getElementById('nav-rumor').classList.add('active');
+        const navRumor = document.getElementById('nav-rumor');
+        if (navRumor) navRumor.classList.add('active');
     } else if (paramGenre === 'confirmed') {
         mode = 'confirmed';
-        document.getElementById('nav-confirmed').classList.add('active');
+        const navConfirmed = document.getElementById('nav-confirmed');
+        if (navConfirmed) navConfirmed.classList.add('active');
     }
 
     if (paramJournalist) searchQuery = paramJournalist;
@@ -93,17 +101,22 @@
             const urlParams = new URLSearchParams(window.location.search);
             const selectedTag = urlParams.get('tag');
 
+            // 💡 タイトルの書き換え先IDを「page-archive-title」に統一
+            const titleElement = document.getElementById('page-archive-title');
+
             if (selectedTag) {
                 allArticles = fetchedArticles.filter(article => 
                     article.tags && article.tags.map(t => t.toLowerCase()).includes(selectedTag.toLowerCase())
                 );
-                document.getElementById('archive-title').innerText = `# ${selectedTag.toUpperCase()}`;
+                if (titleElement) titleElement.innerText = `# ${selectedTag.toUpperCase()}`;
             } else {
                 allArticles = fetchedArticles;
-                if (mode === 'rumor') {
-                    document.getElementById('archive-title').innerText = '噂ニュース';
-                } else if (mode === 'confirmed') {
-                    document.getElementById('archive-title').innerText = '確定ニュース';
+                if (titleElement) {
+                    if (mode === 'rumor') {
+                        titleElement.innerText = '噂ニュース';
+                    } else if (mode === 'confirmed') {
+                        titleElement.innerText = '確定ニュース';
+                    }
                 }
             }
 
@@ -121,13 +134,11 @@
         paginationContainer.innerHTML = '';
 
         const filtered = allArticles.filter(article => {
-            // 正しいジャンル判定ロジック（confirmedはconfirmedとして維持する）
             let articleGenre = article.genre;
             if (articleGenre !== 'confirmed') {
-                articleGenre = 'rumor'; // confirmed 以外（transfer や空欄）はすべて rumor 扱いにする
+                articleGenre = 'rumor'; 
             }
 
-            // ナビゲーションモード（mode）による絞り込み
             if (mode === 'rumor' && articleGenre !== 'rumor') return false;
             if (mode === 'confirmed' && articleGenre !== 'confirmed') return false;
 
@@ -155,12 +166,10 @@
             const dateId = article.id.substring(0, 6);
             const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
             
-            // 記事の最終ジャンルを確定
             let articleGenre = article.genre;
             if (articleGenre !== 'confirmed') articleGenre = 'rumor';
 
             let statusBadge = '';
-            // 噂（rumor）記事の時だけ、的中・はずれバッジを出す
             if (articleGenre === 'rumor') {
                 if (article.status === 'correct') {
                     statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.6rem; margin-right:8px; vertical-align:middle; font-weight:bold;">的中</span>';
