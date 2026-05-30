@@ -498,3 +498,20 @@ footer {
     color: #1a73e8 !important; /* 矢印の色もタイトルと連動 */
     transform: translateX(4px); /* 矢印を右に4px動かす */
 }
+
+/* ==========================================
+   トップジャーナリストのスマホ縦1列並び対応
+   ========================================== */
+
+@media (max-width: 768px) {
+    .journalist-list-container {
+        display: flex;
+        flex-direction: column !important; /* 💡 横並びから縦並びに強制変更 */
+        gap: 15px;
+    }
+
+    .journalist-list-container .journalist-card {
+        flex: 1 1 100% !important; /* 💡 横幅いっぱいに広げる */
+        max-width: 100% !important;
+    }
+}
