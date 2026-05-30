@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ニュース一覧 | Football Transfer Lab</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -75,7 +75,6 @@
     const paramGenre = urlParams.get('genre');
     const paramJournalist = urlParams.get('journalist');
 
-    // 移行判定：旧transfer、新rumorを「噂モード」とする
     if (paramGenre === 'rumor' || paramGenre === 'transfer') {
         mode = 'rumor';
         document.getElementById('nav-rumor').classList.add('active');
@@ -91,11 +90,9 @@
             const response = await fetch('articles/list.json');
             const fetchedArticles = await response.json();
             
-            // 1. URLから「?tag=xxx」のパラメータを取得する
             const urlParams = new URLSearchParams(window.location.search);
             const selectedTag = urlParams.get('tag');
 
-            // 2. タグが指定されている場合は絞り込み、ない場合は全件を入れる
             if (selectedTag) {
                 allArticles = fetchedArticles.filter(article => 
                     article.tags && article.tags.map(t => t.toLowerCase()).includes(selectedTag.toLowerCase())
@@ -103,7 +100,6 @@
                 document.getElementById('archive-title').innerText = `# ${selectedTag.toUpperCase()}`;
             } else {
                 allArticles = fetchedArticles;
-                // 通常時のタイトル設定
                 if (mode === 'rumor') {
                     document.getElementById('archive-title').innerText = '噂ニュース';
                 } else if (mode === 'confirmed') {
@@ -125,18 +121,19 @@
         paginationContainer.innerHTML = '';
 
         const filtered = allArticles.filter(article => {
-            // 旧データのジャンル判定を噂（rumor）へ寄せる
+            // 正しいジャンル判定ロジック（confirmedはconfirmedとして維持する）
             let articleGenre = article.genre;
-            if (articleGenre === 'transfer' || !articleGenre) articleGenre = 'rumor';
+            if (articleGenre !== 'confirmed') {
+                articleGenre = 'rumor'; // confirmed 以外（transfer や空欄）はすべて rumor 扱いにする
+            }
 
-            // ナビゲーションモードによる絞り込み
+            // ナビゲーションモード（mode）による絞り込み
             if (mode === 'rumor' && articleGenre !== 'rumor') return false;
             if (mode === 'confirmed' && articleGenre !== 'confirmed') return false;
 
             const matchRegion = (currentRegion === 'all' || (article.tags && article.tags.includes(currentRegion)));
             const lowerQuery = searchQuery.toLowerCase();
             
-            // 記者のデータを配列として安全に取得
             const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
             
             const matchSearch = article.title.toLowerCase().includes(lowerQuery) || 
@@ -158,11 +155,12 @@
             const dateId = article.id.substring(0, 6);
             const formattedDate = `20${dateId.substring(0, 2)}.${dateId.substring(2, 4)}.${dateId.substring(4, 6)}`;
             
-            let statusBadge = '';
-            // 噂（rumor）のみ、的中・はずれバッジを出すルールに制限
+            // 記事の最終ジャンルを確定
             let articleGenre = article.genre;
-            if (articleGenre === 'transfer' || !articleGenre) articleGenre = 'rumor';
+            if (articleGenre !== 'confirmed') articleGenre = 'rumor';
 
+            let statusBadge = '';
+            // 噂（rumor）記事の時だけ、的中・はずれバッジを出す
             if (articleGenre === 'rumor') {
                 if (article.status === 'correct') {
                     statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.6rem; margin-right:8px; vertical-align:middle; font-weight:bold;">的中</span>';
