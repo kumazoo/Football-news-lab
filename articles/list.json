@@ -2,7 +2,7 @@
   {
     "id": "250829_transfer01",
     "iframely_id": "JfEy1s1n",
-    "genre": "transfer",
+    "genre": "confirmed",
     "title": "トッテナムがオランダ代表の注目株シャビ・シモンズを獲得！",
     "tags": ["england", "germany", "tottenham", "leipzig", "simons"],
     "journalist": ["Sami Mokbel", "Adam Millington"],
@@ -13,7 +13,7 @@
   {
     "id": "250830_transfer01",
     "iframely_id": "TijW0Fgu",
-    "genre": "transfer",
+    "genre": "confirmed",
     "title": "フォレストがヨーロッパリーグに向けニコロ・サヴォーナを補強",
     "tags": ["england", "italia", "nottinghamforest", "juventus", "savona"],
     "journalist": ["Matt Davis"],
@@ -24,7 +24,7 @@
   {
     "id": "250830_transfer02",
     "iframely_id": "Asdkvbwp",
-    "genre": "transfer",
+    "genre": "confirmed",
     "title": "ニューカッスルがクラブ史上最高額でドイツの新星ヴォルテマーデを獲得",
     "tags": ["england", "germany", "newcastle", "stuttgart", "woltemade"],
     "journalist": ["Ciaran Kelly"],
@@ -33,9 +33,20 @@
     "featured": false
   },
   {
+    "id": "250830_transfer03",
+    "iframely_id": "Y5r4bpt6",
+    "genre": "confirmed",
+    "title": "ウェストハムがマテウス・フェルナンデス含む2名のMFを確保",
+    "tags": ["england", "westham", "southampton", "fernandes"],
+    "journalist": ["Ffion Wynne"],
+    "status": "correct",
+    "source_url": "https://www.bbc.com/sport/football/articles/cg50j6p9pq2o",
+    "featured": false
+  },
+  {
     "id": "260109_transfer01",
     "iframely_id": "JT0Bkmh5",
-    "genre": "transfer",
+    "genre": "confirmed",
     "title": "セメンヨのマンチェスター・シティ移籍が決定",
     "tags": ["england", "bournemouth", "manchestercity", "semenyo"],
     "journalist": ["Rob Dawson"],
@@ -46,7 +57,7 @@
   {
     "id": "260124_transfer01",
     "iframely_id": "4NMglghH",
-    "genre": "transfer",
+    "genre": "confirmed",
     "title": "ヌワネリ、マルセイユへのローン移籍が決定",
     "tags": ["england", "france", "arsenal", "marseille", "nwaneri"],
     "journalist": ["Sam Blitz"],
@@ -57,7 +68,7 @@
   {
     "id": "260128_transfer01",
     "iframely_id": "c7j2EwvU",
-    "genre": "transfer",
+    "genre": "confirmed",
     "title": "タミー・アブラハムがアストン・ヴィラ移籍で久しぶりのプレミアリーグ復帰",
     "tags": ["england", "etc", "astonvilla", "chelsea", "besiktas", "abraham"],
     "journalist": null,
@@ -68,7 +79,7 @@
   {
     "id": "260202_transfer01",
     "iframely_id": "71JGWsvt",
-    "genre": "transfer",
+    "genre": "confirmed",
     "title": "オレクサンドル・ジンチェンコ、完全移籍でアヤックスへ",
     "tags": ["england", "netherlands", "arsenal", "nottinghamforest", "ajax", "zinchenko"],
     "journalist": null,
