@@ -199,10 +199,6 @@ function renderTopJournalists(articles) {
     
     // 表示処理（元のデザインを維持）
     journalistSection.innerHTML = ''; 
-    journalistSection.style.display = "grid";
-    journalistSection.style.gridTemplateColumns = "repeat(auto-fit, minmax(150px, 1fr))";
-    journalistSection.style.gap = "15px";
-    journalistSection.style.marginBottom = "20px";
 
     top3.forEach((j, idx) => {
         const medal = ['🥇', '🥈', '🥉'][idx];
