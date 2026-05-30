@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ニュース一覧 | Football Transfer Lab</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Football Transfer Lab | トララボ</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -18,12 +18,6 @@
     </h1>
 </header>
 
-<nav id="main-nav">
-    <a href="journalist.html" class="nav-btn">ジャーナリスト</a>
-    <a href="archive.html?genre=rumor" id="nav-rumor" class="nav-btn">噂ニュース</a>
-    <a href="archive.html?genre=confirmed" id="nav-confirmed" class="nav-btn">確定ニュース</a>
-</nav>
-
 <nav style="text-align: center; margin-top: 15px;">
     <a href="journalist.html" class="nav-btn">ジャーナリスト</a>
     <a href="archive.html?genre=rumor" class="nav-btn">噂ニュース</a>
@@ -35,7 +29,6 @@
         <h2 id="page-archive-title" style="text-align: center; margin-bottom: 30px;">NEWS ARCHIVE</h2>
 
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-            
             <div class="search-box" style="margin-bottom: 20px;">
                 <input type="text" id="search-input" placeholder="記事タイトル、タグ、ジャーナリスト名で検索..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem;">
             </div>
@@ -95,13 +88,11 @@
 
     async function loadArchive() {
         try {
-            const response = await fetch('articles/list.json');
+            const response = await fetch('articles/list.json?v=' + new Date().getTime());
             const fetchedArticles = await response.json();
             
             const urlParams = new URLSearchParams(window.location.search);
             const selectedTag = urlParams.get('tag');
-
-            // 💡 タイトルの書き換え先IDを「page-archive-title」に統一
             const titleElement = document.getElementById('page-archive-title');
 
             if (selectedTag) {
