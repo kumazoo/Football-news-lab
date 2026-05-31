@@ -122,7 +122,7 @@ async function loadPage() {
     }
 }
 
-// ニュースフィード生成用共通関数（リンクの標準カラー仕様を復旧）
+// ニュースフィード生成用共通関数（日付・記者名の下線を完全に消去）
 function renderNewsFeed(list, targetId) {
     const container = document.getElementById(targetId);
     container.innerHTML = ''; 
@@ -134,7 +134,8 @@ function renderNewsFeed(list, targetId) {
         const item = document.createElement('a');
         item.href = `articles/${article.id}.html`;
         item.className = 'news-item-link';
-        // 🚨 原因だった item.style.textDecoration と item.style.color の上書きを完全に削除しました。
+        // 💡 リンク全体の標準の下線をあらかじめOFFにし、タイトル側で個別制御します
+        item.style.textDecoration = 'none'; 
         
         const dateStr = article.id.substring(0,6);
         const formattedDate = `20${dateStr.substring(0,2)}.${dateStr.substring(2,4)}.${dateStr.substring(4,6)}`;
@@ -142,16 +143,32 @@ function renderNewsFeed(list, targetId) {
         const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
         const journalistText = journalists.length > 0 ? journalists.join(', ') : '---';
 
-        // 💡 <a>タグの直下が「青文字・紫文字」の対象になるよう、h3タグなどの文字色固定に干渉しない構造にします
-        // 日付・記者名のグレー色（#999）は維持し、タイトル部分がリンク色（青・紫）として機能します
+        // 💡 構造を分離しました
+        // 1. 日付と記者名（news-date）を覆うブロックに text-decoration: none を徹底して下線を完全排除
+        // 2. タイトルのクラス（news-title-link）を新設し、ここだけにマウスオン時に下線が出るスタイルを適用
         item.innerHTML = `
-            <article class="news-card">
-                <div class="news-meta" style="color: inherit;">
-                    <span class="news-date" style="font-size: 0.75rem; color: #999; display: block; margin-bottom: 5px;">${formattedDate} | Journalist: ${journalistText}</span>
-                    <h3 class="news-title" style="margin: 0; font-size: 1rem; font-weight: bold; display: inline;">${article.title}</h3>
+            <article class="news-card" style="text-decoration: none;">
+                <div class="news-meta" style="text-decoration: none;">
+                    <span class="news-date" style="font-size: 0.75rem; color: #999; display: block; margin-bottom: 5px; text-decoration: none;">
+                        ${formattedDate} | Journalist: ${journalistText}
+                    </span>
+                    <span class="news-title-link" style="font-size: 1rem; font-weight: bold; color: initial; transition: text-decoration 0.2s;">
+                        ${article.title}
+                    </span>
                 </div>
             </article>
         `;
+
+        // 💡 マウスが乗ったとき（hover）と離れたとき（leave）の挙動をJavaScript側で完全に制御します
+        // これにより、ブラウザ標準の青・紫の文字色仕様（visited）を100%維持したまま、タイトルだけに下線を出せます
+        const titleLink = item.querySelector('.news-title-link');
+        item.addEventListener('mouseenter', () => {
+            titleLink.style.textDecoration = 'underline';
+        });
+        item.addEventListener('mouseleave', () => {
+            titleLink.style.textDecoration = 'none';
+        });
+
         container.appendChild(item);
     });
 }
