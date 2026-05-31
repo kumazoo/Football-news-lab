@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【管理画面】Football Transfer Lab</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f6f8; padding: 20px; color: #333; }
+        main { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        h1, h2 { border-bottom: 2px solid #2A6A35; padding-bottom: 8px; color: #2A6A35; margin-top: 0; }
+        .box { background: #fff; padding: 25px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn { background: #2A6A35; color: white; border: none; padding: 12px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { opacity: 0.9; }
+        .btn-download { background: #1a73e8; }
+        .list-container { max-height: 600px; overflow-y: auto; }
+        .article-item { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .article-info { font-size: 0.85rem; color: #666; }
+        .article-title { font-weight: bold; color: #333; margin-bottom: 3px; font-size: 0.95rem; }
+        .status-select { width: auto; padding: 5px; font-size: 0.8rem; }
+        .file-input-box { background: #e8f5e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px dashed #2A6A35; }
+    </style>
+</head>
+<body>
+
+<header style="text-align: center; margin-bottom: 30px;">
+    <h1>Football Transfer Lab 運営管理ツール (ローカル同期版)</h1>
+    <p style="font-size: 0.9rem; color: #666;">※作業を始める前に、必ず最新の <strong>list.json</strong> を以下から読み込ませてください。</p>
+</header>
+
+<main>
+    <section class="box">
+        <h2>① 公開済み記事一覧・編集</h2>
+        
+        <div class="file-input-box">
+            <label for="json-file">▼ 最新の list.json を選択して同期</label>
+            <input type="file" id="json-file" accept=".json">
+        </div>
+
+        <div id="articles-list" class="list-container">
+            <p style="color: #999; text-align: center; padding: 20px;">list.jsonを読み込むと、ここに記事一覧が表示されます。</p>
+        </div>
+
+        <div style="margin-top: 20px; border-top: 2px solid #eee; padding-top: 15px;">
+            <button id="download-json-btn" class="btn btn-download" disabled>更新された list.json を書き出す</button>
+        </div>
+    </section>
+
+    <section class="box">
+        <h2>② 新規記事の追加生成</h2>
+        <form id="new-article-form">
+            <div class="form-group">
+                <label>記事ID (例: 260531_transfer01 ※当日日付+識別子)</label>
+                <input type="text" id="art-id" placeholder="260531_transfer01" required>
+            </div>
+            <div class="form-group">
+                <label>記事タイトル</label>
+                <input type="text" id="art-title" placeholder="選手名、〇〇へ完全移籍決定など" required>
+            </div>
+            <div class="form-group">
+                <label>ジャンル</label>
+                <select id="art-genre">
+                    <option value="rumor">噂ニュース (rumor)</option>
+                    <option value="confirmed">確定ニュース (confirmed)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ステータス (噂ニュースの場合のみ有効)</label>
+                <select id="art-status">
+                    <option value="pending">未確定 / 進行中 (pending)</option>
+                    <option value="correct">的中 (correct)</option>
+                    <option value="incorrect">はずれ (incorrect)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ジャーナリスト名 (カンマ区切りで複数指定可 例: Fabrizio Romano, David Ornstein)</label>
+                <input type="text" id="art-journalist" placeholder="Fabrizio Romano, David Ornstein">
+            </div>
+            <div class="form-group">
+                <label>タグ / 地域 (カンマ区切りで指定 例: england, arsenal, player)</label>
+                <input type="text" id="art-tags" placeholder="england, arsenal, player">
+            </div>
+            <div class="form-group">
+                <label>Iframely ID (11文字の英数字 例: abcde123456)</label>
+                <input type="text" id="art-iframely" placeholder="abcde123456" required>
+            </div>
+            <div class="form-group">
+                <label>情報源URL (元ポストや元記事のリンク)</label>
+                <input type="text" id="art-source" placeholder="https://x.com/..." required>
+            </div>
+            <div class="form-group">
+                <label style="color: #e91e63;">【注目記事】としてトップの一番上に大きく出す</label>
+                <select id="art-featured">
+                    <option value="false">通常記事にする</option>
+                    <option value="true">注目記事(Featured)にする</option>
+                </select>
+            </div>
+
+            <button type="submit" id="create-btn" class="btn" disabled>新しい記事のHTML ＆ JSONデータを生成</button>
+        </form>
+    </section>
+</main>
+
+<script>
+    let currentArticles = [];
+
+    // 1. ローカルのlist.jsonを読み込む処理
+    document.getElementById('json-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                currentArticles = JSON.parse(evt.target.result);
+                renderArticlesList();
+                document.getElementById('download-json-btn').disabled = false;
+                document.getElementById('create-btn').disabled = false;
+            } catch(err) {
+                alert('JSONファイルの読み込み、または解析に失敗しました。正しい形式か確認してください。');
+                console.error(err);
+            }
+        };
+        reader.readAsText(file, 'UTF-8');
+    });
+
+    // 2. 読み込んだ過去記事一覧を画面に描画
+    function renderArticlesList() {
+        const container = document.getElementById('articles-list');
+        container.innerHTML = '';
+
+        const displayList = currentArticles.slice().reverse();
+
+        displayList.forEach(article => {
+            const div = document.createElement('div');
+            div.className = 'article-item';
+
+            const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
+            const jText = journalists.length > 0 ? journalists.join(', ') : '---';
+            const isRumor = article.genre !== 'confirmed';
+
+            let statusSelectHtml = '';
+            if (isRumor) {
+                statusSelectHtml = `
+                    <select class="status-select" onchange="updateStatus('${article.id}', this.value)">
+                        <option value="pending" ${article.status === 'pending' ? 'selected' : ''}>未確定</option>
+                        <option value="correct" ${article.status === 'correct' ? 'selected' : ''}>的中</option>
+                        <option value="incorrect" ${article.status === 'incorrect' ? 'selected' : ''}>はずれ</option>
+                    </select>
+                `;
+            } else {
+                statusSelectHtml = '<span style="font-size:0.8rem; color:#2A6A35; font-weight:bold;">確定ニュース</span>';
+            }
+
+            div.innerHTML = `
+                <div>
+                    <div class="article-title">${article.title}</div>
+                    <div class="article-info">ID: ${article.id} | 記者: ${jText}</div>
+                </div>
+                <div>${statusSelectHtml}</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // 3. ステータスが変更されたら配列データをリアルタイム更新
+    function updateStatus(id, newStatus) {
+        const target = currentArticles.find(a => a.id === id);
+        if (target) {
+            target.status = newStatus;
+        }
+    }
+
+    // 4. 更新されたJSONファイルをダウンロード
+    document.getElementById('download-json-btn').addEventListener('click', function() {
+        triggerDownload(JSON.stringify(currentArticles, null, 2), 'list.json');
+    });
+
+    // 5. 新規記事の生成ボタン押下
+    document.getElementById('new-article-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const id = document.getElementById('art-id').value.trim();
+        if (currentArticles.some(a => a.id === id)) {
+            alert('警告：この記事IDは既に存在しています。');
+            return;
+        }
+
+        const title = document.getElementById('art-title').value.trim();
+        const genre = document.getElementById('art-genre').value;
+        const status = document.getElementById('art-status').value;
+        const featured = document.getElementById('art-featured').value === 'true';
+        const iframely_id = document.getElementById('art-iframely').value.trim();
+        const source_url = document.getElementById('art-source').value.trim();
+
+        const rawJournalist = document.getElementById('art-journalist').value;
+        const journalist = rawJournalist ? rawJournalist.split(',').map(j => j.trim()).filter(j => j) : [];
+        
+        const rawTags = document.getElementById('art-tags').value;
+        const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(t => t) : [];
+
+        // メインソース名（一番最初の記者名、いなければ「---」）を取得
+        const mainSourceDisplay = journalist.length > 0 ? journalist[0] : '---';
+
+        const newArticleObj = { id, title, genre, featured, iframely_id, source_url, journalist, tags };
+        if (genre === 'rumor') {
+            newArticleObj.status = status;
+        }
+
+        currentArticles.push(newArticleObj);
+
+        // --- 💡 あなたの【template.html】と100%完全一致させた変数・構造の組み立てコード ---
+        const htmlTemplate = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>\${title} | Football Transfer Lab | トララボ</title>
+    <link rel="stylesheet" href="../style.css">
+    <script async src="https://iframely.net/embed.js"><\/script>
+</head>
+<body>
+
+<header class="main-header">
+    <p class="site-description">サッカー移籍情報特化サイト</p>
+    <h1>
+        <a href="../index.html">
+            <img src="../transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
+        </a>
+    </h1>
+</header>
+
+<nav>
+    <a href="../journalist.html" class="nav-btn">ジャーナリスト</a>
+    <a href="../archive.html?genre=rumor" class="nav-btn">噂ニュース</a>
+    <a href="../archive.html?genre=confirmed" class="nav-btn">確定ニュース</a>
+</nav>
+
+<main>
+    <article class="article-card">
+        <span id="article-genre-badge" class="tag">---</span>
+        
+        <h2 id="article-title" style="margin-bottom: 10px;">\${title}</h2>
+
+        <div class="post-date" style="font-size: 0.85rem; color: #888; margin-bottom: 10px; font-family: monospace;">
+            POSTED: <span id="article-date">0000.00.00</span>
+        </div>
+
+        <div id="tags-container" style="margin-bottom: 10px;"></div>
+
+        <div id="journalist-info-area"></div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+        <div class="original-intro">
+            <p>【導入文を入力してください】</p>
+        </div>
+
+        <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
+            <div class="iframely-container" style="margin-bottom: 20px;">
+                <div class="iframely-embed">
+                    <div class="iframely-responsive">
+                        <a href="${source_url}" data-iframely-url="https://iframely.net/${iframely_id}?theme=light&media=1"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
+                <strong style="display: block; margin-bottom: 10px;">■ 注目ポイント（ソース：${mainSourceDisplay}）</strong>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>【ポイント1】</li>
+                    <li>【ポイント2】</li>
+                    <li>【ポイント3】</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="supplementary-info">
+            <h3>📊 Player Profile / 📌 Keyword</h3>
+            <div class="supplementary-content">
+                【解説文を入力してください】<br>
+                <a href="【WikipediaのURL】" target="_blank" class="wiki-link-btn">Wikipediaで詳細を確認</a>
+            </div>
+        </div>
+
+        <div class="share-section" style="text-align: center; margin: 40px 0; padding: 20px; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee;">
+            <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-weight: bold; letter-spacing: 0.05em;">SHARE THIS POST</p>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <a id="share-x-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #000; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; transition: opacity 0.3s;">𝕏</a>
+                <a id="share-fb-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #1877F2; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; font-family: sans-serif; font-weight: bold; transition: opacity 0.3s;">f</a>
+            </div>
+        </div>
+
+        <div class="supplementary-info" style="border-top: none; margin-top: 15px;">
+            <h3>🔗 関連記事</h3>
+            <div class="supplementary-content" style="background-color: transparent; padding: 0;">
+                <ul id="related-list" style="margin: 0; padding-left: 20px;"></ul>
+                <div style="margin-top: 10px;">
+                    <a id="back-to-archive-btn" href="../archive.html?genre=confirmed" style="font-size: 13px;">確定ニュース一覧に戻る</a>
+                </div>
+            </div>
+        </div>
+    </article>
+</main>
+
+<footer style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 40px;">
+    <div style="margin-bottom: 10px;">
+        <a href="../about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
+        <a href="../contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
+        <a href="../privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
+    </div>
+    <p style="font-size: 0.75rem; color: #888;">&copy; 2026 Football Transfer Lab</p>
+</footer>
+
+<script>
+    /* 【最重要】記事ごとにここを書き換えてください */
+    const currentArticleTags = ${JSON.stringify(tags)}; // 関連記事の抽出に使用
+    const currentArticleId = "${id}"; // list.jsonのIDと完全一致させる
+
+    // ジャーナリスト統計の自動計算関数（配列対応＆役割分離版）
+    function calculateJournalistStats(allArticles) {
+        const stats = {};
+        allArticles.forEach(article => {
+            const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
+            
+            journalists.forEach(rawName => {
+                const name = rawName.trim();
+                if (!name) return;
+                
+                if (!stats[name]) { 
+                    stats[name] = { name: name, confirmedCount: 0, rumorCorrect: 0, rumorTotal: 0 }; 
+                }
+                
+                if (article.genre === 'confirmed') {
+                    stats[name].confirmedCount++;
+                } else if (article.genre === 'rumor' || article.genre === 'transfer' || !article.genre) {
+                    if (article.status === 'correct' || article.status === 'incorrect') {
+                        stats[name].rumorTotal++;
+                        if (article.status === 'correct') { stats[name].rumorCorrect++; }
+                    }
+                }
+            });
+        });
+        return stats;
+    }
+
+    async function loadArticleContent() {
+        try {
+            const response = await fetch('../articles/list.json?v=' + new Date().getTime());
+            if (!response.ok) return;
+            const allArticles = await response.json();
+            const articleData = allArticles.find(a => a.id === currentArticleId);
+
+            if (articleData) {
+                // 0. ジャンルバッジと戻るボタンの切り替え判定（過去のtransferはrumor扱い）
+                let articleGenre = articleData.genre;
+                if (articleGenre === 'transfer' || !articleGenre) articleGenre = 'rumor';
+
+                const badgeElement = document.getElementById('article-genre-badge');
+                const backBtnElement = document.getElementById('back-to-archive-btn');
+                
+                badgeElement.className = \`tag tag-\${articleGenre}\`;
+                if (articleGenre === 'confirmed') {
+                    badgeElement.innerText = '確定';
+                    backBtnElement.href = '../archive.html?genre=confirmed';
+                    backBtnElement.innerText = '確定ニュース一覧に戻る';
+                } else {
+                    badgeElement.innerText = '噂';
+                    backBtnElement.href = '../archive.html?genre=rumor';
+                    backBtnElement.innerText = '噂ニュース一覧に戻る';
+                }
+
+                // 1. タイトル、日付、タグの反映
+                document.getElementById('article-title').innerText = articleData.title;
+                const dateId = articleData.id.substring(0, 6);
+                const formattedDate = \`20\${dateId.substring(0, 2)}.\${dateId.substring(2, 4)}.\${dateId.substring(4, 6)}\`;
+                document.getElementById('article-date').innerText = formattedDate;
+
+                const tagsContainer = document.getElementById('tags-container');
+                if (articleData.tags) {
+                    articleData.tags.forEach(tag => {
+                        const span = document.createElement('span');
+                        span.className = 'tag'; 
+                        span.style.cursor = 'pointer';
+                        span.onclick = () => {
+                            window.location.href = \`../archive.html?tag=\${tag}\`;
+                        };
+                        span.innerText = tag;
+                        tagsContainer.appendChild(span);
+                    });
+                }
+
+                // 2. ジャーナリスト的中率とバッジの反映（連名・複数記者対応）
+                const allStats = calculateJournalistStats(allArticles);
+                const infoArea = document.getElementById('journalist-info-area');
+                infoArea.innerHTML = ''; 
+
+                const currentJournalists = Array.isArray(articleData.journalist) ? articleData.journalist : (articleData.journalist ? [articleData.journalist] : []);
+                
+                if (currentJournalists.length > 0) {
+                    let htmlContent = '';
+                    
+                    currentJournalists.forEach(rawName => {
+                        const name = rawName.trim();
+                        if (!name || !allStats[name]) return;
+                        
+                        const s = allStats[name];
+                        const accuracy = s.rumorTotal > 0 ? Math.round((s.rumorCorrect / s.rumorTotal) * 100) : 0;
+                        
+                        let statusBadge = '';
+                        if (articleGenre === 'rumor') {
+                            if (articleData.status === 'correct') {
+                                statusBadge = '<span style="background:#e91e63; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle; font-weight:bold;">的中</span>';
+                            } else if (articleData.status === 'incorrect') {
+                                statusBadge = '<span style="background:#666; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.7rem; margin-left:10px; vertical-align:middle; font-weight:bold;">はずれ</span>';
+                            }
+                        }
+
+                        htmlContent += \`
+                            <div class="journalist-info" style="margin: 5px 0 10px 0; padding: 5px 0; border-bottom: 1px dotted #f0f0f0;">
+                                <span class="journalist-label" style="font-size: 0.8rem; color:#666; font-weight:bold;">JOURNALIST:</span>
+                                <span class="journalist-name" style="font-weight:bold; color:#2A6A35; margin-left:5px;">\${name}</span>
+                                \${statusBadge}
+                                <span class="journalist-stats" style="font-size:0.75rem; color:#888; margin-left:10px;">
+                                    (確定: \${s.confirmedCount}件 / 噂的中率: <span class="accuracy-value" style="color:#e91e63; font-weight:bold;">\${accuracy}%</span> [判定:\${s.rumorTotal}件])
+                                </span>
+                            </div>
+                        \`;
+                    });
+                    
+                    infoArea.innerHTML = htmlContent;
+                }
+
+                // 3. SNSシェアリンク
+                const pageUrl = encodeURIComponent(window.location.href);
+                const shareText = encodeURIComponent(\`\${articleData.title} | Football Transfer Lab\`);
+                document.getElementById('share-x-btn').href = \`https://twitter.com/intent/tweet?url=\${pageUrl}&text=\${shareText}&hashtags=トララボ,サッカー移籍\`;
+                document.getElementById('share-fb-btn').href = \`https://www.facebook.com/sharer/sharer.php?u=\${pageUrl}\`;
+
+                // 4. 関連記事の抽出
+                const listElement = document.getElementById('related-list');
+                const related = allArticles.filter(a => a.id !== currentArticleId && a.tags && a.tags.some(t => currentArticleTags.includes(t)));
+                related.slice(-3).reverse().forEach(a => {
+                    const li = document.createElement('li');
+                    li.innerHTML = \`<a href="\${a.id}.html" style="font-size: 13px;">\${a.title}</a>\`;
+                    listElement.appendChild(li);
+                });
+            }
+        } catch (e) { console.error("Content load failed.", e); }
+    }
+    loadArticleContent();
+<\/script>
+
+</body>
+</html>`;
+
+        // 2つのファイルをダウンロード
+        triggerDownload(htmlTemplate, `${id}.html`);
+        triggerDownload(JSON.stringify(currentArticles, null, 2), 'list.json');
+
+        // フォームリセット
+        document.getElementById('new-article-form').reset();
+        document.getElementById('art-featured').value = "false";
+        document.getElementById('art-genre').value = "rumor";
+        document.getElementById('art-status').value = "pending";
+        renderArticlesList();
+        
+        alert('新しい記事の個別HTMLファイル と 更新された list.json の2つの書き出しに成功しました！');
+    });
+
+    function triggerDownload(content, fileName) {
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+</script>
+</body>
+</html>
