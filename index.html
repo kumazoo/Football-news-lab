@@ -122,7 +122,7 @@ async function loadPage() {
     }
 }
 
-// ニュースフィード生成用共通関数（★記者名表示を追加・調整）
+// ニュースフィード生成用共通関数（リンクの標準カラー仕様を復旧）
 function renderNewsFeed(list, targetId) {
     const container = document.getElementById(targetId);
     container.innerHTML = ''; 
@@ -134,22 +134,21 @@ function renderNewsFeed(list, targetId) {
         const item = document.createElement('a');
         item.href = `articles/${article.id}.html`;
         item.className = 'news-item-link';
-        item.style.textDecoration = 'none'; // リンクの下線をリセット
-        item.style.color = 'inherit';
+        // 🚨 原因だった item.style.textDecoration と item.style.color の上書きを完全に削除しました。
         
         const dateStr = article.id.substring(0,6);
         const formattedDate = `20${dateStr.substring(0,2)}.${dateStr.substring(2,4)}.${dateStr.substring(4,6)}`;
 
-        // archiveページのデータ処理ロジックと完全に統一
         const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
         const journalistText = journalists.length > 0 ? journalists.join(', ') : '---';
 
-        // 既存の「news-card」スタイル構造を維持し、日付の横に記者名を出力
+        // 💡 <a>タグの直下が「青文字・紫文字」の対象になるよう、h3タグなどの文字色固定に干渉しない構造にします
+        // 日付・記者名のグレー色（#999）は維持し、タイトル部分がリンク色（青・紫）として機能します
         item.innerHTML = `
             <article class="news-card">
-                <div class="news-meta">
-                    <span class="news-date" style="font-size: 0.75rem; color: #999;">${formattedDate} | Journalist: ${journalistText}</span>
-                    <h3 class="news-title" style="margin-top: 5px;">${article.title}</h3>
+                <div class="news-meta" style="color: inherit;">
+                    <span class="news-date" style="font-size: 0.75rem; color: #999; display: block; margin-bottom: 5px;">${formattedDate} | Journalist: ${journalistText}</span>
+                    <h3 class="news-title" style="margin: 0; font-size: 1rem; font-weight: bold; display: inline;">${article.title}</h3>
                 </div>
             </article>
         `;
