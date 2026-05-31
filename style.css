@@ -515,3 +515,28 @@ footer {
         gap: 15px;
     }
 }
+
+/* ==========================================
+   インデックスページ：最新ニュースリンクのカラー制御
+   ========================================== */
+
+/* リンク全体の標準の下線と文字色をリセット（日付・記者名の下線を消すため） */
+.news-item-link {
+    text-decoration: none !important;
+}
+
+/* 1. 通常時（未訪問）：タイトルの文字色をイメージカラーの緑にする */
+.news-item-link .news-title-text {
+    color: #2A6A35;
+    text-decoration: none;
+}
+
+/* 2. 訪問済み（クリック後）：タイトルの文字色を紫にする */
+.news-item-link:visited .news-title-text {
+    color: #551a8b;
+}
+
+/* 3. マウスオン時（ホバー）：カード全体のどこにマウスが乗っても、タイトルだけに下線を表示 */
+.news-item-link:hover .news-title-text {
+    text-decoration: underline;
+}
