@@ -50,7 +50,7 @@
         <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
         <div class="original-intro">
-            <p>マンチェスター・ユナイテッドやニューカッスルも参加した争奪戦を制したリバプールがフランクフルトからフランス人FWウーゴ・エキティケを獲得。</p>
+            <p>マンチェスター・ユナイテッドやニューカッスルも参加した争奪戦をリバプールが制し、フランクフルトからフランス人FWウーゴ・エキティケを獲得。</p>
         </div>
 
         <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
@@ -110,13 +110,31 @@
 </footer>
 
 <script>
-    // 💡 シェアボタンの設置リンクだけを動かす極小プログラム（Fetch関連、エラーの原因部分全削除）
-    document.addEventListener("DOMContentLoaded", function() {
-        const pageUrl = encodeURIComponent(window.location.href);
-        const shareText = encodeURIComponent(document.title);
-        document.getElementById("share-x-btn").href = "https://twitter.com/intent/tweet?url=" + pageUrl + "&text=" + shareText + "&hashtags=トララボ,サッカー移籍";
-        document.getElementById("share-fb-btn").href = "https://www.facebook.com/sharer/sharer.php?u=" + pageUrl;
-    });
+    // 💡 関連記事とシェアボタンを動かすための正しい変数定義を、エラーの起きないプレーンな文字形式で復活させました
+    const currentArticleId = "250724_transfer01";
+    const currentArticleTags = ["england","liverpool","frankfurt","ekitike"];
+
+    async function loadRelatedArticles() {
+        try {
+            const res = await fetch("../articles/list.json?v=" + new Date().getTime());
+            if (!res.ok) return;
+            const allArticles = await res.json();
+            
+            const pageUrl = encodeURIComponent(window.location.href);
+            const shareText = encodeURIComponent(document.title);
+            document.getElementById("share-x-btn").href = "https://twitter.com/intent/tweet?url=" + pageUrl + "&text=" + shareText + "&hashtags=トララボ,サッカー移籍";
+            document.getElementById("share-fb-btn").href = "https://www.facebook.com/sharer/sharer.php?u=" + pageUrl;
+
+            const listElement = document.getElementById("related-list");
+            const related = allArticles.filter(a => a.id !== currentArticleId && a.tags && a.tags.some(t => currentArticleTags.includes(t)));
+            related.slice(-3).reverse().forEach(a => {
+                const li = document.createElement("li");
+                li.innerHTML = '<a href="' + a.id + '.html" style="font-size: 13px;">' + a.title + '</a>';
+                listElement.appendChild(li);
+            });
+        } catch(e) { console.error(e); }
+    }
+    window.addEventListener("DOMContentLoaded", loadRelatedArticles);
 </script>
 
 
