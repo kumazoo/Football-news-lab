@@ -122,10 +122,10 @@ async function loadPage() {
     }
 }
 
-// ニュースフィード生成用共通関数
+// ニュースフィード生成用共通関数（★記者名表示を追加・調整）
 function renderNewsFeed(list, targetId) {
     const container = document.getElementById(targetId);
-    container.innerHTML = ''; // 重複防止で初期化を追加
+    container.innerHTML = ''; 
     if (list.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">現在、新しい記事はありません。</p>';
         return;
@@ -134,15 +134,22 @@ function renderNewsFeed(list, targetId) {
         const item = document.createElement('a');
         item.href = `articles/${article.id}.html`;
         item.className = 'news-item-link';
+        item.style.textDecoration = 'none'; // リンクの下線をリセット
+        item.style.color = 'inherit';
         
         const dateStr = article.id.substring(0,6);
         const formattedDate = `20${dateStr.substring(0,2)}.${dateStr.substring(2,4)}.${dateStr.substring(4,6)}`;
 
+        // archiveページのデータ処理ロジックと完全に統一
+        const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
+        const journalistText = journalists.length > 0 ? journalists.join(', ') : '---';
+
+        // 既存の「news-card」スタイル構造を維持し、日付の横に記者名を出力
         item.innerHTML = `
             <article class="news-card">
                 <div class="news-meta">
-                    <span class="news-date">${formattedDate}</span>
-                    <h3 class="news-title">${article.title}</h3>
+                    <span class="news-date" style="font-size: 0.75rem; color: #999;">${formattedDate} | Journalist: ${journalistText}</span>
+                    <h3 class="news-title" style="margin-top: 5px;">${article.title}</h3>
                 </div>
             </article>
         `;
@@ -197,7 +204,7 @@ function renderTopJournalists(articles) {
         return b.rumorTotal - a.rumorTotal;
     }).slice(0, 3);
     
-    // 表示処理（元のデザインを維持）
+    // 表示処理
     journalistSection.innerHTML = ''; 
 
     top3.forEach((j, idx) => {
