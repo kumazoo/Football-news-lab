@@ -104,7 +104,7 @@
 </footer>
 
 <script>
-    const currentArticleId = "Andy Hunter";
+    const currentArticleId = "250724_c02";
     const currentArticleTags = ["england","liverpool","frankfurt","ekitike"];
     const currentArticleJournalists = ["Andy Hunter"];
 
@@ -161,8 +161,8 @@
                 
                 let statusBadge = "";
                 if (articleData && articleData.genre === "rumor") {
-                    if (articleData.status === "correct") statusBadge = '...';
-                    if (articleData.status === "incorrect") statusBadge = '...';
+                    if (articleData.status === "correct") statusBadge = '<span class="badge badge-correct" style="margin-left:10px; vertical-align:middle;">🎯 的中</span>';
+                    if (articleData.status === "incorrect") statusBadge = '<span class="badge badge-incorrect" style="margin-left:10px; vertical-align:middle;">❌ はずれ</span>';
                 }
 
                 const div = document.createElement("div");
