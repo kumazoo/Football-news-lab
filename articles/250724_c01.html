@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 
+
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>リバプールがプレミアクラブ間のエキティケ争奪戦を制す | Football Transfer Lab | トララボ</title>
@@ -101,11 +104,9 @@
 </footer>
 
 <script>
-    const currentArticleId = "250724_c02";
+    const currentArticleId = "Andy Hunter";
     const currentArticleTags = ["england","liverpool","frankfurt","ekitike"];
     const currentArticleJournalists = ["Andy Hunter"];
-    const currentArticleGenre = "__ARTICLE_GENRE_STRING__";
-    const currentArticleStatus = "__ARTICLE_STATUS_STRING__";
 
     async function loadArticleFeatures() {
         try {
@@ -138,7 +139,7 @@
             });
 
             const infoArea = document.getElementById("journalist-info-area");
-            allArticles.find(a => a.id === currentArticleId);
+            const articleData = allArticles.find(a => a.id === currentArticleId);
             currentArticleJournalists.forEach(name => {
                 let confirmedCount = 0, rumorCorrect = 0, rumorTotal = 0;
                 
