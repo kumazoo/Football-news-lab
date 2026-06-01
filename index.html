@@ -203,7 +203,10 @@ function renderTopJournalists(articles) {
         if (b.accuracy !== a.accuracy) {
             return b.accuracy - a.accuracy;
         }
-        return b.rumorTotal - a.rumorTotal;
+        if (b.rumorTotal !== a.rumorTotal) {
+            return b.rumorTotal - a.rumorTotal;
+        }
+        return b.confirmedCount - a.confirmedCount;
     }).slice(0, 3);
     
     // 表示処理
@@ -219,7 +222,7 @@ function renderTopJournalists(articles) {
                 <a href="archive.html?journalist=${encodeURIComponent(j.name)}" style="text-decoration: none; color: #2A6A35; border-bottom: 1px dashed #2A6A35;">${j.name}</a>
             </div>
             <div style="font-size: 0.8rem; color: #e91e63; font-weight: bold; margin-bottom: 4px;">噂的中率: ${j.accuracy}%</div>
-            <div style="font-size: 0.7rem; color: #888;">(確定: ${j.confirmedCount}件 / 噂判定: ${j.rumorTotal}件)</div>
+            <div style="font-size: 0.7rem; color: #888;">(確定: ${j.confirmedCount}件 / 噂: ${j.rumorTotal}件)</div>
         `;
         journalistSection.appendChild(div);
     });

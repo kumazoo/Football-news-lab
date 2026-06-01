@@ -107,7 +107,10 @@
                 if (b.accuracy !== a.accuracy) {
                     return b.accuracy - a.accuracy;
                 }
-                return b.rumorTotal - a.rumorTotal;
+                if (b.rumorTotal !== a.rumorTotal) {
+                    return b.rumorTotal - a.rumorTotal;
+                }
+                return b.confirmedCount - a.confirmedCount;
             });
 
             renderJournalists();
