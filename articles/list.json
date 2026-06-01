@@ -1,6 +1,6 @@
 [
   {
-    "id": "250724_c01",
+    "id": "250724_01",
     "title": "リバプールがプレミアクラブ間のエキティケ争奪戦を制す",
     "genre": "confirmed",
     "journalist": [ "Andy Hunter" ],
@@ -97,6 +97,6 @@
     "tags": [ "england", "netherlands", "arsenal", "nottinghamforest", "ajax", "zinchenko" ],
     "journalist": null,
     "source_url": "https://www.bbc.com/sport/football/articles/c0mk38lwm2jo",
-    "featured": true
+    "featured": false
   }
 ]

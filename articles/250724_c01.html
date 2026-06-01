@@ -102,7 +102,7 @@
 </footer>
 
 <script>
-    const currentArticleId = "250724_c01";
+    const currentArticleId = "250724_c02";
     const currentArticleTags = ["england","liverpool","frankfurt","ekitike"];
     const currentArticleJournalists = ["Andy Hunter"];
     const currentArticleGenre = "__ARTICLE_GENRE_STRING__";
@@ -139,6 +139,7 @@
             });
 
             const infoArea = document.getElementById("journalist-info-area");
+            allArticles.find(a => a.id === currentArticleId);
             currentArticleJournalists.forEach(name => {
                 let confirmedCount = 0, rumorCorrect = 0, rumorTotal = 0;
                 
@@ -159,7 +160,7 @@
                 const accuracy = rumorTotal > 0 ? Math.round((rumorCorrect / rumorTotal) * 100) : 0;
                 
                 let statusBadge = "";
-                if (articleData.genre === "rumor") {
+                if (articleData && articleData.genre === "rumor") {
                     if (articleData.status === "correct") statusBadge = '...';
                     if (articleData.status === "incorrect") statusBadge = '...';
                 }
