@@ -1,6 +1,6 @@
 [
   {
-    "id": "250724_transfer01",
+    "id": "250724_c01",
     "title": "リバプールがプレミアクラブ間のエキティケ争奪戦を制す",
     "genre": "confirmed",
     "journalist": [ "Andy Hunter" ],
@@ -50,6 +50,16 @@
     "featured": false
   },
   {
+    "id": "250902_transfer01",
+    "title": "イサク、プレミアリーグレコードの移籍金でついにリバプール移籍",
+    "genre": "confirmed",
+    "featured": true,
+    "iframely_id": "gMnKTRXd",
+    "source_url": "https://www.bbc.com/sport/football/articles/cly4my21lz7o",
+    "journalist": [ "Sami Mokbel", "Mandeep Sanghera" ],
+    "tags": [ "england", "liverpool", "newcastle", "isak" ]
+  },
+  {
     "id": "260109_transfer01",
     "iframely_id": "JT0Bkmh5",
     "genre": "confirmed",
@@ -88,15 +98,5 @@
     "journalist": null,
     "source_url": "https://www.bbc.com/sport/football/articles/c0mk38lwm2jo",
     "featured": true
-  },
-  {
-    "id": "250902_transfer01",
-    "title": "イサク、プレミアリーグレコードの移籍金でついにリバプール移籍",
-    "genre": "confirmed",
-    "featured": true,
-    "iframely_id": "gMnKTRXd",
-    "source_url": "https://www.bbc.com/sport/football/articles/cly4my21lz7o",
-    "journalist": [ "Sami Mokbel", "Mandeep Sanghera" ],
-    "tags": [ "england", "liverpool", "newcastle", "isak" ]
   }
 ]
