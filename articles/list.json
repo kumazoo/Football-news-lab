@@ -60,12 +60,12 @@
     "featured": true
   },
   {
-    "id": "260109_transfer01",
-    "iframely_id": "JT0Bkmh5",
-    "genre": "confirmed",
+    "id": "260109_c01",
     "title": "セメンヨのマンチェスター・シティ移籍が決定",
-    "tags": [ "england", "bournemouth", "manchestercity", "semenyo" ],
+    "genre": "confirmed",
     "journalist": [ "Rob Dawson" ],
+    "tags": [ "england", "bournemouth", "manchestercity", "semenyo" ],
+    "iframely_id": "JT0Bkmh5",
     "source_url": "https://www.espn.com/soccer/story/_/id/47537480/man-city-transfer-antoine-semenyo-bournemouth-64-million-premier-league",
     "featured": false
   },
