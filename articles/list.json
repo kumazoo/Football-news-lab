@@ -20,12 +20,12 @@
     "featured": false
   },
   {
-    "id": "250830_transfer01",
-    "iframely_id": "TijW0Fgu",
-    "genre": "confirmed",
+    "id": "250830_c01",
     "title": "フォレストがヨーロッパリーグに向けニコロ・サヴォーナを補強",
-    "tags": [ "england", "italia", "nottinghamforest", "juventus", "savona" ],
+    "genre": "confirmed",
     "journalist": [ "Matt Davis" ],
+    "tags": [ "england", "italia", "nottinghamforest", "juventus", "savona" ],
+    "iframely_id": "TijW0Fgu",
     "source_url": "https://www.bbc.com/sport/football/articles/cpv0gx7ln1xo",
     "featured": false
   },
