@@ -10,12 +10,12 @@
     "featured": true
   },
   {
-    "id": "250829_transfer01",
-    "iframely_id": "JfEy1s1n",
-    "genre": "confirmed",
+    "id": "250829_c01",
     "title": "トッテナムがオランダ代表の注目株シャビ・シモンズを獲得！",
-    "tags": [ "england", "germany", "tottenham", "leipzig", "simons" ],
+    "genre": "confirmed",
     "journalist": [ "Sami Mokbel", "Adam Millington" ],
+    "tags": [ "england", "germany", "tottenham", "leipzig", "simons" ],
+    "iframely_id": "JfEy1s1n",
     "source_url": "https://www.bbc.com/sport/football/articles/cj4w7xgq47zo",
     "featured": false
   },
