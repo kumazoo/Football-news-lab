@@ -50,14 +50,14 @@
     "featured": false
   },
   {
-    "id": "250902_transfer01",
+    "id": "250902_c01",
     "title": "イサク、プレミアリーグレコードの移籍金でついにリバプール移籍",
     "genre": "confirmed",
-    "featured": true,
+    "journalist": [ "Sami Mokbel", "Mandeep Sanghera" ],
+    "tags": [ "england", "liverpool", "newcastle", "isak" ],
     "iframely_id": "gMnKTRXd",
     "source_url": "https://www.bbc.com/sport/football/articles/cly4my21lz7o",
-    "journalist": [ "Sami Mokbel", "Mandeep Sanghera" ],
-    "tags": [ "england", "liverpool", "newcastle", "isak" ]
+    "featured": true
   },
   {
     "id": "260109_transfer01",
