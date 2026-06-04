@@ -26,7 +26,7 @@
 
 <main>
     <div class="archive-container">
-        <h2 style="text-align: center; margin-bottom: 30px;">JOURNALIST RANKING</h2>
+        <h2 style="text-align: center; margin-bottom: 30px;">ジャーナリスト ランキング</h2>
 
         <div class="filter-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
             <div class="search-box">
@@ -61,7 +61,6 @@
             
             const journalistMap = {};
             
-            // 1. list.json内のデータから「確定数」「噂数」「噂的中」をそれぞれ分立して集計
             articles.forEach(article => {
                 const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
 
@@ -91,7 +90,6 @@
                 });
             });
 
-            // 2. 噂の的中率を計算して配列化
             allJournalists = Object.values(journalistMap).map(j => {
                 const accuracy = j.rumorTotal > 0 ? Math.round((j.rumorCorrect / j.rumorTotal) * 100) : 0;
                 return {
@@ -102,7 +100,6 @@
                 };
             });
 
-            // 3. ソート適用：噂の的中率順 ➔ 的中率が同じなら噂の件数（rumorTotal）が多い順
             allJournalists.sort((a, b) => {
                 if (b.accuracy !== a.accuracy) {
                     return b.accuracy - a.accuracy;

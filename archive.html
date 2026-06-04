@@ -81,7 +81,6 @@
 
     if (paramJournalist) searchQuery = paramJournalist;
 
-    // 💡 HTMLにIDがなくても、hrefの文字を直接見て自動でナビゲーションを光らせる処理
     function highlightNavigation() {
         const navButtons = document.querySelectorAll('#main-nav .nav-btn');
         navButtons.forEach(btn => {
@@ -121,7 +120,7 @@
 
             if (searchQuery) document.getElementById('search-input').value = searchQuery;
             
-            highlightNavigation(); // ナビ点灯処理を実行
+            highlightNavigation();
             renderArchive();
         } catch (e) {
             console.error("Failed to load articles.", e);

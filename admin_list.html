@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【管理】過去記事ステータス編集 | FTL</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --box-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-color); padding: 30px 20px; color: var(--text-main); margin: 0; line-height: 1.5; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: #1e293b; font-size: 1.6rem; font-weight: 800; margin: 0 0 10px 0; }
+        nav { text-align: center; margin-bottom: 30px; }
+        .nav-link { color: var(--text-muted); text-decoration: none; font-weight: bold; margin: 0 15px; font-size: 0.9rem; padding-bottom: 5px; }
+        .nav-link.active { color: #2A6A35; border-bottom: 2px solid #2A6A35; }
+        main { max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; }
+        .box { background: var(--box-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
+        .file-input-box { background: #eff6ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #bfdbfe; text-align: center; }
+        .file-input-box label { display: block; font-weight: 700; color: var(--primary-color); margin-bottom: 5px; font-size: 0.85rem; }
+        .list-container { max-height: 500px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; background: #fff; }
+        
+        /* 選択しやすいアイテムスタイル */
+        .article-item { padding: 12px 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; }
+        .article-item:hover { background: #f1f5f9; }
+        .article-item.selected { background: #e0f2fe; border-left: 4px solid #0284c7; }
+        .article-title { font-weight: 600; color: #0f172a; margin-bottom: 2px; font-size: 0.9rem; line-height: 1.4; }
+        .article-info { font-size: 0.75rem; color: var(--text-muted); font-family: monospace; }
+        
+        .badge { font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
+        .badge-pending { background: #fef3c7; color: #d97706; }
+        .badge-correct { background: #fce7f3; color: #db2777; }
+        .badge-incorrect { background: #f1f5f9; color: #475569; }
+        .badge-confirmed { background: #dcfce7; color: #15803d; }
+
+        /* 右側編集エリア */
+        .editor-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 15px; }
+        .edit-target-title { font-weight: 600; font-size: 0.95rem; background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; }
+        select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; background: #fff; }
+        
+        .btn { background: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; width: 100%; font-size: 0.9rem; transition: background 0.2s; }
+        .btn:hover:not(:disabled) { background: var(--primary-hover); }
+        .btn:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Football Transfer Lab 運営管理ツール</h1>
+</header>
+
+<nav>
+    <a href="admin_list.html" class="nav-link active">📊 過去記事ステータス編集</a>
+    <a href="admin_create.html" class="nav-link">✍️ 新規記事の追加生成</a>
+</nav>
+
+<main>
+    <section class="box">
+        <div class="file-input-box">
+            <label for="json-file">最新の list.json を選択して同期</label>
+            <input type="file" id="json-file" accept=".json">
+        </div>
+
+        <div id="articles-list" class="list-container">
+            <p style="color: var(--text-muted); text-align: center; padding: 40px; font-size: 0.85rem;">ファイルを読み込むと、ここに過去記事が描画されます。</p>
+        </div>
+    </section>
+
+    <section class="box" id="editor-section" style="display: none;">
+        <div class="editor-title">🔄 選択中の記事を編集</div>
+        <div id="edit-title-display" class="edit-target-title">記事タイトル</div>
+        
+        <div class="form-group">
+            <label>噂の判定ステータスを変更</label>
+            <select id="edit-status-select">
+                <option value="pending">⏳ 未確定 / 進行中</option>
+                <option value="correct">🎯 的中 (correct)</option>
+                <option value="incorrect">❌ はずれ (incorrect)</option>
+            </select>
+        </div>
+
+        <button id="save-status-btn" class="btn" style="margin-bottom: 12px;">選択記事のステータスを確定</button>
+        <button id="download-json-btn" class="btn" style="background: #2a6a35;">更新された list.json を書き出す</button>
+    </section>
+</main>
+
+<script>
+    let currentArticles = [];
+    let selectedArticleId = null;
+
+    // 1. list.jsonのインポート
+    document.getElementById('json-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                currentArticles = JSON.parse(evt.target.result);
+                selectedArticleId = null;
+                document.getElementById('editor-section').style.display = 'none';
+                renderArticlesList();
+            } catch(err) {
+                alert('JSONファイルの解析に失敗しました。');
+            }
+        };
+        reader.readAsText(file, 'UTF-8');
+    });
+
+    // 2. 過去記事一覧のレンダリング
+    function renderArticlesList() {
+        const container = document.getElementById('articles-list');
+        container.innerHTML = '';
+        
+        // 最新順に並び替え
+        const displayList = currentArticles.slice().reverse();
+
+        displayList.forEach(article => {
+            const div = document.createElement('div');
+            div.className = `article-item ${article.id === selectedArticleId ? 'selected' : ''}`;
+            
+            // クリックされたら右側の編集エリアを開くイベント
+            div.onclick = function() {
+                selectArticle(article.id);
+            };
+
+            const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
+            const jText = journalists.length > 0 ? journalists.join(', ') : '---';
+
+            // 現在のステータスに応じたバッジを生成
+            let badgeHtml = '';
+            if (article.genre === 'confirmed') {
+                badgeHtml = '<span class="badge badge-confirmed">✅ 確定</span>';
+            } else {
+                if (article.status === 'correct') badgeHtml = '<span class="badge badge-correct">🎯 的中</span>';
+                else if (article.status === 'incorrect') badgeHtml = '<span class="badge badge-incorrect">❌ はずれ</span>';
+                else badgeHtml = '<span class="badge badge-pending">⏳ 噂</span>';
+            }
+
+            div.innerHTML = `
+                <div>
+                    <div class="article-title">${article.title}</div>
+                    <div class="article-info">ID: ${article.id} | 記者: ${jText}</div>
+                </div>
+                <div>${badgeHtml}</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // 3. 記事の選択処理
+    function selectArticle(id) {
+        selectedArticleId = id;
+        renderArticlesList(); // 選択ハイライトの更新
+
+        const article = currentArticles.find(a => a.id === id);
+        if (!article) return;
+
+        document.getElementById('editor-section').style.display = 'block';
+        document.getElementById('edit-title-display').innerText = article.title;
+
+        const selectEl = document.getElementById('edit-status-select');
+        if (article.genre === 'confirmed') {
+            selectEl.innerHTML = '<option value="confirmed">確定ニュース（変更不可）</option>';
+            selectEl.disabled = true;
+            document.getElementById('save-status-btn').disabled = true;
+        } else {
+            selectEl.innerHTML = `
+                <option value="pending">⏳ 未確定 / 進行中</option>
+                <option value="correct">🎯 的中 (correct)</option>
+                <option value="incorrect">❌ はずれ (incorrect)</option>
+            `;
+            selectEl.disabled = false;
+            selectEl.value = article.status || 'pending';
+            document.getElementById('save-status-btn').disabled = false;
+        }
+    }
+
+    // 4. 画面上の「ステータスを確定」ボタンを押したときの処理
+    document.getElementById('save-status-btn').addEventListener('click', function() {
+        if (!selectedArticleId) return;
+        
+        const article = currentArticles.find(a => a.id === selectedArticleId);
+        if (article && article.genre !== 'confirmed') {
+            const newStatus = document.getElementById('edit-status-select').value;
+            article.status = newStatus; // メモリ上のデータを書き換え
+            renderArticlesList(); // 左側の一覧バッジを即座に更新
+            alert('画面上のデータを更新しました。「list.jsonを書き出す」を押して保存してください。');
+        }
+    });
+
+    // 💡 【新設】更新されたJSONコードをワンクリックでクリップボードにコピーする関数
+    document.getElementById('save-status-btn').insertAdjacentHTML('afterend', '<button id="copy-json-btn" class="btn" style="background: #e65100; margin-bottom: 12px; margin-top: 12px;">📋 最新の JSON コードをコピー</button>');
+    
+    document.getElementById('copy-json-btn').addEventListener('click', function() {
+        // 一度全体のJSONテキストを作成
+        let jsonText = JSON.stringify(currentArticles, null, 2);
+        
+        // 🚨 正規表現を使って、journalistとtagsの配列部分の改行とスペースを消し、1行のコンパクトなカンマ区切りに自動変換します
+        jsonText = jsonText.replace(/"(journalist|tags)":\s*\[\s*([^\]]*?)\s*\]/g, function(match, key, content) {
+            const cleanContent = content.split('\n').map(line => line.trim()).join(' ');
+            return `"${key}": [ ${cleanContent} ]`;
+        });
+
+        // 綺麗に1行に直したテキストをクリップボードに引き渡す
+        navigator.clipboard.writeText(jsonText).then(() => {
+            alert('クリップボードに元のフォーマット（1行カンマ区切り）でJSONコードをコピーしました！\nVSCodeの list.json にそのまま上書き貼り付けしてください。');
+        }).catch(err => {
+            alert('コピーに失敗しました。ブラウザの権限を確認してください。');
+        });
+    });
+
+    // 5. JSONファイルの書き出し（ダウンロード）
+    document.getElementById('download-json-btn').addEventListener('click', function() {
+        const blob = new Blob([JSON.stringify(currentArticles, null, 2)], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'list.json';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    });
+</script>
+</body>
+</html>

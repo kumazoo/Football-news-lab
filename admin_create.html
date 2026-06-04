@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【管理】新規記事の追加生成 | FTL</title>
+    <style>
+        :root {
+            --primary-color: #2A6A35;
+            --primary-hover: #1e4b25;
+            --bg-color: #f8fafc;
+            --box-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-color); padding: 30px 20px; color: var(--text-main); margin: 0; line-height: 1.5; }
+        nav { text-align: center; margin: 10px 0 30px 0; background: #fff; padding: 15px; border-bottom: 1px solid var(--border-color); box-shadow: 0 1px 3px rgb(0 0 0 / 0.05); }
+        .nav-link { color: var(--text-muted); text-decoration: none; font-weight: bold; margin: 0 15px; font-size: 0.9rem; padding-bottom: 5px; }
+        .nav-link.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
+        main { max-width: 800px; margin: 0 auto; }
+        .box { background: var(--box-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
+        h2 { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0 0 25px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); }
+        .file-input-box { background: #f0fdf4; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px dashed #bbf7d0; text-align: center; }
+        .file-input-box label { display: block; font-weight: 700; color: var(--primary-color); margin-bottom: 10px; font-size: 0.9rem; }
+        
+        .form-section-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 12px; border-radius: 6px; margin: 25px 0 15px 0; }
+        .section-meta { background: #f1f5f9; color: #475569; }
+        .section-intro { background: #ffedd5; color: #9a3412; }
+        .section-points { background: #ecfdf5; color: #065f46; }
+        .section-profile { background: #e0f2fe; color: #0369a1; }
+        
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85rem; color: #334155; }
+        .form-group label span { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; margin-left: 4px; }
+        input[type="text"], select, textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; color: #0f172a; background: #fff; transition: border 0.2s; }
+        input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-color); }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .btn { background: var(--primary-color); color: white; border: none; padding: 14px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; width: 100%; font-size: 0.95rem; transition: background 0.2s; }
+        .btn:hover:not(:disabled) { background: var(--primary-hover); }
+        .btn:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="admin_list.html" class="nav-link">📊 過去記事ステータス編集</a>
+    <a href="admin_create.html" class="nav-link active">✍️ 新規記事の追加生成</a>
+</nav>
+
+<main>
+    <section class="box">
+        <h2>✍️ 新規記事の追加生成</h2>
+        
+        <div class="file-input-box">
+            <label for="json-file">作業を始める前に：最新の list.json を読み込ませて同期</label>
+            <input type="file" id="json-file" accept=".json">
+        </div>
+
+        <form id="new-article-form">
+            <div class="form-section-title section-meta">⚙️ 基本メタデータ</div>
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>記事ID<span>(例: 260531_transfer01)</span></label>
+                    <input type="text" id="art-id" placeholder="yymmdd_識別子" required>
+                </div>
+                <div class="form-group">
+                    <label>ジャンル</label>
+                    <select id="art-genre">
+                        <option value="rumor">噂ニュース (rumor)</option>
+                        <option value="confirmed">確定ニュース (confirmed)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>記事タイトル</label>
+                <input type="text" id="art-title" placeholder="選手名、〇〇へ完全移籍決定など" required>
+            </div>
+
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>ステータス<span>(噂の時のみ有効)</span></label>
+                    <select id="art-status">
+                        <option value="pending">未確定 / 進行中 (pending)</option>
+                        <option value="correct">的中 (correct)</option>
+                        <option value="incorrect">はずれ (incorrect)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>注目記事指定</label>
+                    <select id="art-featured">
+                        <option value="false">通常記事にする</option>
+                        <option value="true">★注目記事(Featured)にする</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>ジャーナリスト名<span>(カンマ区切り連名可)</span></label>
+                    <input type="text" id="art-journalist" placeholder="Fabrizio Romano, David Ornstein">
+                </div>
+                <div class="form-group">
+                    <label>タグ / 地域<span>(カンマ区切り)</span></label>
+                    <input type="text" id="art-tags" placeholder="england, arsenal, player">
+                </div>
+            </div>
+
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>Iframely ID<span>(11文字の英数字)</span></label>
+                    <input type="text" id="art-iframely" placeholder="abcde123456" required>
+                </div>
+                <div class="form-group">
+                    <label>情報源URL<span>(元ポストのリンク)</span></label>
+                    <input type="text" id="art-source" placeholder="https://x.com/..." required>
+                </div>
+                <div class="form-group">
+                    <label>引用元メディア名<span>(注目ポイントのソース表記用)</span></label>
+                    <input type="text" id="art-media" placeholder="the Guardian, Sky Sportsなど" required>
+                </div>
+            </div>
+            
+            <div class="form-section-title section-intro">📝 記事導入文</div>
+            <div class="form-group">
+                <label>導入テキスト<span>(記事の冒頭に挿入されるリード文・改行可能)</span></label>
+                <textarea id="art-intro" rows="4" placeholder="〇〇選手の移籍に関して、新たな動きがありました。&#13;&#10;クラブ間での交渉は最終段階に入っている模様です。" required></textarea>
+            </div>
+
+            <div class="form-section-title section-points">📌 注目ポイント（3点箇条書き）</div>
+            <div class="form-group">
+                <input type="text" id="art-p1" placeholder="ポイント1：移籍金は〇〇万ユーロ、アドオンを含む見込み" style="margin-bottom: 8px;" required>
+                <input type="text" id="art-p2" placeholder="ポイント2：選手とは個人合意済みで、契約期間は5年間" style="margin-bottom: 8px;" required>
+                <input type="text" id="art-p3" placeholder="ポイント3：メディカルチェックは今週末にロンドンで実施予定" required>
+            </div>
+
+            <div class="form-section-title section-profile">📊 選手解説・プロフィール / 📌 キーワード解説情報</div>
+            
+            <div class="grid-inputs" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <label>解説情報の種類を選択</label>
+                    <select id="art-supp-type">
+                        <option value="profile">📊 Player Profile (選手紹介)</option>
+                        <option value="keyword">📌 Keyword (キーワード解説)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>解説の対象名<span>(例: アーセナル、選手名など)</span></label>
+                    <input type="text" id="art-supp-name" placeholder="オレクサンドル_ジンチェンコ" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>解説テキスト<span>(枠内に表示される詳細文章・改行可能)</span></label>
+                <textarea id="art-profile" rows="5" placeholder="今シーズン公式戦〇〇試合に出場し、〇〇ゴールを記録している若手MF。&#13;&#10;卓越したパスセンスと戦術眼を持っており、新天地での活躍が期待される。" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Wikipedia URL</label>
+                <input type="text" id="art-wiki" placeholder="https://ja.wikipedia.org/wiki/..." required>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button type="submit" id="create-btn" class="btn" disabled>新しい記事のHTML生成 ＆ JSONコードをコピー</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<template id="article-template">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} | Football Transfer Lab | トララボ</title>
+    <link rel="stylesheet" href="../style.css">
+    <script async src="https://iframely.net/embed.js"></script>
+</head>
+<body>
+
+<header class="main-header">
+    <p class="site-description">サッカー移籍情報特化サイト</p>
+    <h1>
+        <a href="../index.html">
+            <img src="../transferlab_logo.jpg" alt="Football Transfer Lab" class="logo-img">
+        </a>
+    </h1>
+</header>
+
+<nav>
+    <a href="../journalist.html" class="nav-btn">ジャーナリスト</a>
+    <a href="../archive.html?genre=rumor" class="nav-btn">噂ニュース</a>
+    <a href="../archive.html?genre=confirmed" class="nav-btn">確定ニュース</a>
+</nav>
+
+<main>
+    <article class="article-card">
+        {{GENRE_BADGE_HTML}}
+        
+        <h2 style="margin-bottom: 10px;">{{TITLE}}</h2>
+
+        <div class="post-date" style="font-size: 0.85rem; color: #888; margin-bottom: 10px; font-family: monospace;">
+            POSTED: <span id="article-date">{{POSTED_DATE}}</span>
+        </div>
+
+        <div id="tags-container" style="margin-bottom: 10px;"></div>
+
+        <div id="journalist-info-area"></div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+        <div class="original-intro">
+            <p>{{INTRO}}</p>
+        </div>
+
+        <div class="quote-summary-group" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #fcfcfc; margin: 25px 0;">
+            <div class="iframely-container" style="margin-bottom: 20px;">
+                <div class="iframely-embed">
+                    <div class="iframely-responsive">
+                        <a href="{{SOURCE_URL}}" data-iframely-url="https://iframely.net/{{IFRAMELY_ID}}?theme=light&media=1"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
+                <strong style="display: block; margin-bottom: 10px;">■ 注目ポイント（ソース：{{MAIN_SOURCE}}）</strong>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>{{P1}}</li>
+                    <li>{{P2}}</li>
+                    <li>{{P3}}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="supplementary-info">
+            <h3>{{SUPPLEMENTARY_HEADER}}</h3>
+            <div class="supplementary-content">
+                {{PROFILE}}<br>
+                <a href="{{WIKI_URL}}" target="_blank" class="wiki-link-btn">Wikipediaで詳細を確認</a>
+            </div>
+        </div>
+
+        <div class="share-section" style="text-align: center; margin: 40px 0; padding: 20px; border-top: 1px dashed #eee; border-bottom: 1px dashed #eee;">
+            <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px; font-weight: bold; letter-spacing: 0.05em;">SHARE THIS POST</p>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <a id="share-x-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #000; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; transition: opacity 0.3s;">𝕏</a>
+                <a id="share-fb-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; background-color: #1877F2; color: #fff; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; font-family: sans-serif; font-weight: bold; transition: opacity 0.3s;">f</a>
+            </div>
+        </div>
+
+        <div class="supplementary-info" style="border-top: none; margin-top: 15px;">
+            <h3>🔗 関連記事</h3>
+            <div class="supplementary-content" style="background-color: transparent; padding: 0;">
+                <ul id="related-list" style="margin: 0; padding-left: 20px;"></ul>
+                <div style="margin-top: 10px;">
+                    <a id="back-to-archive-btn" href="../archive.html?genre=confirmed" style="font-size: 13px;">確定ニュース一覧に戻る</a>
+                </div>
+            </div>
+        </div>
+    </article>
+</main>
+
+<footer style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 40px;">
+    <div style="margin-bottom: 10px;">
+        <a href="../about.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">当サイトについて</a>
+        <a href="../contact.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">お問い合わせ</a>
+        <a href="../privacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin: 0 10px;">プライバシーポリシー</a>
+    </div>
+    <p style="font-size: 0.75rem; color: #888;">&copy; 2026 Football Transfer Lab</p>
+</footer>
+
+<script>
+    const currentArticleId = "__ARTICLE_ID_STRING__";
+    const currentArticleTags = __TAGS_ARRAY_DATA__;
+    const currentArticleJournalists = __JOURNALISTS_ARRAY_DATA__;
+
+    async function loadArticleFeatures() {
+        try {
+            const res = await fetch("../articles/list.json?v=" + new Date().getTime());
+            if (!res.ok) return;
+            const allArticles = await res.json();
+            
+            const pageUrl = encodeURIComponent(window.location.href);
+            const shareText = encodeURIComponent(document.title);
+            document.getElementById("share-x-btn").href = "https://twitter.com/intent/tweet?url=" + pageUrl + "&text=" + shareText + "&hashtags=トララボ,サッカー移籍";
+            document.getElementById("share-fb-btn").href = "https://www.facebook.com/sharer/sharer.php?u=" + pageUrl;
+
+            const listElement = document.getElementById("related-list");
+            const related = allArticles.filter(a => a.id !== currentArticleId && a.tags && a.tags.some(t => currentArticleTags.includes(t)));
+            related.slice(-3).reverse().forEach(a => {
+                const li = document.createElement("li");
+                li.innerHTML = '<a href="' + a.id + '.html" style="font-size: 13px;">' + a.title + '</a>';
+                listElement.appendChild(li);
+            });
+
+            const tagsContainer = document.getElementById("tags-container");
+            currentArticleTags.forEach(tag => {
+                const span = document.createElement("span");
+                span.className = "tag";
+                span.style.cursor = "pointer";
+                span.onclick = () => { window.location.href = '../archive.html?tag=' + tag; };
+                span.innerText = tag;
+                tagsContainer.appendChild(span);
+                tagsContainer.appendChild(document.createTextNode(" "));
+            });
+
+            const infoArea = document.getElementById("journalist-info-area");
+            const articleData = allArticles.find(a => a.id === currentArticleId);
+            currentArticleJournalists.forEach(name => {
+                let confirmedCount = 0, rumorCorrect = 0, rumorTotal = 0;
+                
+                allArticles.forEach(article => {
+                    const journalists = Array.isArray(article.journalist) ? article.journalist : (article.journalist ? [article.journalist] : []);
+                    if (journalists.map(j => j.trim()).includes(name)) {
+                        if (article.genre && article.genre.includes("confirmed")) {
+                            confirmedCount++;
+                        } else {
+                            if (article.status === "correct" || article.status === "incorrect") {
+                                rumorTotal++;
+                                if (article.status === "correct") rumorCorrect++;
+                            }
+                        }
+                    }
+                });
+                
+                const accuracy = rumorTotal > 0 ? Math.round((rumorCorrect / rumorTotal) * 100) : 0;
+                
+                let statusBadge = "";
+                if (articleData && articleData.genre === "rumor") {
+                    if (articleData.status === "correct") statusBadge = '<span class="badge badge-correct" style="margin-left:10px; vertical-align:middle;">🎯 的中</span>';
+                    if (articleData.status === "incorrect") statusBadge = '<span class="badge badge-incorrect" style="margin-left:10px; vertical-align:middle;">❌ はずれ</span>';
+                }
+
+                const div = document.createElement("div");
+                div.className = "journalist-info";
+                div.style = "margin: 5px 0 10px 0; padding: 5px 0; border-bottom: 1px dotted #f0f0f0;";
+                div.innerHTML = `
+                    <span class="journalist-label" style="font-size: 0.8rem; color:#666; font-weight:bold;">JOURNALIST:</span>
+                    <span class="journalist-name" style="font-weight:bold; color:#2A6A35; margin-left:5px;">${name}</span>
+                    ${statusBadge}
+                    <span class="journalist-stats" style="font-size:0.75rem; color:#888; margin-left:10px;">
+                        (確定: ${confirmedCount}件 / 噂的中率: <span class="accuracy-value" style="color:#e91e63; font-weight:bold;">${accuracy}%</span> [判定:${rumorTotal}件])
+                    </span>
+                `;
+                infoArea.appendChild(div);
+            });
+        } catch(e) { console.error(e); }
+    }
+    window.addEventListener("DOMContentLoaded", loadArticleFeatures);
+</script>
+
+</body>
+</html></template>
+
+<script>
+    let currentArticles = [];
+
+    document.getElementById('json-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                currentArticles = JSON.parse(evt.target.result);
+                document.getElementById('create-btn').disabled = false;
+                alert('最新の list.json と同期しました。');
+            } catch(err) {
+                alert('JSONファイルの解析に失敗しました。');
+            }
+        };
+        reader.readAsText(file, 'UTF-8');
+    });
+
+    document.getElementById('new-article-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const id = document.getElementById('art-id').value.trim();
+        if (currentArticles.some(a => a.id === id)) {
+            alert('警告：この記事IDは既に存在しています。');
+            return;
+        }
+
+        const title = document.getElementById('art-title').value.trim();
+        const genre = document.getElementById('art-genre').value;
+        const status = document.getElementById('art-status').value;
+        const featured = document.getElementById('art-featured').value === 'true';
+        const iframely_id = document.getElementById('art-iframely').value.trim();
+        const source_url = document.getElementById('art-source').value.trim();
+        const media_name = document.getElementById('art-media').value.trim();
+
+        const intro_text = document.getElementById('art-intro').value.trim();
+        const p1 = document.getElementById('art-p1').value.trim();
+        const p2 = document.getElementById('art-p2').value.trim();
+        const p3 = document.getElementById('art-p3').value.trim();
+        const profile_text = document.getElementById('art-profile').value.trim();
+        const wiki_url = document.getElementById('art-wiki').value.trim();
+
+        const suppType = document.getElementById('art-supp-type').value;
+        const suppName = document.getElementById('art-supp-name').value.trim();
+
+        const rawJournalist = document.getElementById('art-journalist').value;
+        const journalist = rawJournalist ? rawJournalist.split(',').map(j => j.trim()).filter(j => j) : [];
+        const rawTags = document.getElementById('art-tags').value;
+        const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(t => t) : [];
+
+        const mainSourceDisplay = journalist.length > 0 ? journalist[0] : '---';
+
+        const dateId = id.substring(0, 6);
+        const formattedDate = "20" + dateId.substring(0, 2) + "." + dateId.substring(2, 4) + "." + dateId.substring(4, 6);
+
+        let headerText = suppType === 'profile' ? "📊 Player Profile / " + suppName : "📌 Keyword / " + suppName;
+        let genreBadgeHtml = genre === 'confirmed' ? '<span class="tag tag-confirmed">確定</span>' : '<span class="tag tag-rumor">噂</span>';
+
+        const newArticleObj = { id, title, genre };
+        if (genre === 'rumor') { newArticleObj.status = status; }
+        newArticleObj.journalist = journalist;
+        newArticleObj.tags = tags;
+        newArticleObj.iframely_id = iframely_id;
+        newArticleObj.source_url = source_url;
+        newArticleObj.featured = featured;
+        
+        currentArticles.push(newArticleObj);
+
+        currentArticles.sort((a, b) => {
+            const dateA = a.id.substring(0, 6);
+            const dateB = b.id.substring(0, 6);
+            const numA = Number((Number(dateA.substring(0, 2)) < 80 ? '20' : '19') + dateA);
+            const numB = Number((Number(dateB.substring(0, 2)) < 80 ? '20' : '19') + dateB);
+            return numA - numB;
+        });
+
+        let htmlContent = document.getElementById('article-template').innerHTML;
+        htmlContent = "<!DOCTYPE html>\n<html lang=\"ja\">\n" + htmlContent;
+
+        htmlContent = htmlContent.replace(/{{TITLE}}/g, title);
+        htmlContent = htmlContent.replace(/{{POSTED_DATE}}/g, formattedDate);
+        htmlContent = htmlContent.replace(/{{SOURCE_URL}}/g, source_url);
+        htmlContent = htmlContent.replace(/{{IFRAMELY_ID}}/g, iframely_id);
+        htmlContent = htmlContent.replace(/{{MAIN_SOURCE}}/g, media_name);
+        htmlContent = htmlContent.replace(/{{P1}}/g, p1);
+        htmlContent = htmlContent.replace(/{{P2}}/g, p2);
+        htmlContent = htmlContent.replace(/{{P3}}/g, p3);
+        htmlContent = htmlContent.replace(/{{SUPPLEMENTARY_HEADER}}/g, headerText);
+        htmlContent = htmlContent.replace(/{{WIKI_URL}}/g, wiki_url);
+        htmlContent = htmlContent.replace(/{{INTRO}}/g, intro_text.replace(/\n/g, '<br>'));
+        htmlContent = htmlContent.replace(/{{PROFILE}}/g, profile_text.replace(/\n/g, '<br>'));
+        htmlContent = htmlContent.replace(/{{GENRE_BADGE_HTML}}/g, genreBadgeHtml);
+
+        htmlContent = htmlContent.replace(/__ARTICLE_ID_STRING__/g, id);
+        htmlContent = htmlContent.replace(/__TAGS_ARRAY_DATA__/g, JSON.stringify(tags));
+        htmlContent = htmlContent.replace(/__JOURNALISTS_ARRAY_DATA__/g, JSON.stringify(journalist));
+        
+        let jsonOutput = JSON.stringify(currentArticles, null, 2);
+        jsonOutput = jsonOutput.replace(/"(journalist|tags)":\s*\[\s*([^\]]*?)\s*\]/g, function(match, key, content) {
+            const cleanContent = content.split('\n').map(line => line.trim()).join(' ');
+            return `"${key}": [ ${cleanContent} ]`;
+        });
+
+        const blob = new Blob([htmlContent], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = id + '.html';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        navigator.clipboard.writeText(jsonOutput).then(() => {
+            alert('\n\n① 指定の空の器枠（tags、journalist）を持つHTMLを生成しました。\n② 最新の並び替えJSONをコピーしました！\n\nVSCodeで list.json に上書き保存してください。');
+            document.getElementById('new-article-form').reset();
+            document.getElementById('art-featured').value = "false";
+            document.getElementById('art-genre').value = "rumor";
+            document.getElementById('art-status').value = "pending";
+        }).catch(err => { alert('コピー失敗'); });
+    });
+</script>
+</body>
+</html>
